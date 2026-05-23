@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Bauschreinerei Urra – Fenster, Türen und Garagentore aus Olsberg. Qualität, Handwerkskunst und Präzision seit 2003." />
+    <meta name="theme-color" content="#000000" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <title>Bauschreinerei Urra · Fenster und Türen aus Olsberg</title>
+    <script>
+      // SPA-Router restore for GitHub Pages — decodes the path that 404.html
+      // stashed into the query string and replaces history before React boots.
+      (function () {
+        var l = window.location;
+        if (l.search.indexOf('p=') !== -1) {
+          var q = {};
+          l.search
+            .slice(1)
+            .split('&')
+            .forEach(function (kv) {
+              var i = kv.indexOf('=');
+              if (i > -1) q[kv.slice(0, i)] = kv.slice(i + 1).replace(/~and~/g, '&');
+            });
+          if (q.p !== undefined) {
+            window.history.replaceState(
+              null,
+              '',
+              l.pathname.replace(/\/$/, '') +
+                (q.p || '') +
+                (q.q ? '?' + q.q : '') +
+                l.hash
+            );
+          }
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bauschreinerei Urra</title>
+    <script>
+      // SPA-Fallback for GitHub Pages — redirects unknown paths to root with
+      // the original path encoded into the query string. The boot script in
+      // index.html restores it via history.replaceState.
+      (function () {
+        var segmentCount = 1; // /<repo-name>/ — drop one segment
+        var l = window.location;
+        l.replace(
+          l.protocol +
+            '//' +
+            l.hostname +
+            (l.port ? ':' + l.port : '') +
+            l.pathname
+              .split('/')
+              .slice(0, 1 + segmentCount)
+              .join('/') +
+            '/?p=/' +
+            l.pathname
+              .slice(1)
+              .split('/')
+              .slice(segmentCount)
+              .join('/')
+              .replace(/&/g, '~and~') +
+            (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+        );
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

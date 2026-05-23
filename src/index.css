@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Readex Pro', system-ui, -apple-system, sans-serif;
+    background: #000;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .hero-title {
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+  }
+
+  .text-on-video {
+    text-shadow: 0 1px 16px rgba(0, 0, 0, 0.55);
+  }
+
+  main p,
+  main li,
+  main a,
+  main h3,
+  main span {
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.65);
+  }
+
+  main .no-shadow,
+  main .no-shadow * {
+    text-shadow: none;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
