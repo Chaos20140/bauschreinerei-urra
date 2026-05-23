@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 
 const FRAME_COUNT = 100;
 const BASE = import.meta.env.BASE_URL;
-const framePath = (i: number): string =>
-  `${BASE}frames/frame-${String(i).padStart(3, '0')}.jpg`;
+
+const framePath = (folder: string, i: number): string =>
+  `${BASE}${folder}/frame-${String(i).padStart(3, '0')}.jpg`;
 
 type LoadState = 'loading' | 'ready' | 'error';
 
-export function useFrames(): {
+export function useFrames(folder: string = 'frames'): {
   images: HTMLImageElement[];
   state: LoadState;
   progress: number;
@@ -36,7 +37,7 @@ export function useFrames(): {
           if (!cancelled) setProgress(loaded / FRAME_COUNT);
           resolve();
         };
-        img.src = framePath(idx + 1);
+        img.src = framePath(folder, idx + 1);
       });
     });
 
@@ -50,7 +51,7 @@ export function useFrames(): {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [folder]);
 
   return { images, state, progress };
 }
@@ -58,9 +59,18 @@ export function useFrames(): {
 type Props = {
   images: HTMLImageElement[];
   progress: number;
+  maxDpr?: number;
+  easing?: number;
+  bgPositionY?: number;
 };
 
-export function ScrollSequenceCanvas({ images, progress }: Props) {
+export function ScrollSequenceCanvas({
+  images,
+  progress,
+  maxDpr = 2,
+  easing = 0.18,
+  bgPositionY = 0.5,
+}: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const targetFrame = useRef(0);
@@ -80,7 +90,7 @@ export function ScrollSequenceCanvas({ images, progress }: Props) {
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
 
     const resize = () => {
       const { innerWidth: w, innerHeight: h } = window;
@@ -105,7 +115,7 @@ export function ScrollSequenceCanvas({ images, progress }: Props) {
       const dw = iw * scale;
       const dh = ih * scale;
       const dx = (cw - dw) / 2;
-      const dy = (ch - dh) / 2;
+      const dy = (ch - dh) * bgPositionY;
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, cw, ch);
       ctx.drawImage(img, dx, dy, dw, dh);
@@ -114,7 +124,7 @@ export function ScrollSequenceCanvas({ images, progress }: Props) {
     const tick = () => {
       const diff = targetFrame.current - currentFrame.current;
       if (Math.abs(diff) > 0.01) {
-        currentFrame.current += diff * 0.18;
+        currentFrame.current += diff * easing;
         draw(currentFrame.current);
       } else if (currentFrame.current !== targetFrame.current) {
         currentFrame.current = targetFrame.current;
@@ -131,7 +141,7 @@ export function ScrollSequenceCanvas({ images, progress }: Props) {
       window.removeEventListener('resize', resize);
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [images]);
+  }, [images, maxDpr, easing, bgPositionY]);
 
   return (
     <canvas
