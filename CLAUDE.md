@@ -148,6 +148,16 @@ Alle Texte zentral in `src/data/content.ts` halten — niemals in Komponenten ha
     - **BOTTOM**: Stats horizontal als Reihe (3 Werte mit kleinen Caps-Labels) + Scroll-Indikator rechts.
     - Subtile vertikale Gradient-Overlays oben (`rgba(0,0,0,0.45) → 0`) und unten (`rgba(0,0,0,0.55) → 0`) für Lesbarkeit der Top-/Bottom-Bänder, ohne die Bildmitte zu verdunkeln.
   - **Lesbarkeit über bewegtem Hintergrund**: `.hero-title` bekommt globalen `text-shadow: 0 2px 24px rgba(0,0,0,0.45)` (Big-Headlines), Body-Text in `main` (`p, li, a, h3, span`) bekommt `text-shadow: 0 1px 12px rgba(0,0,0,0.65)` für saubere Lesbarkeit auf dem Video — kein neuer Dim-Layer. Zusätzlich Canvas-Filter auf `contrast(1.08) saturate(1.08) brightness(0.82)` — leichte 18-%-Brightness-Reduktion des Bilds selbst (nicht als Overlay), damit weißer Text auf hellen Frame-Bereichen (Fensterglas, Himmel) zuverlässig steht.
+  - **GitHub-Pages-Deployment**:
+    - Repo: https://github.com/Chaos20140/bauschreinerei-urra (public)
+    - Live: https://chaos20140.github.io/bauschreinerei-urra/
+    - `vite.config.ts` setzt `base: '/bauschreinerei-urra/'` wenn `GITHUB_PAGES=true` (CI), sonst `/` (lokal).
+    - `App.tsx`: `BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}` — automatisch korrekter Pfad für lokal vs. Pages.
+    - `ScrollSequence.tsx`: Frame-Pfade nutzen `BASE_URL` als Prefix.
+    - SPA-Deep-Link-Fix: `public/404.html` + Inline-Boot-Script in `index.html` (Pattern aus rafgraph/spa-github-pages) — Pages routet unbekannte Pfade auf `404.html`, das script-redirected mit dem Original-Pfad in der Query-String, das Boot-Script in `index.html` stellt die URL wieder her bevor React bootet.
+    - GitHub-Action `.github/workflows/deploy.yml`: läuft auf push:main, baut mit `GITHUB_PAGES=true`, kopiert `404.html` ins `dist/`, lädt das Artefakt mit `actions/upload-pages-artifact@v3` hoch, deployt via `actions/deploy-pages@v4`.
+    - `gh` CLI 2.92 wurde lokal installiert. Erste OAuth hatte nur `repo`-Scope → Push der Workflow-Datei wurde abgewiesen, daher `gh auth refresh -s workflow` nachgereicht. Token-Scopes jetzt: `gist`, `read:org`, `repo`, `workflow`.
+    - Erstdeploy: Build 27s + Deploy 11s. Live-URL geprüft (Home + Deep-Link `/impressum` direkt aufgerufen).
   - **Multi-Page-Refactor + Mobile-Burger + Cookie-Banner**:
     - `react-router-dom@6.28` + `lucide-react` als Dependencies. `BrowserRouter` in `App.tsx`, 7 Routes: `/`, `/leistungen`, `/projekte`, `/ueber-uns`, `/kontakt`, `/impressum`, `/datenschutz` (Catch-all `*` → HomePage).
     - Neue Pages unter `src/pages/`: `HomePage` (übernimmt die Scroll-Video-Sequenz und alle Marketing-Sektionen), plus 6 dedizierte Sub-Pages mit eigener Komposition (Hero, Kategorien-Karten, Werte-Listen, Process-Schritte, CTA).
