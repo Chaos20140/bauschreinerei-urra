@@ -6,26 +6,26 @@ import { regions } from '../data/content';
 const CATEGORIES = [
   {
     title: 'privatbau',
-    body: 'einfamilien- und mehrfamilienhäuser, neubauten und individuelle anbauten. moderne fenster, eingangstüren und schiebetüren — komplett geplant, geliefert und montiert.',
-    tags: ['neubau', 'einfamilienhaus', 'eingangsbereich'],
+    body: 'Einfamilien- und Mehrfamilienhäuser, Neubauten und individuelle Anbauten. Moderne Fenster, Eingangstüren und Schiebetüren — komplett geplant, geliefert und montiert.',
+    tags: ['Neubau', 'Einfamilienhaus', 'Eingangsbereich'],
   },
   {
     title: 'sanierung & modernisierung',
-    body: 'austausch alter fenster und türen mit blick auf energieeffizienz, schallschutz und einbruchhemmung. fachgerechte demontage, saubere baustelle, ral-konforme montage.',
-    tags: ['altbau', 'energetisch', 'rc-2'],
+    body: 'Austausch alter Fenster und Türen mit Blick auf Energieeffizienz, Schallschutz und Einbruchhemmung. Fachgerechte Demontage, saubere Baustelle, RAL-konforme Montage.',
+    tags: ['Altbau', 'Energetisch', 'RC-2'],
   },
   {
     title: 'gewerbe & sondermaße',
-    body: 'objekttüren, große festverglasungen und schiebeelemente für gewerbeobjekte. abgestimmt auf nutzungsanforderungen, brandschutz und barrierefreiheit.',
-    tags: ['objekt', 'großformat', 'sondermaß'],
+    body: 'Objekttüren, große Festverglasungen und Schiebeelemente für Gewerbeobjekte. Abgestimmt auf Nutzungsanforderungen, Brandschutz und Barrierefreiheit.',
+    tags: ['Objekt', 'Großformat', 'Sondermaß'],
   },
 ] as const;
 
 const HIGHLIGHTS = [
-  { value: '20+', label: 'jahre erfahrung' },
-  { value: '3', label: 'regionen flächendeckend' },
-  { value: '100%', label: 'eigenes montage-team' },
-  { value: 'ral', label: 'zertifizierte montage' },
+  { value: '20+', label: 'Jahre Erfahrung' },
+  { value: '3', label: 'Regionen flächendeckend' },
+  { value: '100%', label: 'eigenes Montage-Team' },
+  { value: 'RAL', label: 'zertifizierte Montage' },
 ] as const;
 
 export function ProjektePage() {
@@ -34,7 +34,7 @@ export function ProjektePage() {
       <PageHero
         eyebrow="projekte"
         title="referenzen aus dem sauerland und ganz westfalen."
-        intro="jedes objekt hat seine eigene geschichte — von der kleinen sanierung bis zum gewerbeobjekt. seit 2003 begleiten wir bauherren in drei regionen mit fachhandwerk auf hohem niveau."
+        intro="Jedes Objekt hat seine eigene Geschichte — von der kleinen Sanierung bis zum Gewerbeobjekt. Seit 2003 begleiten wir Bauherren in drei Regionen mit Fachhandwerk auf hohem Niveau."
       />
 
       <section className="relative px-6 md:px-12 py-12 md:py-20">
@@ -138,7 +138,7 @@ export function ProjektePage() {
 
       <CtaBlock
         title="ihr nächstes projekt."
-        body="schicken sie uns die eckdaten — adresse, gewünschte elemente, zeithorizont. wir melden uns binnen 24 stunden."
+        body="Schicken Sie uns die Eckdaten — Adresse, gewünschte Elemente, Zeithorizont. Wir melden uns binnen 24 Stunden."
       />
     </main>
   );

@@ -9,7 +9,7 @@ type Props = {
 
 export function CtaBlock({
   title = 'lassen sie uns sprechen.',
-  body = 'unverbindlich, kostenlos und werktags innerhalb von 24 stunden zurück.',
+  body = 'Unverbindlich, kostenlos und werktags innerhalb von 24 Stunden zurück.',
 }: Props) {
   return (
     <section className="relative px-6 md:px-12 py-24 md:py-32">
@@ -36,7 +36,7 @@ export function CtaBlock({
               to="/kontakt"
               className="px-6 md:px-8 py-4 rounded-full border border-white/30 text-white text-sm md:text-base font-medium hover:bg-white/10 transition-colors"
             >
-              zum kontaktformular
+              Zum Kontaktformular
             </Link>
           </div>
         </BlurIn>

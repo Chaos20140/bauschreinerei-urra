@@ -56,9 +56,9 @@ export function Contact() {
 
           <BlurIn className="md:col-span-5 md:col-start-8 flex flex-col justify-between gap-10" delay={0.15}>
             <p className="text-white/80 text-base md:text-lg leading-relaxed">
-              schreiben sie uns oder rufen sie direkt an. wir melden uns
-              werktags innerhalb von 24 stunden zurück und vereinbaren einen
-              unverbindlichen aufmaß-termin bei ihnen vor ort.
+              Schreiben Sie uns oder rufen Sie direkt an. Wir melden uns
+              werktags innerhalb von 24 Stunden zurück und vereinbaren einen
+              unverbindlichen Aufmaß-Termin bei Ihnen vor Ort.
             </p>
             <a
               href={contact.phone.href}

@@ -3,9 +3,9 @@ import { BlurIn } from '../components/BlurIn';
 import { contact, regions } from '../data/content';
 
 const HOURS = [
-  { day: 'montag — freitag', value: '08:00 — 17:00' },
-  { day: 'samstag', value: 'nach vereinbarung' },
-  { day: 'sonntag', value: 'geschlossen' },
+  { day: 'Montag — Freitag', value: '08:00 — 17:00' },
+  { day: 'Samstag', value: 'nach Vereinbarung' },
+  { day: 'Sonntag', value: 'geschlossen' },
 ] as const;
 
 export function KontaktPage() {
@@ -18,7 +18,7 @@ export function KontaktPage() {
       <PageHero
         eyebrow="kontakt"
         title="lassen sie uns über ihr projekt sprechen."
-        intro="rufen sie an, schreiben sie eine e-mail oder hinterlassen sie eine nachricht — wir melden uns werktags innerhalb von 24 stunden zurück."
+        intro="Rufen Sie an, schreiben Sie eine E-Mail oder hinterlassen Sie eine Nachricht — wir melden uns werktags innerhalb von 24 Stunden zurück."
       />
 
       <section className="relative px-6 md:px-12 py-12 md:py-20">
@@ -45,7 +45,7 @@ export function KontaktPage() {
                     rel="noopener noreferrer"
                     className="inline-block mt-3 text-white/70 hover:text-white text-sm underline underline-offset-2 transition-colors"
                   >
-                    anfahrt planen →
+                    Anfahrt planen →
                   </a>
                 </div>
 
@@ -81,11 +81,11 @@ export function KontaktPage() {
               </p>
               <ul className="space-y-3 text-white/85 text-sm md:text-base">
                 {[
-                  'objekt & adresse',
-                  'gewünschte elemente (fenster, haustüren, …)',
-                  'material-präferenz, falls vorhanden',
-                  'wunsch-zeitfenster für aufmaß & montage',
-                  'beste rückruf-zeit',
+                  'Objekt & Adresse',
+                  'Gewünschte Elemente (Fenster, Haustüren, …)',
+                  'Material-Präferenz, falls vorhanden',
+                  'Wunsch-Zeitfenster für Aufmaß & Montage',
+                  'Beste Rückruf-Zeit',
                 ].map((item) => (
                   <li
                     key={item}
@@ -97,8 +97,8 @@ export function KontaktPage() {
                 ))}
               </ul>
               <p className="mt-6 text-white/65 text-xs md:text-sm leading-relaxed">
-                je präziser ihre angaben, desto schneller können wir ein
-                belastbares angebot vorbereiten.
+                Je präziser Ihre Angaben, desto schneller können wir ein
+                belastbares Angebot vorbereiten.
               </p>
             </div>
           </BlurIn>
@@ -120,8 +120,8 @@ export function KontaktPage() {
                 ))}
               </ul>
               <p className="mt-5 text-white/55 text-xs md:text-sm">
-                aufmaß-termine erfolgen nach vereinbarung — auch außerhalb der
-                öffnungszeiten.
+                Aufmaß-Termine erfolgen nach Vereinbarung — auch außerhalb der
+                Öffnungszeiten.
               </p>
             </div>
 
@@ -136,7 +136,7 @@ export function KontaktPage() {
                 {contact.phone.display}
               </p>
               <p className="text-black/65 text-sm mt-2">
-                {contact.cta} — wir freuen uns auf ihr projekt.
+                {contact.cta} — wir freuen uns auf Ihr Projekt.
               </p>
             </a>
 
@@ -145,7 +145,7 @@ export function KontaktPage() {
                 servicegebiet
               </p>
               <p className="text-white/85 text-sm md:text-base leading-relaxed mb-3">
-                wir sind in drei regionen unterwegs:
+                Wir sind in drei Regionen unterwegs:
               </p>
               <ul className="space-y-1 text-white/80 text-sm">
                 {regions.areas.map((a) => (

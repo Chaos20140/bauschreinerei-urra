@@ -7,41 +7,41 @@ const MILESTONES = [
   {
     year: '2003',
     title: 'gründung',
-    body: 'h. urra gründet die bauschreinerei in olsberg — als familien- und inhabergeführter handwerksbetrieb.',
+    body: 'H. Urra gründet die Bauschreinerei in Olsberg — als familien- und inhabergeführter Handwerksbetrieb.',
   },
   {
     year: '2010',
     title: 'spezialisierung',
-    body: 'wachsender fokus auf fenster, haustüren und garagentore. eigene montage-teams für volle qualitätskontrolle.',
+    body: 'Wachsender Fokus auf Fenster, Haustüren und Garagentore. Eigene Montage-Teams für volle Qualitätskontrolle.',
   },
   {
     year: '2018',
     title: 'digital',
-    body: 'einführung der metiscale-app für millimetergenaues digitales aufmaß und durchgängige projektdokumentation.',
+    body: 'Einführung der metiscale-App für millimetergenaues digitales Aufmaß und durchgängige Projektdokumentation.',
   },
   {
     year: 'heute',
     title: 'westfalen',
-    body: 'wir sind in sauerland, ostwestfalen-lippe und ruhrgebiet fest verwurzelt. weiterhin inhabergeführt.',
+    body: 'Wir sind im Sauerland, in Ostwestfalen-Lippe und im Ruhrgebiet fest verwurzelt. Weiterhin inhabergeführt.',
   },
 ] as const;
 
 const PRINCIPLES = [
   {
     key: 'qualität',
-    body: 'wir verarbeiten ausschließlich produkte renommierter hersteller — langlebig, sicher und energieeffizient. unsere montage erfolgt nach RAL und EnEV-standard.',
+    body: 'Wir verarbeiten ausschließlich Produkte renommierter Hersteller — langlebig, sicher und energieeffizient. Unsere Montage erfolgt nach RAL- und EnEV-Standard.',
   },
   {
     key: 'präzision',
-    body: 'millimetergenaues aufmaß mit der metiscale-app, saubere baustelle, dokumentierte abnahme. wir arbeiten so, wie wir bei uns selbst arbeiten würden.',
+    body: 'Millimetergenaues Aufmaß mit der metiscale-App, saubere Baustelle, dokumentierte Abnahme. Wir arbeiten so, wie wir bei uns selbst arbeiten würden.',
   },
   {
     key: 'verlässlich',
-    body: 'feste ansprechpartner, terminTreue und transparente kommunikation — vom angebot bis zur einweisung. keine versteckten kosten, keine ausreden.',
+    body: 'Feste Ansprechpartner, Termintreue und transparente Kommunikation — vom Angebot bis zur Einweisung. Keine versteckten Kosten, keine Ausreden.',
   },
   {
     key: 'regional',
-    body: 'wir kennen das wetter, die häuser und die menschen in westfalen. das macht uns zu einem partner, der versteht, was vor ort wirklich gebraucht wird.',
+    body: 'Wir kennen das Wetter, die Häuser und die Menschen in Westfalen. Das macht uns zu einem Partner, der versteht, was vor Ort wirklich gebraucht wird.',
   },
 ] as const;
 
@@ -51,7 +51,7 @@ export function UeberUnsPage() {
       <PageHero
         eyebrow="über uns"
         title={`„${about.lead}"`}
-        intro={`— h. urra · ${brand.longName}, olsberg`}
+        intro={`— H. Urra · ${brand.longName}, Olsberg`}
       />
 
       <section className="relative px-6 md:px-12 py-12 md:py-20">
@@ -79,23 +79,23 @@ export function UeberUnsPage() {
             </p>
             <dl className="space-y-4 text-sm md:text-base">
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">gegründet</dt>
+                <dt className="text-white/65">Gegründet</dt>
                 <dd className="text-white">{brand.founded}</dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">sitz</dt>
-                <dd className="text-white">olsberg, sauerland</dd>
+                <dt className="text-white/65">Sitz</dt>
+                <dd className="text-white">Olsberg, Sauerland</dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">form</dt>
-                <dd className="text-white">inhabergeführt</dd>
+                <dt className="text-white/65">Form</dt>
+                <dd className="text-white">Inhabergeführt</dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">standard</dt>
+                <dt className="text-white/65">Standard</dt>
                 <dd className="text-white">RAL / EnEV</dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">kontakt</dt>
+                <dt className="text-white/65">Kontakt</dt>
                 <dd className="text-white text-right break-all">
                   {contact.phone.display}
                 </dd>
@@ -168,7 +168,7 @@ export function UeberUnsPage() {
 
       <CtaBlock
         title="lernen sie uns kennen."
-        body="ein gespräch sagt mehr als zehn webseiten — gerne bei ihnen vor ort oder telefonisch."
+        body="Ein Gespräch sagt mehr als zehn Webseiten — gerne bei Ihnen vor Ort oder telefonisch."
       />
     </main>
   );

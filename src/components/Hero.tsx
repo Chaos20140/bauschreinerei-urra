@@ -30,7 +30,7 @@ export function Hero() {
             className="text-white text-[10px] md:text-xs tracking-[0.4em] uppercase"
             style={SHADOW_SOFT}
           >
-            {brand.longName} · olsberg · seit 2003
+            {brand.longName} · Olsberg · seit 2003
           </p>
         </BlurIn>
 

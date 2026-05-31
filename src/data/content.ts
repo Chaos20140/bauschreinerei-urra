@@ -1,17 +1,17 @@
 export const brand = {
   name: 'urra',
-  longName: 'bauschreinerei urra',
+  longName: 'Bauschreinerei Urra',
   founded: 2003,
 } as const;
 
 export const hero = {
   words: ['fenster', 'und', 'türen'] as const,
   description:
-    'handwerk aus dem sauerland. wir planen, fertigen und montieren fenster, türen und garagentore mit präzision seit 2003.',
+    'Handwerk aus dem Sauerland. Wir planen, fertigen und montieren Fenster, Türen und Garagentore mit Präzision — inhabergeführt seit 2003.',
   stats: [
-    { value: 'seit 2003', label: 'inhabergeführt aus olsberg' },
-    { value: '3 regionen', label: 'sauerland · owl · ruhrgebiet' },
-    { value: '100% handwerk', label: 'fachmontage nach enev' },
+    { value: 'seit 2003', label: 'Inhabergeführt aus Olsberg' },
+    { value: '3 regionen', label: 'Sauerland · OWL · Ruhrgebiet' },
+    { value: '100% handwerk', label: 'Fachmontage nach EnEV' },
   ],
 } as const;
 
@@ -24,146 +24,116 @@ export const navigation = [
 
 export const services = {
   title: 'leistungen',
-  subtitle: 'rundum-service vom aufmaß bis zur fachgerechten montage.',
+  subtitle:
+    'Rundum-Service vom Aufmaß bis zur fachgerechten Montage — alles aus einer Hand.',
   items: [
     {
       id: 'beratung',
       number: '01',
       title: 'beratung & aufmaß',
-      body: 'persönliche beratung vor ort und millimetergenaues digitales aufmaß mit der metiscale-app. wir hören zu, denken mit und planen passgenau für ihr objekt.',
+      body:
+        'Persönliche Beratung vor Ort und millimetergenaues digitales Aufmaß mit der metiscale-App. Wir hören zu, denken mit und planen passgenau für Ihr Objekt.',
     },
     {
       id: 'demontage',
       number: '02',
       title: 'demontage & entsorgung',
-      body: 'fachgerechtes lösen und entfernen der alten rahmen. minimierung von staub und schmutz, schutz von innenräumen und böden, umweltgerechte entsorgung der altmaterialien.',
+      body:
+        'Fachgerechtes Lösen und Entfernen der alten Rahmen. Wir minimieren Staub und Schmutz, schützen Innenräume und Böden und entsorgen alle Altmaterialien umweltgerecht.',
     },
     {
       id: 'montage',
       number: '03',
       title: 'montage nach enev',
-      body: 'ral-zertifizierte montage nach energieeinsparverordnung. dämmung der anschlussfugen gegen wärmebrücken, dichtheitsprüfung, funktionskontrolle, leibungsverkleidung und farblich abgestimmte abschlussleisten.',
-    },
-  ],
-} as const;
-
-export const features = {
-  title: 'warum urra',
-  subtitle: 'fünf gründe, warum wir seit 2003 ihr partner für fenster und türen sind.',
-  items: [
-    {
-      key: 'ral',
-      title: 'ral-zertifizierte montage',
-      body: 'einbau nach den anerkannten ral-richtlinien — die strengste norm für fenster- und türmontage in deutschland.',
-    },
-    {
-      key: 'enev',
-      title: 'enev-konform',
-      body: 'jeder einbau entspricht der energieeinsparverordnung. anschlussfugen werden fachgerecht gedämmt — kein wärmeverlust.',
-    },
-    {
-      key: 'aufmass',
-      title: 'digitales aufmaß',
-      body: 'metiscale-app misst millimetergenau. keine nachmessungen, keine überraschungen, keine bösen rechnungen.',
-    },
-    {
-      key: 'eigenes-team',
-      title: 'eigenes montage-team',
-      body: 'kein subunternehmer. unsere monteure sind festangestellt, geschult und seit jahren beim selben handwerk.',
-    },
-    {
-      key: 'regional',
-      title: 'regional verwurzelt',
-      body: 'olsberg, brilon, meschede und das gesamte sauerland — wir kennen die häuser, die menschen und das wetter hier.',
-    },
-  ],
-} as const;
-
-export const faq = {
-  title: 'häufige fragen',
-  subtitle: 'was kunden uns am häufigsten fragen — kurz und ehrlich beantwortet.',
-  items: [
-    {
-      q: 'wie lange dauert ein typischer fenster-austausch?',
-      a: 'für ein einzelnes fenster rechnen wir mit 1–2 stunden inklusive demontage, montage und endabnahme. ein komplett-haus mit 8–12 fenstern dauert in der regel 2–3 werktage.',
-    },
-    {
-      q: 'müssen wir während der montage zuhause sein?',
-      a: 'mindestens eine ansprechperson vor ort ist hilfreich, aber nicht zwingend. wir können auch nach absprache mit schlüsselübergabe arbeiten — sauberkeit und ordnung garantiert.',
-    },
-    {
-      q: 'übernehmt ihr auch die entsorgung der alten fenster?',
-      a: 'ja, immer. fachgerechte demontage, abtransport und umweltgerechte entsorgung sind im angebot enthalten. sie müssen nichts organisieren.',
-    },
-    {
-      q: 'welche materialien empfehlt ihr für welches objekt?',
-      a: 'kunststoff für die meisten neubauten und sanierungen — preis-leistung top. aluminium für schlanke ansichten und großformate. holz oder holz-alu für historisch geprägte oder besonders hochwertige objekte. wir beraten ergebnisoffen.',
-    },
-    {
-      q: 'wie schnell bekomme ich ein angebot?',
-      a: 'nach dem aufmaß-termin innerhalb von 3–5 werktagen. transparent, mit allen leistungen aufgeschlüsselt, ohne versteckte kosten.',
-    },
-    {
-      q: 'gibt es eine garantie auf montage und produkte?',
-      a: 'auf unsere montage-leistung 5 jahre. auf die produkte greift die jeweilige herstellergarantie — meist 5–10 jahre, je nach element. details zu jedem auftrag im angebot.',
-    },
-    {
-      q: 'in welchem umkreis seid ihr unterwegs?',
-      a: 'unser kerngebiet ist olsberg, brilon, meschede und das sauerland. zusätzlich bedienen wir das gesamte ostwestfalen-lippe und ruhrgebiet — anfragen darüber hinaus auf nachfrage.',
-    },
-    {
-      q: 'macht ihr auch sonderanfertigungen?',
-      a: 'ja. ob bogenfenster für altbauten, übergroße schiebetüren oder spezielle objekttüren für gewerbeprojekte — wir planen und realisieren maßanfertigungen mit unseren herstellerpartnern.',
+      body:
+        'RAL-zertifizierte Montage nach Energieeinsparverordnung. Dämmung der Anschlussfugen gegen Wärmebrücken, Dichtheitsprüfung, Funktionskontrolle, Leibungsverkleidung und farblich abgestimmte Abschlussleisten.',
     },
   ],
 } as const;
 
 export const products = {
   title: 'unser handwerk',
-  subtitle: 'fenster, türen und tore – aus holz, kunststoff oder aluminium.',
+  subtitle:
+    'Fenster, Türen und Tore aus Holz, Kunststoff oder Aluminium — für Neubau, Sanierung und Gewerbe.',
   categories: [
-    { title: 'fenster', items: ['kunststofffenster', 'aluminiumfenster', 'holzfenster', 'sonderanfertigungen'] },
-    { title: 'türen', items: ['haustüren', 'innentüren', 'schiebetüren', 'objekttüren'] },
-    { title: 'tore', items: ['garagentore', 'industrietore', 'hofeinfahrten', 'antriebe'] },
+    {
+      title: 'fenster',
+      items: ['Kunststofffenster', 'Aluminiumfenster', 'Holzfenster', 'Sonderanfertigungen'],
+    },
+    {
+      title: 'türen',
+      items: ['Haustüren', 'Innentüren', 'Schiebetüren', 'Objekttüren'],
+    },
+    {
+      title: 'tore',
+      items: ['Garagentore', 'Industrietore', 'Hofeinfahrten', 'Antriebe'],
+    },
   ],
 } as const;
 
 export const about = {
   title: 'über uns',
-  lead: 'qualität ist kein zufall, sie ist das ergebnis harter arbeit, kluger planung und ehrlicher leidenschaft.',
+  lead:
+    'Qualität ist kein Zufall, sie ist das Ergebnis harter Arbeit, kluger Planung und ehrlicher Leidenschaft.',
   paragraphs: [
-    'seit 2003 stehen wir als inhabergeführter fachbetrieb für qualität, zuverlässigkeit und handwerkliche präzision. unsere philosophie: für jedes projekt die beste lösung finden – funktional, energieeffizient und optisch ansprechend.',
-    'wir arbeiten eng mit renommierten herstellern zusammen und sind ihr kompetenter ansprechpartner rund um fenster, türen und garagentore – von der ersten beratung bis zur fachgerechten montage.',
+    'Seit 2003 stehen wir als inhabergeführter Fachbetrieb für Qualität, Zuverlässigkeit und handwerkliche Präzision. Unsere Philosophie: für jedes Projekt die beste Lösung finden — funktional, energieeffizient und optisch ansprechend.',
+    'Wir arbeiten eng mit renommierten Herstellern zusammen und sind Ihr kompetenter Ansprechpartner rund um Fenster, Türen und Garagentore — von der ersten Beratung bis zur fachgerechten Montage.',
   ],
   values: [
-    { key: 'qualität', body: 'langlebig, sicher und energieeffizient.' },
-    { key: 'präzision', body: 'millimetergenau geplant, sauber montiert.' },
-    { key: 'verlässlich', body: 'terminTreue und transparente kommunikation.' },
+    { key: 'qualität', body: 'Langlebig, sicher und energieeffizient.' },
+    { key: 'präzision', body: 'Millimetergenau geplant, sauber montiert.' },
+    { key: 'verlässlich', body: 'Termintreue und transparente Kommunikation.' },
   ],
 } as const;
 
 export const regions = {
   title: 'unsere region',
-  subtitle: 'wir sind unterwegs im gesamten westfalen.',
+  subtitle: 'Wir sind im gesamten Westfalen unterwegs.',
   areas: [
     {
-      key: 'sauerland',
-      cities: ['arnsberg', 'meschede', 'brilon', 'winterberg', 'schmallenberg', 'olpe', 'lüdenscheid', 'iserlohn'],
+      key: 'Sauerland',
+      cities: [
+        'Arnsberg',
+        'Meschede',
+        'Brilon',
+        'Winterberg',
+        'Schmallenberg',
+        'Olpe',
+        'Lüdenscheid',
+        'Iserlohn',
+      ],
     },
     {
-      key: 'ostwestfalen-lippe',
-      cities: ['bielefeld', 'gütersloh', 'herford', 'paderborn', 'detmold', 'höxter', 'minden-lübbecke'],
+      key: 'Ostwestfalen-Lippe',
+      cities: [
+        'Bielefeld',
+        'Gütersloh',
+        'Herford',
+        'Paderborn',
+        'Detmold',
+        'Höxter',
+        'Minden-Lübbecke',
+      ],
     },
     {
-      key: 'ruhrgebiet',
-      cities: ['dortmund', 'hagen', 'bochum', 'essen', 'gelsenkirchen', 'herne', 'duisburg', 'recklinghausen'],
+      key: 'Ruhrgebiet',
+      cities: [
+        'Dortmund',
+        'Hagen',
+        'Bochum',
+        'Essen',
+        'Gelsenkirchen',
+        'Herne',
+        'Duisburg',
+        'Recklinghausen',
+      ],
     },
   ],
 } as const;
 
 export const contact = {
   title: 'kontakt',
-  lead: 'lassen sie uns über ihr projekt sprechen.',
+  lead: 'Lassen Sie uns über Ihr Projekt sprechen.',
   address: {
     street: 'Am Ochsenberg 13',
     zip: '59939',
@@ -171,14 +141,100 @@ export const contact = {
   },
   phone: { display: '+49 160 99116995', href: 'tel:+4916099116995' },
   email: { display: 'h.urra@bauschreinerei-urra.de', href: 'mailto:h.urra@bauschreinerei-urra.de' },
-  cta: 'termin anfragen',
+  cta: 'Termin anfragen',
 } as const;
 
 export const footer = {
-  tagline: 'fenster, türen und garagentore. handgemacht im sauerland seit 2003.',
-  copyright: `© ${new Date().getFullYear()} bauschreinerei urra · alle rechte vorbehalten`,
+  tagline: 'Fenster, Türen und Garagentore. Handgemacht im Sauerland seit 2003.',
+  copyright: `© ${new Date().getFullYear()} Bauschreinerei Urra · Alle Rechte vorbehalten`,
   legal: [
     { label: 'impressum', href: '#impressum' },
     { label: 'datenschutz', href: '#datenschutz' },
+  ],
+} as const;
+
+export const features = {
+  title: 'warum urra',
+  subtitle:
+    'Fünf Gründe, warum wir seit 2003 Ihr Partner für Fenster und Türen sind.',
+  items: [
+    {
+      key: 'ral',
+      title: 'ral-zertifizierte montage',
+      body:
+        'Einbau nach den anerkannten RAL-Richtlinien — die strengste Norm für Fenster- und Türmontage in Deutschland.',
+    },
+    {
+      key: 'enev',
+      title: 'enev-konform',
+      body:
+        'Jeder Einbau entspricht der Energieeinsparverordnung. Anschlussfugen werden fachgerecht gedämmt — kein Wärmeverlust.',
+    },
+    {
+      key: 'aufmass',
+      title: 'digitales aufmaß',
+      body:
+        'Die metiscale-App misst millimetergenau. Keine Nachmessungen, keine Überraschungen, keine bösen Rechnungen.',
+    },
+    {
+      key: 'eigenes-team',
+      title: 'eigenes montage-team',
+      body:
+        'Kein Subunternehmer. Unsere Monteure sind festangestellt, geschult und seit Jahren beim selben Handwerk.',
+    },
+    {
+      key: 'regional',
+      title: 'regional verwurzelt',
+      body:
+        'Olsberg, Brilon, Meschede und das gesamte Sauerland — wir kennen die Häuser, die Menschen und das Wetter hier.',
+    },
+  ],
+} as const;
+
+export const faq = {
+  title: 'häufige fragen',
+  subtitle:
+    'Was Kunden uns am häufigsten fragen — kurz und ehrlich beantwortet.',
+  items: [
+    {
+      q: 'Wie lange dauert ein typischer Fenster-Austausch?',
+      a:
+        'Für ein einzelnes Fenster rechnen wir mit 1–2 Stunden inklusive Demontage, Montage und Endabnahme. Ein komplettes Haus mit 8–12 Fenstern dauert in der Regel 2–3 Werktage.',
+    },
+    {
+      q: 'Müssen wir während der Montage zuhause sein?',
+      a:
+        'Mindestens eine Ansprechperson vor Ort ist hilfreich, aber nicht zwingend. Wir können auch nach Absprache mit Schlüsselübergabe arbeiten — Sauberkeit und Ordnung garantiert.',
+    },
+    {
+      q: 'Übernehmt ihr auch die Entsorgung der alten Fenster?',
+      a:
+        'Ja, immer. Fachgerechte Demontage, Abtransport und umweltgerechte Entsorgung sind im Angebot enthalten. Sie müssen nichts organisieren.',
+    },
+    {
+      q: 'Welche Materialien empfehlt ihr für welches Objekt?',
+      a:
+        'Kunststoff für die meisten Neubauten und Sanierungen — Preis-Leistung top. Aluminium für schlanke Ansichten und Großformate. Holz oder Holz-Alu für historisch geprägte oder besonders hochwertige Objekte. Wir beraten ergebnisoffen.',
+    },
+    {
+      q: 'Wie schnell bekomme ich ein Angebot?',
+      a:
+        'Nach dem Aufmaß-Termin innerhalb von 3–5 Werktagen. Transparent, mit allen Leistungen aufgeschlüsselt, ohne versteckte Kosten.',
+    },
+    {
+      q: 'Gibt es eine Garantie auf Montage und Produkte?',
+      a:
+        'Auf unsere Montage-Leistung gewähren wir 5 Jahre Garantie. Auf die Produkte greift die jeweilige Herstellergarantie — meist 5–10 Jahre, je nach Element. Details zu jedem Auftrag im Angebot.',
+    },
+    {
+      q: 'In welchem Umkreis seid ihr unterwegs?',
+      a:
+        'Unser Kerngebiet ist Olsberg, Brilon, Meschede und das Sauerland. Zusätzlich bedienen wir das gesamte Ostwestfalen-Lippe und das Ruhrgebiet — Anfragen darüber hinaus auf Nachfrage.',
+    },
+    {
+      q: 'Macht ihr auch Sonderanfertigungen?',
+      a:
+        'Ja. Ob Bogenfenster für Altbauten, übergroße Schiebetüren oder spezielle Objekttüren für Gewerbeprojekte — wir planen und realisieren Maßanfertigungen mit unseren Herstellerpartnern.',
+    },
   ],
 } as const;

@@ -7,47 +7,47 @@ const PROCESS = [
   {
     step: '01',
     title: 'beratung',
-    body: 'persönlicher termin bei ihnen vor ort. wir hören zu, klären den bedarf und zeigen passende lösungen.',
+    body: 'Persönlicher Termin bei Ihnen vor Ort. Wir hören zu, klären den Bedarf und zeigen passende Lösungen.',
   },
   {
     step: '02',
     title: 'aufmaß',
-    body: 'millimetergenaues digitales aufmaß mit der metiscale-app. keine bösen überraschungen, kein nachmessen.',
+    body: 'Millimetergenaues digitales Aufmaß mit der metiscale-App. Keine bösen Überraschungen, kein Nachmessen.',
   },
   {
     step: '03',
     title: 'angebot',
-    body: 'transparentes festpreisangebot mit allen leistungen, materialien und montageschritten.',
+    body: 'Transparentes Festpreisangebot mit allen Leistungen, Materialien und Montageschritten.',
   },
   {
     step: '04',
     title: 'demontage',
-    body: 'fachgerechter ausbau der alten elemente, saubere baustelle und entsorgung nach abrL-vorschrift.',
+    body: 'Fachgerechter Ausbau der alten Elemente, saubere Baustelle und Entsorgung nach AbfRL-Vorschrift.',
   },
   {
     step: '05',
     title: 'montage',
-    body: 'ral-zertifizierte montage nach enev-standard durch unser eigenes team — kein subunternehmer.',
+    body: 'RAL-zertifizierte Montage nach EnEV-Standard durch unser eigenes Team — kein Subunternehmer.',
   },
   {
     step: '06',
     title: 'abnahme',
-    body: 'gemeinsame abnahme, einweisung in pflege und bedienung sowie übergabe aller dokumente.',
+    body: 'Gemeinsame Abnahme, Einweisung in Pflege und Bedienung sowie Übergabe aller Dokumente.',
   },
 ] as const;
 
 const MATERIALS = [
   {
     name: 'kunststoff',
-    body: 'pflegeleicht, formstabil und mit modernen mehrkammerprofilen energieeffizient. die meistgewählte basis für neubau und sanierung.',
+    body: 'Pflegeleicht, formstabil und mit modernen Mehrkammerprofilen energieeffizient. Die meistgewählte Basis für Neubau und Sanierung.',
   },
   {
     name: 'aluminium',
-    body: 'schlanke ansichtsbreiten, hohe statik, ideal für großflächige verglasungen, schiebeelemente und gewerbeobjekte.',
+    body: 'Schlanke Ansichtsbreiten, hohe Statik, ideal für großflächige Verglasungen, Schiebeelemente und Gewerbeobjekte.',
   },
   {
     name: 'holz / holz-alu',
-    body: 'natürliche optik innen, wetterfeste alu-schale außen. wertbeständig, ökologisch und besonders langlebig.',
+    body: 'Natürliche Optik innen, wetterfeste Alu-Schale außen. Wertbeständig, ökologisch und besonders langlebig.',
   },
 ] as const;
 
@@ -57,7 +57,7 @@ export function LeistungenPage() {
       <PageHero
         eyebrow="leistungen"
         title="rundum-service vom aufmaß bis zur fachgerechten montage."
-        intro="wir sind ihr alleiniger ansprechpartner — von der ersten beratung bis zur einbau-abnahme. kein subunternehmer, keine schnittstellen, keine ausreden."
+        intro="Wir sind Ihr alleiniger Ansprechpartner — von der ersten Beratung bis zur Einbau-Abnahme. Kein Subunternehmer, keine Schnittstellen, keine Ausreden."
       />
 
       <section className="relative px-6 md:px-12 py-16 md:py-24">
@@ -72,7 +72,7 @@ export function LeistungenPage() {
               </h2>
             </div>
             <p className="md:col-span-5 md:col-start-8 self-end text-white/85 text-base md:text-lg leading-relaxed">
-              drei kompetenz-säulen, die ineinandergreifen — sauber dokumentiert,
+              Drei Kompetenz-Säulen, die ineinandergreifen — sauber dokumentiert,
               nach RAL ausgeführt, EnEV-konform.
             </p>
           </BlurIn>
@@ -107,8 +107,8 @@ export function LeistungenPage() {
               wie wir arbeiten.
             </h2>
             <p className="mt-6 text-white/85 text-base md:text-lg leading-relaxed">
-              vom ersten anruf bis zur abnahme — sechs schritte, keine
-              überraschungen.
+              Vom ersten Anruf bis zur Abnahme — sechs Schritte, keine
+              Überraschungen.
             </p>
           </BlurIn>
 
@@ -144,8 +144,8 @@ export function LeistungenPage() {
               kunststoff. aluminium. holz.
             </h2>
             <p className="mt-6 text-white/85 text-base md:text-lg leading-relaxed">
-              wir beraten ergebnisoffen — welches material das richtige ist, hängt
-              vom objekt, der nutzung und ihrem budget ab.
+              Wir beraten ergebnisoffen — welches Material das richtige ist, hängt
+              vom Objekt, der Nutzung und Ihrem Budget ab.
             </p>
           </BlurIn>
 
@@ -202,7 +202,7 @@ export function LeistungenPage() {
 
       <CtaBlock
         title="bereit für ihr projekt?"
-        body="erzählen sie uns, was sie vorhaben — wir kommen vorbei, messen auf und beraten ergebnisoffen."
+        body="Erzählen Sie uns, was Sie vorhaben — wir kommen vorbei, messen auf und beraten ergebnisoffen."
       />
     </main>
   );

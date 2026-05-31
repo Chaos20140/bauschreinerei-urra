@@ -185,3 +185,9 @@ Alle Texte zentral in `src/data/content.ts` halten — niemals in Komponenten ha
     - HomePage-Reihenfolge: Hero · Services(01) · Products(02) · Features(03) · About(04) · Regions(05) · FAQ(06) · Contact(07).
   - Content um konkrete Details aus urra-fenster.de erweitert: RAL-Richtlinien, EnEV-Anschlussfugen-Dämmung, Dichtheitsprüfung, Leibungsverkleidung. FAQ-Antworten zu Dauer, Garantie (5J Montage), Material-Empfehlung, Sonderanfertigungen, Servicegebiet.
   - Live: https://chaos20140.github.io/bauschreinerei-urra/ — Mobile zeigt jetzt natives Portrait-Video, Desktop unverändert flüssig.
+  - **Globaler Video-Hintergrund auf allen Content-Pages**: Vereinheitlichtes Look-and-Feel zwischen Homepage und den 4 Sub-Pages.
+    - Neue Komponente `src/components/GlobalBackground.tsx` besitzt Scroll-Progress + isMobile + reduceMotion + Canvas-Rendering. Sie liegt im App-Tree-Root und persistiert über Routenwechsel (Scroll-Listener wird via `useEffect`-Dep auf `location.pathname` neu gebunden).
+    - HomePage entkernt: keine Canvas-/Scroll-Logik mehr drin, nur noch Sektionen-Komposition.
+    - `LeistungenPage`, `ProjektePage`, `UeberUnsPage`, `KontaktPage`: `bg-neutral-950` auf `<main>` entfernt → transparent, Canvas scheint durch.
+    - `ImpressumPage` + `DatenschutzPage` bleiben opak (Legal-Text-Lesbarkeit): `GlobalBackground` rendert dort statt Canvas einen `bg-neutral-950`-Layer (siehe `SUPPRESSED_ROUTES`-Konstante).
+    - Sicherheitscheck nach Refactor: keine neue Angriffsfläche (rein visuell, keine neuen User-Inputs / Secrets / External-Requests).
