@@ -8,7 +8,7 @@ export function Regions() {
         <div className="grid md:grid-cols-12 gap-8 mb-16">
           <BlurIn className="md:col-span-7">
             <p className="text-xs md:text-sm text-white/60 tracking-widest uppercase mb-4">
-              04 — {regions.title}
+              05 — {regions.title}
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw]">
               westfalen.

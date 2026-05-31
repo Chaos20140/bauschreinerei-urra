@@ -8,7 +8,7 @@ export function Contact() {
         <BlurIn className="grid md:grid-cols-12 gap-8 mb-16 md:mb-24">
           <div className="md:col-span-8">
             <p className="text-xs md:text-sm text-white/60 tracking-widest uppercase mb-4">
-              05 — {contact.title}
+              07 — {contact.title}
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[8vw]">
               {contact.lead}

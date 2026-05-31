@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { Hero } from '../components/Hero';
 import { Services } from '../components/Services';
 import { Products } from '../components/Products';
+import { Features } from '../components/Features';
 import { About } from '../components/About';
 import { Regions } from '../components/Regions';
+import { Faq } from '../components/Faq';
 import { Contact } from '../components/Contact';
 import {
   ScrollSequenceCanvas,
@@ -65,8 +67,10 @@ export function HomePage() {
       <Hero />
       <Services />
       <Products />
+      <Features />
       <About />
       <Regions />
+      <Faq />
       <Contact />
     </>
   );
@@ -88,7 +92,7 @@ function BackgroundCanvas({ isMobile, progress }: BgProps) {
       progress={progress}
       maxDpr={isMobile ? 1.5 : 2}
       easing={isMobile ? 0.3 : 0.18}
-      bgPositionY={isMobile ? 0.35 : 0.5}
+      bgPositionY={0.5}
     />
   );
 }

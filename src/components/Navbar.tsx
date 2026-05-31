@@ -38,19 +38,22 @@ export function Navbar() {
           </Link>
 
           <ul className="hidden md:flex items-center gap-1 bg-neutral-900/90 backdrop-blur rounded-full px-3 py-2 no-shadow">
-            {navigation.map((item) => (
+            {navigation.map((item, idx) => (
               <li key={item.href}>
                 <NavLink
                   to={item.href}
                   className={({ isActive }) =>
-                    `text-sm px-5 py-2 rounded-full block transition-colors ${
+                    `group flex items-center gap-2 text-sm px-4 py-2 rounded-full transition-colors ${
                       isActive
                         ? 'text-white bg-white/10'
                         : 'text-neutral-300 hover:text-white'
                     }`
                   }
                 >
-                  {item.label}
+                  <span className="text-[9px] tracking-[0.2em] text-white/50 group-hover:text-white/80 transition-colors tabular-nums">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <span>{item.label}</span>
                 </NavLink>
               </li>
             ))}
@@ -93,7 +96,7 @@ export function Navbar() {
               }}
               className="flex flex-col gap-2"
             >
-              {navigation.map((item) => (
+              {navigation.map((item, idx) => (
                 <motion.li
                   key={item.href}
                   variants={{
@@ -105,12 +108,17 @@ export function Navbar() {
                   <NavLink
                     to={item.href}
                     className={({ isActive }) =>
-                      `block text-3xl font-medium tracking-tight py-3 border-b border-white/10 hero-title ${
+                      `flex items-baseline gap-4 py-3 border-b border-white/10 hero-title ${
                         isActive ? 'text-white' : 'text-white/70'
                       }`
                     }
                   >
-                    {item.label}
+                    <span className="text-xs text-white/40 tracking-[0.2em] tabular-nums">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-3xl font-medium tracking-tight">
+                      {item.label}
+                    </span>
                   </NavLink>
                 </motion.li>
               ))}

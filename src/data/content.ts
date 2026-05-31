@@ -36,13 +36,84 @@ export const services = {
       id: 'demontage',
       number: '02',
       title: 'demontage & entsorgung',
-      body: 'fachgerechte demontage der alten elemente inklusive sauberer abtransport und entsorgung. saubere baustelle, transparente abwicklung.',
+      body: 'fachgerechtes lösen und entfernen der alten rahmen. minimierung von staub und schmutz, schutz von innenräumen und böden, umweltgerechte entsorgung der altmaterialien.',
     },
     {
       id: 'montage',
       number: '03',
       title: 'montage nach enev',
-      body: 'ral-zertifizierte montage nach energetischen baustandards. fenster, haustüren, schiebetüren und garagentore – energieeffizient, sicher und langlebig.',
+      body: 'ral-zertifizierte montage nach energieeinsparverordnung. dämmung der anschlussfugen gegen wärmebrücken, dichtheitsprüfung, funktionskontrolle, leibungsverkleidung und farblich abgestimmte abschlussleisten.',
+    },
+  ],
+} as const;
+
+export const features = {
+  title: 'warum urra',
+  subtitle: 'fünf gründe, warum wir seit 2003 ihr partner für fenster und türen sind.',
+  items: [
+    {
+      key: 'ral',
+      title: 'ral-zertifizierte montage',
+      body: 'einbau nach den anerkannten ral-richtlinien — die strengste norm für fenster- und türmontage in deutschland.',
+    },
+    {
+      key: 'enev',
+      title: 'enev-konform',
+      body: 'jeder einbau entspricht der energieeinsparverordnung. anschlussfugen werden fachgerecht gedämmt — kein wärmeverlust.',
+    },
+    {
+      key: 'aufmass',
+      title: 'digitales aufmaß',
+      body: 'metiscale-app misst millimetergenau. keine nachmessungen, keine überraschungen, keine bösen rechnungen.',
+    },
+    {
+      key: 'eigenes-team',
+      title: 'eigenes montage-team',
+      body: 'kein subunternehmer. unsere monteure sind festangestellt, geschult und seit jahren beim selben handwerk.',
+    },
+    {
+      key: 'regional',
+      title: 'regional verwurzelt',
+      body: 'olsberg, brilon, meschede und das gesamte sauerland — wir kennen die häuser, die menschen und das wetter hier.',
+    },
+  ],
+} as const;
+
+export const faq = {
+  title: 'häufige fragen',
+  subtitle: 'was kunden uns am häufigsten fragen — kurz und ehrlich beantwortet.',
+  items: [
+    {
+      q: 'wie lange dauert ein typischer fenster-austausch?',
+      a: 'für ein einzelnes fenster rechnen wir mit 1–2 stunden inklusive demontage, montage und endabnahme. ein komplett-haus mit 8–12 fenstern dauert in der regel 2–3 werktage.',
+    },
+    {
+      q: 'müssen wir während der montage zuhause sein?',
+      a: 'mindestens eine ansprechperson vor ort ist hilfreich, aber nicht zwingend. wir können auch nach absprache mit schlüsselübergabe arbeiten — sauberkeit und ordnung garantiert.',
+    },
+    {
+      q: 'übernehmt ihr auch die entsorgung der alten fenster?',
+      a: 'ja, immer. fachgerechte demontage, abtransport und umweltgerechte entsorgung sind im angebot enthalten. sie müssen nichts organisieren.',
+    },
+    {
+      q: 'welche materialien empfehlt ihr für welches objekt?',
+      a: 'kunststoff für die meisten neubauten und sanierungen — preis-leistung top. aluminium für schlanke ansichten und großformate. holz oder holz-alu für historisch geprägte oder besonders hochwertige objekte. wir beraten ergebnisoffen.',
+    },
+    {
+      q: 'wie schnell bekomme ich ein angebot?',
+      a: 'nach dem aufmaß-termin innerhalb von 3–5 werktagen. transparent, mit allen leistungen aufgeschlüsselt, ohne versteckte kosten.',
+    },
+    {
+      q: 'gibt es eine garantie auf montage und produkte?',
+      a: 'auf unsere montage-leistung 5 jahre. auf die produkte greift die jeweilige herstellergarantie — meist 5–10 jahre, je nach element. details zu jedem auftrag im angebot.',
+    },
+    {
+      q: 'in welchem umkreis seid ihr unterwegs?',
+      a: 'unser kerngebiet ist olsberg, brilon, meschede und das sauerland. zusätzlich bedienen wir das gesamte ostwestfalen-lippe und ruhrgebiet — anfragen darüber hinaus auf nachfrage.',
+    },
+    {
+      q: 'macht ihr auch sonderanfertigungen?',
+      a: 'ja. ob bogenfenster für altbauten, übergroße schiebetüren oder spezielle objekttüren für gewerbeprojekte — wir planen und realisieren maßanfertigungen mit unseren herstellerpartnern.',
     },
   ],
 } as const;

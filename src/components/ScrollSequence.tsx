@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const FRAME_COUNT = 100;
+const FRAME_COUNT = 140;
 const BASE = import.meta.env.BASE_URL;
 
 const framePath = (folder: string, i: number): string =>
