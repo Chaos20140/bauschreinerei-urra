@@ -170,3 +170,18 @@ Alle Texte zentral in `src/data/content.ts` halten — niemals in Komponenten ha
     - Verifiziert: Desktop 1440×900 (Hero, Leistungen, Impressum, Cookie-Banner) **und** Mobile 390×844 (Hero gestackt, Burger-Menü Vollbild, Cookie-Banner gestackte Buttons).
   - **Mobile-Performance-Fix (v1, verworfen)**: Statisches CSS-Background-Image auf Mobile statt Canvas. Funktionierte, aber Nutzer wollte das Video auch auf dem Handy sehen.
   - **Mobile-Canvas v2 (aktuell)**: Eigene **mobile-Frame-Sequenz** in [public/frames-mobile/](public/frames-mobile/) — 100 Frames bei `scale=1080:608`, `q=4` (~4.6 MB statt 16 MB der Desktop-Frames). `useFrames(folder)` akzeptiert nun den Folder-Parameter. `ScrollSequenceCanvas` ist um drei Props erweitert: `maxDpr` (Mobile 1.5 statt Desktop 2), `easing` (Mobile 0.3 statt 0.18 — snappier), `bgPositionY` (Mobile 0.35 — verschiebt das 16:9-Frame nach oben damit die Tür auf Portrait-Viewports zentriert sitzt). Resultat: Canvas-Pixel-Aufwand auf Mobile ca. ein Viertel der vorherigen Last, Scrubbing läuft flüssig. ffmpeg-Befehl: `ffmpeg -i video_mp_upscaled.mp4 -vf "fps=10,crop=iw*0.84:ih*0.84,scale=1080:608:flags=lanczos" -q:v 4 frame-%03d.jpg`.
+- **2026-05-31**
+  - **Neue Videos vom Nutzer**: zwei dedizierte Quellen statt eines geteilten Crops:
+    - Desktop: `14.6-invideo-video_tools.mp4` (1920×1080, 14s, 4.2 MBit/s)
+    - Mobile: `25.6-invideo-video_tools.mp4` (1080×1920, 14s, 3.2 MBit/s — echtes Portrait)
+    - Beide Videos zeigen Einfamilienhaus bei Sonnenuntergang mit warmer Innenbeleuchtung
+  - Frames neu extrahiert mit `fps=10` → **140 Frames pro Sequenz** (vorher 100). FRAME_COUNT in `ScrollSequence.tsx` entsprechend angepasst. Desktop ~24 MB / Mobile ~11 MB.
+  - Mobile-Canvas: `bgPositionY` zurück auf `0.5` (zentriert), da das Portrait-Video natively passt — kein Versatz mehr nötig.
+  - **aludoors.com.au-inspirierte Interaktivität**:
+    - **Navbar**: nummerierte Items `01–04` (tabular-nums Caps vor jedem Label) auf Desktop und Mobile-Burger-Menü. Hover hellt das Caps-Prefix auf.
+    - **Products-Karten**: Hover-State mit `translate-y-(-1)`, weißerer Border, radialer Top-Glow, rotierender ArrowUpRight-Button (45°), Klick führt zu `/leistungen`. Bullet-Items mit kleinen Punkten statt nur Border-Lines.
+    - Neue **Features-Sektion** „warum urra" (Position 03): 5 USP-Karten mit Lucide-Icons (`ShieldCheck`, `Leaf`, `Ruler`, `Users`, `MapPin`), Hover-Glow + Icon-Scale.
+    - Neue **FAQ-Sektion** (Position 06): 8 expandierbare Items mit `motion AnimatePresence` (height + opacity), Plus-Icon rotiert 135° und füllt sich weiß beim Öffnen. Erste Frage standardmäßig offen.
+    - HomePage-Reihenfolge: Hero · Services(01) · Products(02) · Features(03) · About(04) · Regions(05) · FAQ(06) · Contact(07).
+  - Content um konkrete Details aus urra-fenster.de erweitert: RAL-Richtlinien, EnEV-Anschlussfugen-Dämmung, Dichtheitsprüfung, Leibungsverkleidung. FAQ-Antworten zu Dauer, Garantie (5J Montage), Material-Empfehlung, Sonderanfertigungen, Servicegebiet.
+  - Live: https://chaos20140.github.io/bauschreinerei-urra/ — Mobile zeigt jetzt natives Portrait-Video, Desktop unverändert flüssig.

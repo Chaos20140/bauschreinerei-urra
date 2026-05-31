@@ -14,7 +14,7 @@ export function KontaktPage() {
   )}`;
 
   return (
-    <main className="relative bg-neutral-950 min-h-screen text-white pb-12">
+    <main className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="kontakt"
         title="lassen sie uns über ihr projekt sprechen."

@@ -5,6 +5,7 @@ import { ScrollToTop } from './components/ScrollToTop';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { CookieBanner } from './components/CookieBanner';
+import { GlobalBackground } from './components/GlobalBackground';
 import { HomePage } from './pages/HomePage';
 import { LeistungenPage } from './pages/LeistungenPage';
 import { ProjektePage } from './pages/ProjektePage';
@@ -17,6 +18,7 @@ export default function App() {
   return (
     <BrowserRouter basename={ROUTER_BASENAME}>
       <ScrollToTop />
+      <GlobalBackground />
       <Navbar />
       <div className="relative z-10 text-white">
         <Routes>

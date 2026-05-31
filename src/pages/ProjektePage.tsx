@@ -30,7 +30,7 @@ const HIGHLIGHTS = [
 
 export function ProjektePage() {
   return (
-    <main className="relative bg-neutral-950 min-h-screen text-white pb-12">
+    <main className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="projekte"
         title="referenzen aus dem sauerland und ganz westfalen."
