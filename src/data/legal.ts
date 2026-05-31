@@ -5,8 +5,8 @@ export const impressum = {
     {
       heading: 'Anbieter',
       lines: [
-        'Bauschreinerei Urra',
-        'Inhaber: H. Urra',
+        'Bauschreinerei Heribert Urra',
+        'Inhaber: Heribert Urra',
         'Am Ochsenberg 13',
         '59939 Olsberg',
         'Deutschland',
@@ -26,7 +26,7 @@ export const impressum = {
     },
     {
       heading: 'Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV',
-      lines: ['H. Urra', 'Am Ochsenberg 13', '59939 Olsberg'],
+      lines: ['Heribert Urra', 'Am Ochsenberg 13', '59939 Olsberg'],
     },
     {
       heading: 'EU-Streitschlichtung',
@@ -59,8 +59,8 @@ export const datenschutz = {
     {
       heading: '2. Verantwortliche Stelle',
       lines: [
-        'Bauschreinerei Urra',
-        'Inhaber: H. Urra',
+        'Bauschreinerei Heribert Urra',
+        'Inhaber: Heribert Urra',
         'Am Ochsenberg 13',
         '59939 Olsberg',
         'Telefon: +49 160 99116995',

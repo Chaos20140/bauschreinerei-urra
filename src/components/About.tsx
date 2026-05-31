@@ -22,7 +22,7 @@ export function About() {
               <p key={i}>{p}</p>
             ))}
             <p className="text-white/50 text-sm tracking-widest uppercase pt-4">
-              — H. Urra · {brand.longName}
+              — Heribert Urra · {brand.longName}
             </p>
           </BlurIn>
 

@@ -7,7 +7,7 @@ const MILESTONES = [
   {
     year: '2003',
     title: 'gründung',
-    body: 'H. Urra gründet die Bauschreinerei in Olsberg — als familien- und inhabergeführter Handwerksbetrieb.',
+    body: 'Heribert Urra gründet die Bauschreinerei in Olsberg — als familien- und inhabergeführter Handwerksbetrieb.',
   },
   {
     year: '2010',
@@ -51,7 +51,7 @@ export function UeberUnsPage() {
       <PageHero
         eyebrow="über uns"
         title={`„${about.lead}"`}
-        intro={`— H. Urra · ${brand.longName}, Olsberg`}
+        intro={`— Heribert Urra · ${brand.longName}, Olsberg`}
       />
 
       <section className="relative px-6 md:px-12 py-12 md:py-20">

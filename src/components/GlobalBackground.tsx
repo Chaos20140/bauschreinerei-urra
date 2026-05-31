@@ -37,7 +37,10 @@ export function GlobalBackground() {
   }, []);
 
   useEffect(() => {
-    const compute = () => {
+    let rafId: number | null = null;
+
+    const runCompute = () => {
+      rafId = null;
       const total =
         document.documentElement.scrollHeight - window.innerHeight;
       if (total <= 0) {
@@ -47,12 +50,20 @@ export function GlobalBackground() {
       setProgress(Math.min(Math.max(window.scrollY / total, 0), 1));
     };
 
-    compute();
-    window.addEventListener('scroll', compute, { passive: true });
-    window.addEventListener('resize', compute, { passive: true });
+    // Throttle über rAF: max. ein setProgress pro Frame, statt einmal pro
+    // Scroll-Event (auf Mobile feuert Scroll bei Fling hunderte Male/s).
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(runCompute);
+    };
+
+    runCompute();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', compute);
-      window.removeEventListener('resize', compute);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
     };
   }, [location.pathname]);
 
