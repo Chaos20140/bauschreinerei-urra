@@ -84,6 +84,10 @@ export const datenschutz = {
       body: 'Diese Website lädt Schriftarten der Familie „Readex Pro" über die Server von Google (Google Fonts). Beim Aufruf einer Seite wird hierzu eine Verbindung zu Google-Servern hergestellt, wobei Ihre IP-Adresse an Google übermittelt werden kann. Die Nutzung erfolgt im Interesse einer einheitlichen und ansprechenden Darstellung unserer Inhalte (Art. 6 Abs. 1 lit. f DSGVO). Weitere Informationen: https://policies.google.com/privacy.',
     },
     {
+      heading: '7. Google Maps (Two-Click-Lösung)',
+      body: 'Auf unserer Kontakt-Seite haben Sie die Möglichkeit, eine Standort-Karte über den Dienst Google Maps der Google Ireland Limited (Gordon House, Barrow Street, Dublin 4, Irland) anzuzeigen. Aus Datenschutzgründen wird die Karte erst nach Ihrer aktiven Bestätigung („Karte aktivieren") geladen — vorher findet keinerlei Datenübertragung zu Google statt. Sobald Sie die Karte aktivieren, werden Daten (insbesondere Ihre IP-Adresse sowie Geräte- und Browser-Informationen) an Google übertragen und ggf. auf Servern in den USA verarbeitet. Rechtsgrundlage für die Datenverarbeitung nach Aktivierung ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Weitere Informationen finden Sie in der Datenschutzerklärung von Google: https://policies.google.com/privacy.',
+    },
+    {
       heading: '7. Ihre Rechte',
       list: [
         'Auskunft über die zu Ihrer Person gespeicherten Daten (Art. 15 DSGVO)',

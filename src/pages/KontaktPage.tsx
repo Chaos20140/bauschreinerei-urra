@@ -1,5 +1,6 @@
 import { PageHero } from '../components/PageHero';
 import { BlurIn } from '../components/BlurIn';
+import { MapEmbed } from '../components/MapEmbed';
 import { contact, regions } from '../data/content';
 
 const HOURS = [
@@ -156,6 +157,26 @@ export function KontaktPage() {
                 ))}
               </ul>
             </div>
+          </BlurIn>
+        </div>
+      </section>
+
+      <section className="relative px-6 md:px-12 py-12 md:py-20 border-t border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <BlurIn className="mb-8 md:mb-10 max-w-3xl">
+            <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
+              Standort
+            </p>
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5vw] leading-[0.95]">
+              So finden Sie uns.
+            </h2>
+            <p className="mt-5 text-white/80 text-base md:text-lg leading-relaxed">
+              Unsere Werkstatt in Olsberg liegt am Ochsenberg — gut erreichbar
+              aus dem gesamten Sauerland.
+            </p>
+          </BlurIn>
+          <BlurIn delay={0.15}>
+            <MapEmbed />
           </BlurIn>
         </div>
       </section>

@@ -2,6 +2,7 @@ import { Hero } from '../components/Hero';
 import { Services } from '../components/Services';
 import { Products } from '../components/Products';
 import { Features } from '../components/Features';
+import { Reviews } from '../components/Reviews';
 import { About } from '../components/About';
 import { Regions } from '../components/Regions';
 import { Faq } from '../components/Faq';
@@ -14,6 +15,7 @@ export function HomePage() {
       <Services />
       <Products />
       <Features />
+      <Reviews />
       <About />
       <Regions />
       <Faq />
