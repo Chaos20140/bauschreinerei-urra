@@ -6,41 +6,41 @@ import { about, brand, hero, contact } from '../data/content';
 const MILESTONES = [
   {
     year: '2003',
-    title: 'gründung',
+    title: 'Gründung',
     body: 'Heribert Urra gründet die Bauschreinerei in Olsberg — als familien- und inhabergeführter Handwerksbetrieb.',
   },
   {
     year: '2010',
-    title: 'spezialisierung',
+    title: 'Spezialisierung',
     body: 'Wachsender Fokus auf Fenster, Haustüren und Garagentore. Eigene Montage-Teams für volle Qualitätskontrolle.',
   },
   {
     year: '2018',
-    title: 'digital',
+    title: 'Digital',
     body: 'Einführung der metiscale-App für millimetergenaues digitales Aufmaß und durchgängige Projektdokumentation.',
   },
   {
-    year: 'heute',
-    title: 'westfalen',
+    year: 'Heute',
+    title: 'Westfalen',
     body: 'Wir sind im Sauerland, in Ostwestfalen-Lippe und im Ruhrgebiet fest verwurzelt. Weiterhin inhabergeführt.',
   },
 ] as const;
 
 const PRINCIPLES = [
   {
-    key: 'qualität',
+    key: 'Qualität',
     body: 'Wir verarbeiten ausschließlich Produkte renommierter Hersteller — langlebig, sicher und energieeffizient. Unsere Montage erfolgt nach RAL- und EnEV-Standard.',
   },
   {
-    key: 'präzision',
+    key: 'Präzision',
     body: 'Millimetergenaues Aufmaß mit der metiscale-App, saubere Baustelle, dokumentierte Abnahme. Wir arbeiten so, wie wir bei uns selbst arbeiten würden.',
   },
   {
-    key: 'verlässlich',
+    key: 'Verlässlich',
     body: 'Feste Ansprechpartner, Termintreue und transparente Kommunikation — vom Angebot bis zur Einweisung. Keine versteckten Kosten, keine Ausreden.',
   },
   {
-    key: 'regional',
+    key: 'Regional',
     body: 'Wir kennen das Wetter, die Häuser und die Menschen in Westfalen. Das macht uns zu einem Partner, der versteht, was vor Ort wirklich gebraucht wird.',
   },
 ] as const;
@@ -49,9 +49,9 @@ export function UeberUnsPage() {
   return (
     <main className="relative min-h-screen text-white pb-12">
       <PageHero
-        eyebrow="über uns"
+        eyebrow="Über uns"
         title={`„${about.lead}"`}
-        intro={`— Heribert Urra · ${brand.longName}, Olsberg`}
+        intro={`— Heribert Urra · ${brand.shortName}, Olsberg`}
       />
 
       <section className="relative px-6 md:px-12 py-12 md:py-20">
@@ -75,7 +75,7 @@ export function UeberUnsPage() {
             delay={0.2}
           >
             <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-4">
-              auf einen blick
+              Auf einen Blick
             </p>
             <dl className="space-y-4 text-sm md:text-base">
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
@@ -109,10 +109,10 @@ export function UeberUnsPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              geschichte
+              Geschichte
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              wie wir hierher kamen.
+              Wie wir hierher kamen.
             </h2>
           </BlurIn>
 
@@ -142,10 +142,10 @@ export function UeberUnsPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              werte
+              Werte
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              woran wir uns messen lassen.
+              Woran wir uns messen lassen.
             </h2>
           </BlurIn>
 
@@ -167,7 +167,7 @@ export function UeberUnsPage() {
       </section>
 
       <CtaBlock
-        title="lernen sie uns kennen."
+        title="Lernen Sie uns kennen."
         body="Ein Gespräch sagt mehr als zehn Webseiten — gerne bei Ihnen vor Ort oder telefonisch."
       />
     </main>

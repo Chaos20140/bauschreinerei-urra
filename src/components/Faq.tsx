@@ -13,7 +13,7 @@ export function Faq() {
         <div className="grid md:grid-cols-12 gap-8 md:gap-16 mb-12 md:mb-20">
           <BlurIn className="md:col-span-5">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              06 — faq
+              {faq.eyebrow}
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[6vw] leading-[0.92]">
               {faq.title}

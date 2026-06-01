@@ -27,7 +27,7 @@ export function PageHero({ eyebrow, title, intro, children }: Props) {
             className="text-white/55 text-[10px] md:text-xs tracking-[0.35em] uppercase mb-8 md:mb-12 flex items-center gap-3"
           >
             <Link to="/" className="hover:text-white transition-colors">
-              start
+              Start
             </Link>
             <span className="text-white/30">/</span>
             <span className="text-white/85">{eyebrow}</span>

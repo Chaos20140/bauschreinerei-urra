@@ -8,7 +8,7 @@ export function About() {
         <BlurIn className="grid md:grid-cols-12 gap-8 mb-16 md:mb-24">
           <div className="md:col-span-7">
             <p className="text-xs md:text-sm text-white/60 tracking-widest uppercase mb-4">
-              04 — {about.title}
+              {about.eyebrow}
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] max-w-5xl">
               „{about.lead}"

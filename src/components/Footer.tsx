@@ -14,9 +14,9 @@ export function Footer() {
         <div className="grid md:grid-cols-12 gap-10 md:gap-8 mb-12 md:mb-16">
           <div className="md:col-span-5 space-y-4 no-shadow">
             <Link to="/" className="flex items-center gap-3">
-              <Logo className="h-6 w-6" />
+              <Logo className="h-7 w-7" />
               <span className="hero-title text-2xl md:text-3xl text-white">
-                {brand.longName}
+                {brand.shortName}
               </span>
             </Link>
             <p className="text-white/65 text-sm md:text-base max-w-md leading-relaxed">
@@ -26,7 +26,7 @@ export function Footer() {
 
           <div className="md:col-span-3 md:col-start-7">
             <p className="text-white/45 text-xs tracking-[0.3em] uppercase mb-4">
-              navigation
+              Navigation
             </p>
             <ul className="space-y-2">
               {navigation.map((n) => (
@@ -44,7 +44,7 @@ export function Footer() {
 
           <div className="md:col-span-3">
             <p className="text-white/45 text-xs tracking-[0.3em] uppercase mb-4">
-              kontakt
+              Kontakt
             </p>
             <ul className="space-y-2 text-sm md:text-base">
               <li className="text-white/80">

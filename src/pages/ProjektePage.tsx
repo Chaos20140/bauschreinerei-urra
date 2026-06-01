@@ -5,17 +5,17 @@ import { regions } from '../data/content';
 
 const CATEGORIES = [
   {
-    title: 'privatbau',
+    title: 'Privatbau',
     body: 'Einfamilien- und Mehrfamilienhäuser, Neubauten und individuelle Anbauten. Moderne Fenster, Eingangstüren und Schiebetüren — komplett geplant, geliefert und montiert.',
     tags: ['Neubau', 'Einfamilienhaus', 'Eingangsbereich'],
   },
   {
-    title: 'sanierung & modernisierung',
+    title: 'Sanierung & Modernisierung',
     body: 'Austausch alter Fenster und Türen mit Blick auf Energieeffizienz, Schallschutz und Einbruchhemmung. Fachgerechte Demontage, saubere Baustelle, RAL-konforme Montage.',
     tags: ['Altbau', 'Energetisch', 'RC-2'],
   },
   {
-    title: 'gewerbe & sondermaße',
+    title: 'Gewerbe & Sondermaße',
     body: 'Objekttüren, große Festverglasungen und Schiebeelemente für Gewerbeobjekte. Abgestimmt auf Nutzungsanforderungen, Brandschutz und Barrierefreiheit.',
     tags: ['Objekt', 'Großformat', 'Sondermaß'],
   },
@@ -32,8 +32,8 @@ export function ProjektePage() {
   return (
     <main className="relative min-h-screen text-white pb-12">
       <PageHero
-        eyebrow="projekte"
-        title="referenzen aus dem sauerland und ganz westfalen."
+        eyebrow="Projekte"
+        title="Referenzen aus dem Sauerland und ganz Westfalen."
         intro="Jedes Objekt hat seine eigene Geschichte — von der kleinen Sanierung bis zum Gewerbeobjekt. Seit 2003 begleiten wir Bauherren in drei Regionen mit Fachhandwerk auf hohem Niveau."
       />
 
@@ -41,10 +41,10 @@ export function ProjektePage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              objektarten
+              Objektarten
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              was wir umsetzen.
+              Was wir umsetzen.
             </h2>
           </BlurIn>
 
@@ -79,10 +79,10 @@ export function ProjektePage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              eckdaten
+              Eckdaten
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              das spricht für uns.
+              Das spricht für uns.
             </h2>
           </BlurIn>
           <ul className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
@@ -106,10 +106,10 @@ export function ProjektePage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-10 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              servicegebiet
+              Servicegebiet
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              wo wir bauen.
+              Wo wir bauen.
             </h2>
           </BlurIn>
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
@@ -137,7 +137,7 @@ export function ProjektePage() {
       </section>
 
       <CtaBlock
-        title="ihr nächstes projekt."
+        title="Ihr nächstes Projekt."
         body="Schicken Sie uns die Eckdaten — Adresse, gewünschte Elemente, Zeithorizont. Wir melden uns binnen 24 Stunden."
       />
     </main>

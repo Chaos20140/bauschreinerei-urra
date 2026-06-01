@@ -1,50 +1,49 @@
 export const brand = {
-  name: 'urra',
-  longName: 'Bauschreinerei Urra',
+  name: 'Urra',
+  longName: 'Bauschreinerei Heribert Urra',
+  shortName: 'Bauschreinerei Urra',
   founded: 2003,
 } as const;
 
 export const hero = {
-  words: ['fenster', 'und', 'türen'] as const,
+  words: ['Fenster', 'und', 'Türen'] as const,
   description:
     'Handwerk aus dem Sauerland. Wir planen, fertigen und montieren Fenster, Türen und Garagentore mit Präzision — inhabergeführt seit 2003.',
   stats: [
-    { value: 'seit 2003', label: 'Inhabergeführt aus Olsberg' },
-    { value: '3 regionen', label: 'Sauerland · OWL · Ruhrgebiet' },
-    { value: '100% handwerk', label: 'Fachmontage nach EnEV' },
+    { value: 'Seit 2003', label: 'Inhabergeführt aus Olsberg' },
+    { value: '3 Regionen', label: 'Sauerland · OWL · Ruhrgebiet' },
+    { value: '100 % Handwerk', label: 'Fachmontage nach EnEV' },
   ],
 } as const;
 
 export const navigation = [
-  { label: 'leistungen', href: '/leistungen' },
-  { label: 'projekte', href: '/projekte' },
-  { label: 'über uns', href: '/ueber-uns' },
-  { label: 'kontakt', href: '/kontakt' },
+  { label: 'Leistungen', href: '/leistungen' },
+  { label: 'Projekte', href: '/projekte' },
+  { label: 'Über uns', href: '/ueber-uns' },
+  { label: 'Kontakt', href: '/kontakt' },
 ] as const;
 
 export const services = {
-  title: 'leistungen',
+  title: 'Leistungen',
+  eyebrow: 'Leistungen',
   subtitle:
     'Rundum-Service vom Aufmaß bis zur fachgerechten Montage — alles aus einer Hand.',
   items: [
     {
       id: 'beratung',
-      number: '01',
-      title: 'beratung & aufmaß',
+      title: 'Beratung & Aufmaß',
       body:
         'Persönliche Beratung vor Ort und millimetergenaues digitales Aufmaß mit der metiscale-App. Wir hören zu, denken mit und planen passgenau für Ihr Objekt.',
     },
     {
       id: 'demontage',
-      number: '02',
-      title: 'demontage & entsorgung',
+      title: 'Demontage & Entsorgung',
       body:
         'Fachgerechtes Lösen und Entfernen der alten Rahmen. Wir minimieren Staub und Schmutz, schützen Innenräume und Böden und entsorgen alle Altmaterialien umweltgerecht.',
     },
     {
       id: 'montage',
-      number: '03',
-      title: 'montage nach enev',
+      title: 'Montage nach EnEV',
       body:
         'RAL-zertifizierte Montage nach Energieeinsparverordnung. Dämmung der Anschlussfugen gegen Wärmebrücken, Dichtheitsprüfung, Funktionskontrolle, Leibungsverkleidung und farblich abgestimmte Abschlussleisten.',
     },
@@ -52,27 +51,29 @@ export const services = {
 } as const;
 
 export const products = {
-  title: 'unser handwerk',
+  title: 'Unser Handwerk',
+  eyebrow: 'Produkte',
   subtitle:
     'Fenster, Türen und Tore aus Holz, Kunststoff oder Aluminium — für Neubau, Sanierung und Gewerbe.',
   categories: [
     {
-      title: 'fenster',
+      title: 'Fenster',
       items: ['Kunststofffenster', 'Aluminiumfenster', 'Holzfenster', 'Sonderanfertigungen'],
     },
     {
-      title: 'türen',
+      title: 'Türen',
       items: ['Haustüren', 'Innentüren', 'Schiebetüren', 'Objekttüren'],
     },
     {
-      title: 'tore',
+      title: 'Tore',
       items: ['Garagentore', 'Industrietore', 'Hofeinfahrten', 'Antriebe'],
     },
   ],
 } as const;
 
 export const about = {
-  title: 'über uns',
+  title: 'Über uns',
+  eyebrow: 'Über uns',
   lead:
     'Qualität ist kein Zufall, sie ist das Ergebnis harter Arbeit, kluger Planung und ehrlicher Leidenschaft.',
   paragraphs: [
@@ -80,14 +81,15 @@ export const about = {
     'Wir arbeiten eng mit renommierten Herstellern zusammen und sind Ihr kompetenter Ansprechpartner rund um Fenster, Türen und Garagentore — von der ersten Beratung bis zur fachgerechten Montage.',
   ],
   values: [
-    { key: 'qualität', body: 'Langlebig, sicher und energieeffizient.' },
-    { key: 'präzision', body: 'Millimetergenau geplant, sauber montiert.' },
-    { key: 'verlässlich', body: 'Termintreue und transparente Kommunikation.' },
+    { key: 'Qualität', body: 'Langlebig, sicher und energieeffizient.' },
+    { key: 'Präzision', body: 'Millimetergenau geplant, sauber montiert.' },
+    { key: 'Verlässlich', body: 'Termintreue und transparente Kommunikation.' },
   ],
 } as const;
 
 export const regions = {
-  title: 'unsere region',
+  title: 'Unsere Region',
+  eyebrow: 'Region',
   subtitle: 'Wir sind im gesamten Westfalen unterwegs.',
   areas: [
     {
@@ -132,7 +134,8 @@ export const regions = {
 } as const;
 
 export const contact = {
-  title: 'kontakt',
+  title: 'Kontakt',
+  eyebrow: 'Kontakt',
   lead: 'Lassen Sie uns über Ihr Projekt sprechen.',
   address: {
     street: 'Am Ochsenberg 13',
@@ -145,46 +148,48 @@ export const contact = {
 } as const;
 
 export const footer = {
-  tagline: 'Fenster, Türen und Garagentore. Handgemacht im Sauerland seit 2003.',
-  copyright: `© ${new Date().getFullYear()} Bauschreinerei Urra · Alle Rechte vorbehalten`,
+  tagline:
+    'Fenster, Türen und Garagentore. Handgemacht im Sauerland seit 2003.',
+  copyright: `© ${new Date().getFullYear()} Bauschreinerei Heribert Urra · Alle Rechte vorbehalten`,
   legal: [
-    { label: 'impressum', href: '#impressum' },
-    { label: 'datenschutz', href: '#datenschutz' },
+    { label: 'Impressum', href: '/impressum' },
+    { label: 'Datenschutz', href: '/datenschutz' },
   ],
 } as const;
 
 export const features = {
-  title: 'warum urra',
+  title: 'Warum Urra',
+  eyebrow: 'Qualität',
   subtitle:
     'Fünf Gründe, warum wir seit 2003 Ihr Partner für Fenster und Türen sind.',
   items: [
     {
       key: 'ral',
-      title: 'ral-zertifizierte montage',
+      title: 'RAL-zertifizierte Montage',
       body:
         'Einbau nach den anerkannten RAL-Richtlinien — die strengste Norm für Fenster- und Türmontage in Deutschland.',
     },
     {
       key: 'enev',
-      title: 'enev-konform',
+      title: 'EnEV-konform',
       body:
         'Jeder Einbau entspricht der Energieeinsparverordnung. Anschlussfugen werden fachgerecht gedämmt — kein Wärmeverlust.',
     },
     {
       key: 'aufmass',
-      title: 'digitales aufmaß',
+      title: 'Digitales Aufmaß',
       body:
         'Die metiscale-App misst millimetergenau. Keine Nachmessungen, keine Überraschungen, keine bösen Rechnungen.',
     },
     {
       key: 'eigenes-team',
-      title: 'eigenes montage-team',
+      title: 'Eigenes Montage-Team',
       body:
         'Kein Subunternehmer. Unsere Monteure sind festangestellt, geschult und seit Jahren beim selben Handwerk.',
     },
     {
       key: 'regional',
-      title: 'regional verwurzelt',
+      title: 'Regional verwurzelt',
       body:
         'Olsberg, Brilon, Meschede und das gesamte Sauerland — wir kennen die Häuser, die Menschen und das Wetter hier.',
     },
@@ -192,7 +197,8 @@ export const features = {
 } as const;
 
 export const faq = {
-  title: 'häufige fragen',
+  title: 'Häufige Fragen',
+  eyebrow: 'FAQ',
   subtitle:
     'Was Kunden uns am häufigsten fragen — kurz und ehrlich beantwortet.',
   items: [

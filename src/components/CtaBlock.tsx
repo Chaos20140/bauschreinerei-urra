@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function CtaBlock({
-  title = 'lassen sie uns sprechen.',
+  title = 'Lassen Sie uns sprechen.',
   body = 'Unverbindlich, kostenlos und werktags innerhalb von 24 Stunden zurück.',
 }: Props) {
   return (

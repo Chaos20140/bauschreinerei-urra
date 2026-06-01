@@ -7,8 +7,8 @@ export function Services() {
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="grid md:grid-cols-12 gap-8 md:gap-16 items-end mb-16 md:mb-24">
           <BlurIn className="md:col-span-6">
-            <p className="text-xs md:text-sm text-white/60 tracking-widest uppercase mb-4">
-              01 — leistungen
+            <p className="text-xs md:text-sm text-white/60 tracking-[0.3em] uppercase mb-4">
+              {services.eyebrow}
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[7vw]">
               {services.title}
@@ -26,10 +26,7 @@ export function Services() {
             <li key={item.id}>
               <BlurIn delay={idx * 0.08}>
                 <div className="grid md:grid-cols-12 gap-6 md:gap-10 py-10 md:py-14">
-                  <span className="md:col-span-1 text-white/60 text-sm tracking-widest">
-                    {item.number}
-                  </span>
-                  <h3 className="md:col-span-4 hero-title text-white text-3xl md:text-5xl font-medium">
+                  <h3 className="md:col-span-5 hero-title text-white text-3xl md:text-5xl font-medium">
                     {item.title}
                   </h3>
                   <p className="md:col-span-6 md:col-start-7 text-white/80 text-base md:text-lg leading-relaxed">

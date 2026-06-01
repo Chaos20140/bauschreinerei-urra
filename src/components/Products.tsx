@@ -10,7 +10,7 @@ export function Products() {
         <div className="grid md:grid-cols-12 gap-8 mb-12 md:mb-20">
           <BlurIn className="md:col-span-7">
             <p className="text-xs md:text-sm text-white/60 tracking-[0.3em] uppercase mb-4">
-              02 — produkte
+              {products.eyebrow}
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[7vw] leading-[0.92]">
               {products.title}.
@@ -38,10 +38,7 @@ export function Products() {
                   }}
                   aria-hidden="true"
                 />
-                <div className="flex items-start justify-between mb-7">
-                  <span className="text-white/40 text-xs tracking-[0.3em] tabular-nums">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
+                <div className="flex items-start justify-end mb-7">
                   <span className="h-9 w-9 grid place-items-center rounded-full border border-white/20 group-hover:bg-white group-hover:text-black text-white/70 transition-all duration-300 group-hover:rotate-45">
                     <ArrowUpRight className="h-4 w-4" strokeWidth={1.75} />
                   </span>
@@ -53,7 +50,7 @@ export function Products() {
                   {cat.items.map((item) => (
                     <li
                       key={item}
-                      className="text-white/85 text-sm md:text-base border-t border-white/10 pt-2.5 flex items-center gap-3"
+                      className="text-white/90 text-sm md:text-base border-t border-white/10 pt-2.5 flex items-center gap-3"
                     >
                       <span className="h-1 w-1 rounded-full bg-white/45" aria-hidden="true" />
                       <span>{item}</span>

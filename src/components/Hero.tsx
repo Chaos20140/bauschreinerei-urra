@@ -30,7 +30,7 @@ export function Hero() {
             className="text-white text-[10px] md:text-xs tracking-[0.4em] uppercase"
             style={SHADOW_SOFT}
           >
-            {brand.longName} · Olsberg · seit 2003
+            {brand.longName} · Olsberg · Seit 2003
           </p>
         </BlurIn>
 
@@ -40,9 +40,9 @@ export function Hero() {
               className="hero-title text-white font-medium text-[15vw] md:text-[10vw] leading-[0.88]"
               style={SHADOW_HEAVY}
             >
-              fenster.
+              Fenster.
               <br />
-              und türen.
+              Und Türen.
             </h1>
           </BlurIn>
           <BlurIn delay={0.55} className="mt-6 md:mt-8">
@@ -76,7 +76,7 @@ export function Hero() {
               className="hidden md:flex flex-col items-center gap-2 text-white/85 text-[10px] tracking-[0.3em] uppercase"
               style={SHADOW_SOFT}
             >
-              <span>scroll</span>
+              <span>Scroll</span>
               <span
                 className="w-px h-12 bg-white/50 animate-pulse"
                 aria-hidden="true"

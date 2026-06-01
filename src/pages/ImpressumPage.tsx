@@ -6,8 +6,8 @@ export function ImpressumPage() {
   return (
     <main className="relative bg-neutral-950 min-h-screen text-white pb-16">
       <PageHero
-        eyebrow="impressum"
-        title={impressum.title + '.'}
+        eyebrow="Impressum"
+        title="Impressum."
         intro={impressum.subtitle}
       />
 

@@ -16,8 +16,8 @@ export function KontaktPage() {
   return (
     <main className="relative min-h-screen text-white pb-12">
       <PageHero
-        eyebrow="kontakt"
-        title="lassen sie uns über ihr projekt sprechen."
+        eyebrow="Kontakt"
+        title="Lassen Sie uns über Ihr Projekt sprechen."
         intro="Rufen Sie an, schreiben Sie eine E-Mail oder hinterlassen Sie eine Nachricht — wir melden uns werktags innerhalb von 24 Stunden zurück."
       />
 
@@ -26,13 +26,13 @@ export function KontaktPage() {
           <BlurIn className="md:col-span-7 space-y-6">
             <div className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-10">
               <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-6">
-                so erreichen sie uns
+                So erreichen Sie uns
               </p>
 
               <div className="grid sm:grid-cols-2 gap-x-6 gap-y-8">
                 <div>
                   <p className="text-white/55 text-[10px] md:text-xs tracking-[0.25em] uppercase mb-2">
-                    werkstatt
+                    Werkstatt
                   </p>
                   <p className="text-white text-lg md:text-xl leading-snug">
                     {contact.address.street}
@@ -51,7 +51,7 @@ export function KontaktPage() {
 
                 <div>
                   <p className="text-white/55 text-[10px] md:text-xs tracking-[0.25em] uppercase mb-2">
-                    telefon
+                    Telefon
                   </p>
                   <a
                     href={contact.phone.href}
@@ -63,7 +63,7 @@ export function KontaktPage() {
 
                 <div className="sm:col-span-2">
                   <p className="text-white/55 text-[10px] md:text-xs tracking-[0.25em] uppercase mb-2">
-                    e-mail
+                    E-Mail
                   </p>
                   <a
                     href={contact.email.href}
@@ -77,7 +77,7 @@ export function KontaktPage() {
 
             <div className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-10">
               <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-6">
-                anfrage in stichpunkten
+                Anfrage in Stichpunkten
               </p>
               <ul className="space-y-3 text-white/85 text-sm md:text-base">
                 {[
@@ -106,7 +106,7 @@ export function KontaktPage() {
           <BlurIn className="md:col-span-5 md:col-start-8 space-y-6" delay={0.2}>
             <div className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9">
               <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-5">
-                öffnungszeiten
+                Öffnungszeiten
               </p>
               <ul className="space-y-3 text-sm md:text-base">
                 {HOURS.map((h) => (
@@ -130,19 +130,19 @@ export function KontaktPage() {
               className="block rounded-2xl bg-white text-black p-7 md:p-9 hover:bg-neutral-200 transition-colors no-shadow"
             >
               <p className="text-black/55 text-xs tracking-[0.3em] uppercase mb-3">
-                direkt anrufen
+                Direkt anrufen
               </p>
               <p className="hero-title text-3xl md:text-4xl font-medium tracking-tight">
                 {contact.phone.display}
               </p>
               <p className="text-black/65 text-sm mt-2">
-                {contact.cta} — wir freuen uns auf Ihr Projekt.
+                {contact.cta} — Wir freuen uns auf Ihr Projekt.
               </p>
             </a>
 
             <div className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9">
               <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-4">
-                servicegebiet
+                Servicegebiet
               </p>
               <p className="text-white/85 text-sm md:text-base leading-relaxed mb-3">
                 Wir sind in drei Regionen unterwegs:

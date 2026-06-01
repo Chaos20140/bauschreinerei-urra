@@ -6,8 +6,8 @@ export function DatenschutzPage() {
   return (
     <main className="relative bg-neutral-950 min-h-screen text-white pb-16">
       <PageHero
-        eyebrow="datenschutz"
-        title="datenschutzerklärung."
+        eyebrow="Datenschutz"
+        title="Datenschutzerklärung."
         intro={datenschutz.subtitle}
       />
 
