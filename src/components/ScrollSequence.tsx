@@ -28,10 +28,23 @@ export function useFrames(
       return new Promise<void>((resolve) => {
         const img = new Image();
         img.decoding = 'async';
+        // Erstes Frame mit hoher Priorität laden, Rest im Hintergrund
+        if (idx === 0) {
+          (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority =
+            'high';
+        }
         img.onload = () => {
           buffer[idx] = img;
           loaded += 1;
-          if (!cancelled) setProgress(loaded / count);
+          if (!cancelled) {
+            setProgress(loaded / count);
+            // Frame 1 sofort verfügbar machen, damit Canvas nicht
+            // schwarz bleibt während der Rest lädt.
+            if (idx === 0) {
+              setImages([img]);
+              setState('ready');
+            }
+          }
           resolve();
         };
         img.onerror = () => {
