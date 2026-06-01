@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-const FRAME_COUNT = 140;
 const BASE = import.meta.env.BASE_URL;
 
 const framePath = (folder: string, i: number): string =>
@@ -8,7 +7,10 @@ const framePath = (folder: string, i: number): string =>
 
 type LoadState = 'loading' | 'ready' | 'error';
 
-export function useFrames(folder: string = 'frames'): {
+export function useFrames(
+  folder: string = 'frames',
+  count: number = 140
+): {
   images: HTMLImageElement[];
   state: LoadState;
   progress: number;
@@ -20,21 +22,21 @@ export function useFrames(folder: string = 'frames'): {
   useEffect(() => {
     let cancelled = false;
     let loaded = 0;
-    const buffer: HTMLImageElement[] = new Array(FRAME_COUNT);
+    const buffer: HTMLImageElement[] = new Array(count);
 
-    const promises = Array.from({ length: FRAME_COUNT }, (_, idx) => {
+    const promises = Array.from({ length: count }, (_, idx) => {
       return new Promise<void>((resolve) => {
         const img = new Image();
         img.decoding = 'async';
         img.onload = () => {
           buffer[idx] = img;
           loaded += 1;
-          if (!cancelled) setProgress(loaded / FRAME_COUNT);
+          if (!cancelled) setProgress(loaded / count);
           resolve();
         };
         img.onerror = () => {
           loaded += 1;
-          if (!cancelled) setProgress(loaded / FRAME_COUNT);
+          if (!cancelled) setProgress(loaded / count);
           resolve();
         };
         img.src = framePath(folder, idx + 1);
@@ -45,13 +47,13 @@ export function useFrames(folder: string = 'frames'): {
       if (cancelled) return;
       const valid = buffer.filter(Boolean);
       setImages(valid);
-      setState(valid.length === FRAME_COUNT ? 'ready' : 'error');
+      setState(valid.length === count ? 'ready' : 'error');
     });
 
     return () => {
       cancelled = true;
     };
-  }, [folder]);
+  }, [folder, count]);
 
   return { images, state, progress };
 }
@@ -147,7 +149,14 @@ export function ScrollSequenceCanvas({
     <canvas
       ref={canvasRef}
       className="fixed inset-0 w-full h-full z-0"
-      style={{ filter: 'contrast(1.08) saturate(1.08) brightness(0.82)' }}
+      style={{
+        filter: 'contrast(1.08) saturate(1.08) brightness(0.82)',
+        // GPU-Layer-Promotion: erzwingt Compositor-Layer und nimmt Last
+        // vom Main-Thread beim Scrubbing, besonders auf Mobile.
+        willChange: 'transform',
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
+      }}
       aria-hidden="true"
     />
   );

@@ -68,7 +68,8 @@ export function GlobalBackground() {
   }, [location.pathname]);
 
   const folder = isMobile ? 'frames-mobile' : 'frames';
-  const { images, state } = useFrames(folder);
+  const frameCount = isMobile ? 70 : 140;
+  const { images, state } = useFrames(folder, frameCount);
   const effective = reduceMotion ? 0 : progress;
 
   if (suppressed) {
