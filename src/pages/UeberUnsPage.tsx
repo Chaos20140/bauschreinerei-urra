@@ -1,4 +1,4 @@
-import { PageHero } from '../components/PageHero';
+import { Link } from 'react-router-dom';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
 import { about, brand, hero, contact } from '../data/content';
@@ -48,11 +48,65 @@ const PRINCIPLES = [
 export function UeberUnsPage() {
   return (
     <main className="relative min-h-screen text-white pb-12">
-      <PageHero
-        eyebrow="Über uns"
-        title={`„${about.lead}"`}
-        intro={`— Heribert Urra · ${brand.shortName}, Olsberg`}
-      />
+      <section className="relative pt-32 md:pt-40 pb-16 md:pb-24 px-6 md:px-12 overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none opacity-60"
+          style={{
+            background:
+              'radial-gradient(ellipse 80% 60% at 30% 0%, rgba(255,255,255,0.08), transparent 60%)',
+          }}
+          aria-hidden="true"
+        />
+        <div className="relative max-w-7xl mx-auto">
+          <BlurIn delay={0.05}>
+            <nav
+              aria-label="breadcrumb"
+              className="text-white/55 text-[10px] md:text-xs tracking-[0.35em] uppercase mb-10 md:mb-16 flex items-center gap-3"
+            >
+              <Link to="/" className="hover:text-white transition-colors">
+                Start
+              </Link>
+              <span className="text-white/30">/</span>
+              <span className="text-white/85">Über uns</span>
+            </nav>
+          </BlurIn>
+
+          <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
+            <BlurIn delay={0.15} className="md:col-span-8">
+              <p
+                className="hero-title text-white font-medium text-[12vw] md:text-[6.5vw] lg:text-[5.5vw] leading-[0.95] mb-6 md:mb-8"
+                style={{ textWrap: 'balance' }}
+              >
+                „Qualität ist kein Zufall."
+              </p>
+              <p
+                className="text-white/90 text-lg md:text-2xl lg:text-[1.7rem] leading-snug max-w-2xl"
+                style={{ textWrap: 'balance' }}
+              >
+                Sie ist das Ergebnis harter Arbeit, kluger Planung und
+                ehrlicher Leidenschaft.
+              </p>
+            </BlurIn>
+
+            <BlurIn
+              delay={0.4}
+              className="md:col-span-3 md:col-start-10 md:pt-3 self-end"
+            >
+              <p className="text-white/55 text-[10px] md:text-xs tracking-[0.3em] uppercase mb-3">
+                Inhaber
+              </p>
+              <p className="text-white text-lg md:text-xl font-medium">
+                Heribert Urra
+              </p>
+              <p className="text-white/65 text-sm mt-1">
+                {brand.shortName}
+                <br />
+                Olsberg, Sauerland
+              </p>
+            </BlurIn>
+          </div>
+        </div>
+      </section>
 
       <section className="relative px-6 md:px-12 py-12 md:py-20">
         <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-10">
