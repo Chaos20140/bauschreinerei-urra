@@ -6,73 +6,66 @@ const framePath = (folder: string, i: number): string =>
   `${BASE}${folder}/frame-${String(i).padStart(3, '0')}.jpg`;
 
 type LoadState = 'loading' | 'ready' | 'error';
+type FrameBuffer = (HTMLImageElement | undefined)[];
 
 export function useFrames(
   folder: string = 'frames',
   count: number = 140
 ): {
-  images: HTMLImageElement[];
+  framesRef: React.MutableRefObject<FrameBuffer>;
   state: LoadState;
-  progress: number;
+  count: number;
+  loadedCount: number;
 } {
-  const [images, setImages] = useState<HTMLImageElement[]>([]);
+  const framesRef = useRef<FrameBuffer>([]);
   const [state, setState] = useState<LoadState>('loading');
-  const [progress, setProgress] = useState(0);
+  const [loadedCount, setLoadedCount] = useState(0);
 
   useEffect(() => {
+    framesRef.current = new Array(count);
+    setLoadedCount(0);
+    setState('loading');
     let cancelled = false;
     let loaded = 0;
-    const buffer: HTMLImageElement[] = new Array(count);
 
-    const promises = Array.from({ length: count }, (_, idx) => {
-      return new Promise<void>((resolve) => {
-        const img = new Image();
-        img.decoding = 'async';
-        // Erstes Frame mit hoher Priorität laden, Rest im Hintergrund
-        if (idx === 0) {
-          (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority =
-            'high';
+    for (let i = 0; i < count; i++) {
+      const img = new Image();
+      img.decoding = 'async';
+      if (i === 0) {
+        (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority =
+          'high';
+      }
+      const onSettle = (ok: boolean) => {
+        if (cancelled) return;
+        if (ok) framesRef.current[i] = img;
+        loaded += 1;
+        setLoadedCount(loaded);
+        // Sobald Frame 1 da ist, Canvas freigeben — danach kann auch
+        // mit Teil-Buffer gerendert werden (Fallback aufs nächstgelegene
+        // geladene Frame).
+        if (i === 0 && ok) setState('ready');
+        if (loaded === count && state !== 'ready') {
+          setState('ready');
         }
-        img.onload = () => {
-          buffer[idx] = img;
-          loaded += 1;
-          if (!cancelled) {
-            setProgress(loaded / count);
-            // Frame 1 sofort verfügbar machen, damit Canvas nicht
-            // schwarz bleibt während der Rest lädt.
-            if (idx === 0) {
-              setImages([img]);
-              setState('ready');
-            }
-          }
-          resolve();
-        };
-        img.onerror = () => {
-          loaded += 1;
-          if (!cancelled) setProgress(loaded / count);
-          resolve();
-        };
-        img.src = framePath(folder, idx + 1);
-      });
-    });
-
-    Promise.all(promises).then(() => {
-      if (cancelled) return;
-      const valid = buffer.filter(Boolean);
-      setImages(valid);
-      setState(valid.length === count ? 'ready' : 'error');
-    });
+      };
+      img.onload = () => onSettle(true);
+      img.onerror = () => onSettle(false);
+      img.src = framePath(folder, i + 1);
+    }
 
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [folder, count]);
 
-  return { images, state, progress };
+  return { framesRef, state, count, loadedCount };
 }
 
 type Props = {
-  images: HTMLImageElement[];
+  framesRef: React.MutableRefObject<FrameBuffer>;
+  count: number;
+  loadedCount: number;
   progress: number;
   maxDpr?: number;
   easing?: number;
@@ -80,7 +73,9 @@ type Props = {
 };
 
 export function ScrollSequenceCanvas({
-  images,
+  framesRef,
+  count,
+  loadedCount,
   progress,
   maxDpr = 2,
   easing = 0.18,
@@ -90,22 +85,33 @@ export function ScrollSequenceCanvas({
   const rafRef = useRef<number | null>(null);
   const targetFrame = useRef(0);
   const currentFrame = useRef(0);
+  const lastDrawn = useRef(-1);
 
   useEffect(() => {
-    if (images.length === 0) return;
+    if (count <= 0) return;
     targetFrame.current = Math.min(
-      images.length - 1,
-      Math.max(0, Math.round(progress * (images.length - 1)))
+      count - 1,
+      Math.max(0, Math.round(progress * (count - 1)))
     );
-  }, [progress, images.length]);
+  }, [progress, count]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || images.length === 0) return;
+    if (!canvas || count <= 0) return;
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+
+    const findNearest = (target: number): HTMLImageElement | undefined => {
+      const buf = framesRef.current;
+      if (buf[target]) return buf[target];
+      for (let d = 1; d < buf.length; d++) {
+        if (buf[target - d]) return buf[target - d];
+        if (buf[target + d]) return buf[target + d];
+      }
+      return undefined;
+    };
 
     const resize = () => {
       const { innerWidth: w, innerHeight: h } = window;
@@ -116,16 +122,20 @@ export function ScrollSequenceCanvas({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
+      lastDrawn.current = -1;
       draw(currentFrame.current);
     };
 
     const draw = (frameIndex: number) => {
-      const img = images[Math.round(frameIndex)];
+      const target = Math.round(frameIndex);
+      const img = findNearest(target);
       if (!img) return;
+      lastDrawn.current = target;
       const cw = canvas.width / dpr;
       const ch = canvas.height / dpr;
       const iw = img.naturalWidth;
       const ih = img.naturalHeight;
+      if (!iw || !ih) return;
       const scale = Math.max(cw / iw, ch / ih);
       const dw = iw * scale;
       const dh = ih * scale;
@@ -144,6 +154,13 @@ export function ScrollSequenceCanvas({
       } else if (currentFrame.current !== targetFrame.current) {
         currentFrame.current = targetFrame.current;
         draw(currentFrame.current);
+      } else if (
+        // Re-draw, sobald der ursprünglich gewünschte Ziel-Frame
+        // nachgeladen wurde (lastDrawn hatte vorher das Fallback-Frame).
+        lastDrawn.current !== Math.round(currentFrame.current) &&
+        framesRef.current[Math.round(currentFrame.current)]
+      ) {
+        draw(currentFrame.current);
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -156,7 +173,11 @@ export function ScrollSequenceCanvas({
       window.removeEventListener('resize', resize);
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [images, maxDpr, easing, bgPositionY]);
+  }, [count, maxDpr, easing, bgPositionY, framesRef]);
+
+  // loadedCount Änderungen reichern die useRef-Daten an; der oben
+  // laufende rAF-Loop pickt sie automatisch beim nächsten Tick auf.
+  void loadedCount;
 
   return (
     <canvas
@@ -164,8 +185,6 @@ export function ScrollSequenceCanvas({
       className="fixed inset-0 w-full h-full z-0"
       style={{
         filter: 'contrast(1.08) saturate(1.08) brightness(0.82)',
-        // GPU-Layer-Promotion: erzwingt Compositor-Layer und nimmt Last
-        // vom Main-Thread beim Scrubbing, besonders auf Mobile.
         willChange: 'transform',
         transform: 'translateZ(0)',
         backfaceVisibility: 'hidden',

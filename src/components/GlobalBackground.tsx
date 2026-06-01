@@ -68,21 +68,22 @@ export function GlobalBackground() {
   }, [location.pathname]);
 
   const folder = isMobile ? 'frames-mobile' : 'frames';
-  const frameCount = isMobile ? 70 : 140;
-  const { images, state } = useFrames(folder, frameCount);
+  const { framesRef, state, count, loadedCount } = useFrames(folder, 70);
   const effective = reduceMotion ? 0 : progress;
 
   if (suppressed) {
     return <div className="fixed inset-0 z-0 bg-neutral-950" aria-hidden="true" />;
   }
 
-  if (state !== 'ready' || images.length === 0) {
+  if (state !== 'ready') {
     return <div className="fixed inset-0 z-0 bg-black" aria-hidden="true" />;
   }
 
   return (
     <ScrollSequenceCanvas
-      images={images}
+      framesRef={framesRef}
+      count={count}
+      loadedCount={loadedCount}
       progress={effective}
       maxDpr={isMobile ? 1.5 : 2}
       easing={isMobile ? 0.3 : 0.18}
