@@ -27,8 +27,12 @@ export function PageHero({
 }: Props) {
   const titleClass =
     titleSize === 'compact'
-      ? 'hero-title text-white font-medium text-[11vw] md:text-[5vw] lg:text-[4vw] leading-[0.95]'
+      ? 'hero-title text-white font-medium text-[7vw] md:text-[5vw] lg:text-[4vw] leading-[1] break-words'
       : 'hero-title text-white font-medium text-[14vw] md:text-[7.5vw] lg:text-[6vw] leading-[0.95]';
+  const titleStyle =
+    titleSize === 'compact'
+      ? { textWrap: 'balance' as const, hyphens: 'auto' as const }
+      : { textWrap: 'balance' as const };
 
   return (
     <section className="relative pt-32 md:pt-40 pb-12 md:pb-20 px-6 md:px-12 overflow-hidden">
@@ -57,7 +61,7 @@ export function PageHero({
         {layout === 'stacked' ? (
           <>
             <BlurIn delay={0.2}>
-              <h1 className={titleClass} style={{ textWrap: 'balance' }}>
+              <h1 className={titleClass} style={titleStyle} lang="de">
                 {title}
               </h1>
             </BlurIn>
@@ -75,7 +79,7 @@ export function PageHero({
         ) : (
           <div className="grid md:grid-cols-12 gap-x-8 gap-y-8 md:gap-y-12 items-end">
             <BlurIn delay={0.2} className="md:col-span-8">
-              <h1 className={titleClass} style={{ textWrap: 'balance' }}>
+              <h1 className={titleClass} style={titleStyle} lang="de">
                 {title}
               </h1>
             </BlurIn>
