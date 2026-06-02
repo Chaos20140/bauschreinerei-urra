@@ -71,27 +71,18 @@ export function UeberUnsPage() {
             </nav>
           </BlurIn>
 
-          <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
-            <BlurIn delay={0.15} className="md:col-span-8">
+          <div className="grid md:grid-cols-12 gap-x-10 gap-y-10 items-end">
+            <BlurIn delay={0.15} className="md:col-span-9">
               <p
-                className="hero-title text-white font-medium text-[12vw] md:text-[6.5vw] lg:text-[5.5vw] leading-[0.95] mb-6 md:mb-8"
+                className="hero-title text-white font-medium text-[8vw] md:text-[4.2vw] lg:text-[3.4vw] leading-[1.15] max-w-5xl"
                 style={{ textWrap: 'balance' }}
               >
-                „Qualität ist kein Zufall."
-              </p>
-              <p
-                className="text-white/90 text-lg md:text-2xl lg:text-[1.7rem] leading-snug max-w-2xl"
-                style={{ textWrap: 'balance' }}
-              >
-                Sie ist das Ergebnis harter Arbeit, kluger Planung und
-                ehrlicher Leidenschaft.
+                „Qualität ist kein Zufall — sie ist das Ergebnis harter Arbeit,
+                kluger Planung und ehrlicher Leidenschaft."
               </p>
             </BlurIn>
 
-            <BlurIn
-              delay={0.4}
-              className="md:col-span-3 md:col-start-10 md:pt-3 self-end"
-            >
+            <BlurIn delay={0.4} className="md:col-span-3 md:pb-2">
               <p className="text-white/55 text-[10px] md:text-xs tracking-[0.3em] uppercase mb-3">
                 Inhaber
               </p>

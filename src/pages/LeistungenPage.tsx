@@ -3,6 +3,32 @@ import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
 import { services, products } from '../data/content';
 
+const BASE = import.meta.env.BASE_URL;
+
+const TOOLS = [
+  {
+    src: 'leistungen/aufmass-app.webp',
+    eyebrow: 'Digital',
+    title: 'metiscale-Aufmaß',
+    body: 'Tablet plus Laser-Distanzmesser — millimetergenau in Echtzeit dokumentiert.',
+    aspect: 'aspect-[4/3]',
+  },
+  {
+    src: 'leistungen/montage.webp',
+    eyebrow: 'Werkbank',
+    title: 'Montage vor Ort',
+    body: 'Festes Team, eigene Werkzeuge. RAL-konform fixiert, ausgerichtet, geprüft.',
+    aspect: 'aspect-[4/3]',
+  },
+  {
+    src: 'leistungen/abdichtung.webp',
+    eyebrow: 'Detail',
+    title: 'Anschlussfuge dichten',
+    body: 'Fachgerechte Dämmung gegen Wärmebrücken — Schicht für Schicht abgedichtet.',
+    aspect: 'aspect-[4/3]',
+  },
+] as const;
+
 const PROCESS = [
   {
     title: 'Beratung',
@@ -117,6 +143,47 @@ export function LeistungenPage() {
               </BlurIn>
             ))}
           </ol>
+        </div>
+      </section>
+
+      <section className="relative px-6 md:px-12 py-16 md:py-24 border-t border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <BlurIn className="mb-10 md:mb-14 max-w-3xl">
+            <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
+              Im Einsatz
+            </p>
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+              So sieht das aus.
+            </h2>
+          </BlurIn>
+          <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            {TOOLS.map((t, idx) => (
+              <BlurIn key={t.src} delay={idx * 0.08}>
+                <li className="group rounded-2xl overflow-hidden border border-white/15 bg-white/[0.03] h-full flex flex-col">
+                  <div className={`relative ${t.aspect} overflow-hidden bg-neutral-900`}>
+                    <img
+                      src={`${BASE}${t.src}`}
+                      alt={t.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6 md:p-7 flex-1 flex flex-col">
+                    <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-2">
+                      {t.eyebrow}
+                    </p>
+                    <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
+                      {t.title}
+                    </h3>
+                    <p className="text-white/80 text-sm leading-relaxed">
+                      {t.body}
+                    </p>
+                  </div>
+                </li>
+              </BlurIn>
+            ))}
+          </ul>
         </div>
       </section>
 
