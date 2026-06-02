@@ -1,6 +1,48 @@
+import { useEffect, useState } from 'react';
 import { Star, ExternalLink } from 'lucide-react';
 import { reviews } from '../data/content';
+import { supabase, isSupabaseConfigured, type ReviewRow } from '../lib/supabase';
 import { BlurIn } from './BlurIn';
+
+type ReviewItem = {
+  key: string;
+  name: string;
+  role: string | null;
+  rating: number;
+  body: string;
+  date: string;
+};
+
+const MONTHS_DE = [
+  'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember',
+] as const;
+
+function formatGermanMonth(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return `${MONTHS_DE[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+const FALLBACK_ITEMS: ReviewItem[] = reviews.items.map((r, idx) => ({
+  key: `static-${idx}`,
+  name: r.name,
+  role: r.role,
+  rating: r.rating,
+  body: r.body,
+  date: r.date,
+}));
+
+function rowToItem(row: ReviewRow): ReviewItem {
+  return {
+    key: row.id,
+    name: row.author_name,
+    role: row.author_role,
+    rating: row.rating,
+    body: row.body,
+    date: formatGermanMonth(row.review_date),
+  };
+}
 
 function Stars({ count }: { count: number }) {
   return (
@@ -19,6 +61,30 @@ function Stars({ count }: { count: number }) {
 }
 
 export function Reviews() {
+  const [items, setItems] = useState<ReviewItem[]>(FALLBACK_ITEMS);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select(
+          'id, author_name, author_role, rating, body, review_date, source, published, sort_order'
+        )
+        .eq('published', true)
+        .order('sort_order', { ascending: true })
+        .order('review_date', { ascending: false })
+        .limit(12);
+      if (cancelled) return;
+      if (error || !data || data.length === 0) return;
+      setItems((data as ReviewRow[]).map(rowToItem));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section className="relative text-white py-24 md:py-40 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
@@ -48,8 +114,8 @@ export function Reviews() {
         </div>
 
         <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-          {reviews.items.map((r, idx) => (
-            <BlurIn key={r.name + r.date} delay={idx * 0.06}>
+          {items.map((r, idx) => (
+            <BlurIn key={r.key} delay={idx * 0.06}>
               <li className="h-full rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7 flex flex-col group transition-all duration-500 hover:border-white/30 hover:bg-white/[0.06] hover:-translate-y-1">
                 <Stars count={r.rating} />
                 <p className="text-white/90 text-sm md:text-[15px] leading-relaxed mt-4 mb-6 flex-1">
@@ -58,7 +124,7 @@ export function Reviews() {
                 <div className="border-t border-white/10 pt-4">
                   <p className="text-white text-sm font-medium">{r.name}</p>
                   <p className="text-white/55 text-xs mt-0.5">
-                    {r.role} · {r.date}
+                    {r.role ? `${r.role} · ` : ''}{r.date}
                   </p>
                 </div>
               </li>

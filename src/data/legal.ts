@@ -88,6 +88,10 @@ export const datenschutz = {
       body: 'Auf unserer Kontakt-Seite haben Sie die Möglichkeit, eine Standort-Karte über den Dienst Google Maps der Google Ireland Limited (Gordon House, Barrow Street, Dublin 4, Irland) anzuzeigen. Aus Datenschutzgründen wird die Karte erst nach Ihrer aktiven Bestätigung („Karte aktivieren") geladen — vorher findet keinerlei Datenübertragung zu Google statt. Sobald Sie die Karte aktivieren, werden Daten (insbesondere Ihre IP-Adresse sowie Geräte- und Browser-Informationen) an Google übertragen und ggf. auf Servern in den USA verarbeitet. Rechtsgrundlage für die Datenverarbeitung nach Aktivierung ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Weitere Informationen finden Sie in der Datenschutzerklärung von Google: https://policies.google.com/privacy.',
     },
     {
+      heading: '8. Supabase (Bewertungs-Datenbank)',
+      body: 'Zur Anzeige unserer Kunden-Bewertungen auf der Startseite verwenden wir den Dienst Supabase (Supabase Inc., 970 Toa Payoh North #07-04, Singapore 318992). Die Bewertungs-Daten sind auf Servern in der EU-Region (Frankfurt, Deutschland) gehostet. Beim Aufruf der Startseite wird eine Verbindung zu Supabase aufgebaut, um die Bewertungs-Inhalte zu laden — dabei können technische Verbindungsdaten (insbesondere Ihre IP-Adresse) verarbeitet werden. Die Verarbeitung erfolgt im Interesse einer ansprechenden und aktuellen Darstellung unserer Inhalte (Art. 6 Abs. 1 lit. f DSGVO). Weitere Informationen: https://supabase.com/privacy.',
+    },
+    {
       heading: '7. Ihre Rechte',
       list: [
         'Auskunft über die zu Ihrer Person gespeicherten Daten (Art. 15 DSGVO)',
