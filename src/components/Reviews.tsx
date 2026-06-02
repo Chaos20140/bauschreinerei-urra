@@ -116,17 +116,31 @@ export function Reviews() {
         <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
           {items.map((r, idx) => (
             <BlurIn key={r.key} delay={idx * 0.06}>
-              <li className="h-full rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7 flex flex-col group transition-all duration-500 hover:border-white/30 hover:bg-white/[0.06] hover:-translate-y-1">
-                <Stars count={r.rating} />
-                <p className="text-white/90 text-sm md:text-[15px] leading-relaxed mt-4 mb-6 flex-1">
-                  „{r.body}"
-                </p>
-                <div className="border-t border-white/10 pt-4">
-                  <p className="text-white text-sm font-medium">{r.name}</p>
-                  <p className="text-white/55 text-xs mt-0.5">
-                    {r.role ? `${r.role} · ` : ''}{r.date}
+              <li className="h-full">
+                <a
+                  href={reviews.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block h-full rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7 flex flex-col group transition-all duration-500 hover:border-white/30 hover:bg-white/[0.06] hover:-translate-y-1 no-shadow"
+                  aria-label={`Bewertung von ${r.name} auf Google ansehen`}
+                >
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <Stars count={r.rating} />
+                    <ExternalLink
+                      className="h-3.5 w-3.5 text-white/40 group-hover:text-white/85 transition-colors"
+                      strokeWidth={2}
+                    />
+                  </div>
+                  <p className="text-white/90 text-sm md:text-[15px] leading-relaxed mb-6 flex-1">
+                    „{r.body}"
                   </p>
-                </div>
+                  <div className="border-t border-white/10 pt-4">
+                    <p className="text-white text-sm font-medium">{r.name}</p>
+                    <p className="text-white/55 text-xs mt-0.5">
+                      {r.role ? `${r.role} · ` : ''}{r.date}
+                    </p>
+                  </div>
+                </a>
               </li>
             </BlurIn>
           ))}

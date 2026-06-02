@@ -209,10 +209,10 @@ export const reviews = {
   title: 'Was Kunden sagen.',
   subtitle:
     'Direkt aus dem Sauerland und ganz Westfalen — echte Eindrücke von Bauherren, die wir begleitet haben.',
-  rating: 4.9,
-  count: 24,
+  rating: 5.0,
+  count: 8,
   source: 'Google',
-  link: 'https://www.google.com/maps/search/?api=1&query=Bauschreinerei+Urra+Olsberg',
+  link: 'https://www.google.com/maps/search/?api=1&query=Bauschreinerei+Heribert+Urra+Olsberg',
   items: [
     {
       name: 'Familie B.',
