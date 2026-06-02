@@ -4,9 +4,9 @@ import { ScrollSequenceCanvas, useFrames } from './ScrollSequence';
 
 const MOBILE_QUERY = '(max-width: 767px)';
 
-// Routen, die einen eigenen Hintergrund haben (Legal-Pages mit viel Text)
-// behalten ihre opake Bg-Fläche — der Canvas wird verdeckt, aber bleibt
-// im DOM, damit der State (Frame-Position) beim Wechsel zur Homepage stimmt.
+// Routen, die einen eigenen Hintergrund (LegalBackdrop) haben.
+// GlobalBackground rendert dort nichts — der Canvas wäre durch den
+// LegalBackdrop verdeckt und nur Last für nichts.
 const SUPPRESSED_ROUTES = ['/impressum', '/datenschutz'];
 
 export function GlobalBackground() {
@@ -72,7 +72,7 @@ export function GlobalBackground() {
   const effective = reduceMotion ? 0 : progress;
 
   if (suppressed) {
-    return <div className="fixed inset-0 z-0 bg-neutral-950" aria-hidden="true" />;
+    return null;
   }
 
   if (state !== 'ready') {

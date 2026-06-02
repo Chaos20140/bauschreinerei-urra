@@ -1,14 +1,18 @@
 import { PageHero } from '../components/PageHero';
 import { BlurIn } from '../components/BlurIn';
+import { LegalBackdrop } from '../components/LegalBackdrop';
 import { datenschutz } from '../data/legal';
 
 export function DatenschutzPage() {
   return (
-    <main className="relative bg-neutral-950 min-h-screen text-white pb-16">
+    <main className="relative min-h-screen text-white pb-16">
+      <LegalBackdrop />
       <PageHero
         eyebrow="Datenschutz"
         title="Datenschutzerklärung."
         intro={datenschutz.subtitle}
+        layout="stacked"
+        titleSize="compact"
       />
 
       <section className="relative px-6 md:px-12 py-8 md:py-16">

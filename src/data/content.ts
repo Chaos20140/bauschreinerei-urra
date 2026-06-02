@@ -90,7 +90,7 @@ export const about = {
 export const regions = {
   title: 'Unsere Region',
   eyebrow: 'Region',
-  subtitle: 'Wir sind im gesamten Westfalen unterwegs.',
+  subtitle: 'Wir sind im gesamten Nordrhein-Westfalen unterwegs.',
   areas: [
     {
       key: 'Sauerland',
@@ -208,7 +208,7 @@ export const reviews = {
   eyebrow: 'Stimmen',
   title: 'Was Kunden sagen.',
   subtitle:
-    'Direkt aus dem Sauerland und ganz Westfalen — echte Eindrücke von Bauherren, die wir begleitet haben.',
+    'Direkt aus dem Sauerland und ganz Nordrhein-Westfalen — echte Eindrücke von Bauherren, die wir begleitet haben.',
   rating: 5.0,
   count: 8,
   source: 'Google',

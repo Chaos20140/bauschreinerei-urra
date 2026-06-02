@@ -7,9 +7,29 @@ type Props = {
   title: string;
   intro?: string;
   children?: ReactNode;
+  /**
+   * Bei `stacked` rendern Titel und Intro untereinander statt im 2-Spalten-
+   * Grid. Sinnvoll für sehr lange einzelne Wörter wie „Datenschutzerklärung",
+   * die sonst die Intro-Spalte überlaufen.
+   */
+  layout?: 'split' | 'stacked';
+  /** Kompakte Titelgröße — gut für legal Pages. */
+  titleSize?: 'default' | 'compact';
 };
 
-export function PageHero({ eyebrow, title, intro, children }: Props) {
+export function PageHero({
+  eyebrow,
+  title,
+  intro,
+  children,
+  layout = 'split',
+  titleSize = 'default',
+}: Props) {
+  const titleClass =
+    titleSize === 'compact'
+      ? 'hero-title text-white font-medium text-[11vw] md:text-[5vw] lg:text-[4vw] leading-[0.95]'
+      : 'hero-title text-white font-medium text-[14vw] md:text-[7.5vw] lg:text-[6vw] leading-[0.95]';
+
   return (
     <section className="relative pt-32 md:pt-40 pb-12 md:pb-20 px-6 md:px-12 overflow-hidden">
       <div
@@ -34,26 +54,43 @@ export function PageHero({ eyebrow, title, intro, children }: Props) {
           </nav>
         </BlurIn>
 
-        <div className="grid md:grid-cols-12 gap-x-8 gap-y-8 md:gap-y-12 items-end">
-          <BlurIn delay={0.2} className="md:col-span-8">
-            <h1
-              className="hero-title text-white font-medium text-[14vw] md:text-[7.5vw] lg:text-[6vw] leading-[0.95]"
-              style={{ textWrap: 'balance' }}
-            >
-              {title}
-            </h1>
-          </BlurIn>
-          {intro && (
-            <BlurIn delay={0.4} className="md:col-span-4 md:pb-3">
-              <p
-                className="text-white/90 text-base md:text-lg lg:text-xl leading-relaxed"
-                style={{ textWrap: 'pretty' }}
-              >
-                {intro}
-              </p>
+        {layout === 'stacked' ? (
+          <>
+            <BlurIn delay={0.2}>
+              <h1 className={titleClass} style={{ textWrap: 'balance' }}>
+                {title}
+              </h1>
             </BlurIn>
-          )}
-        </div>
+            {intro && (
+              <BlurIn delay={0.35} className="mt-6 md:mt-8 max-w-3xl">
+                <p
+                  className="text-white/90 text-base md:text-lg lg:text-xl leading-relaxed"
+                  style={{ textWrap: 'pretty' }}
+                >
+                  {intro}
+                </p>
+              </BlurIn>
+            )}
+          </>
+        ) : (
+          <div className="grid md:grid-cols-12 gap-x-8 gap-y-8 md:gap-y-12 items-end">
+            <BlurIn delay={0.2} className="md:col-span-8">
+              <h1 className={titleClass} style={{ textWrap: 'balance' }}>
+                {title}
+              </h1>
+            </BlurIn>
+            {intro && (
+              <BlurIn delay={0.4} className="md:col-span-4 md:pb-3">
+                <p
+                  className="text-white/90 text-base md:text-lg lg:text-xl leading-relaxed"
+                  style={{ textWrap: 'pretty' }}
+                >
+                  {intro}
+                </p>
+              </BlurIn>
+            )}
+          </div>
+        )}
 
         {children && (
           <BlurIn delay={0.55} className="mt-12 md:mt-16">

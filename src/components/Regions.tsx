@@ -10,8 +10,8 @@ export function Regions() {
             <p className="text-xs md:text-sm text-white/60 tracking-widest uppercase mb-4">
               {regions.eyebrow}
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw]">
-              Westfalen.
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+              Nordrhein-Westfalen.
             </h2>
           </BlurIn>
           <BlurIn className="md:col-span-4 md:col-start-9 self-end" delay={0.15}>

@@ -1,68 +1,55 @@
 import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
+import { ThreeDPhotoCarousel } from '../components/ThreeDPhotoCarousel';
 import { regions } from '../data/content';
 
 const BASE = import.meta.env.BASE_URL;
 
-const PROJECTS = [
+const PROJECT_SLIDES = [
   {
-    src: 'projekte/privatbau-haus.webp',
-    title: 'Bungalow mit anthrazit-Tür',
-    location: 'Sauerland',
-    category: 'Privatbau',
-    span: 'sm:row-span-2',
-    aspect: 'aspect-[3/4]',
+    src: `${BASE}projekte/privatbau-haus.webp`,
+    alt: 'Bungalow mit anthrazit-Tür',
+    caption: 'Bungalow mit anthrazit-Tür',
+    meta: 'Privatbau · Sauerland',
   },
   {
-    src: 'projekte/gewerbe-schiebe.webp',
-    title: 'Großformat-Schiebeelemente',
-    location: 'Gewerbeobjekt',
-    category: 'Gewerbe',
-    span: '',
-    aspect: 'aspect-[4/3]',
+    src: `${BASE}projekte/gewerbe-schiebe.webp`,
+    alt: 'Großformat-Schiebeelemente',
+    caption: 'Großformat-Schiebeelemente',
+    meta: 'Gewerbe · Objektbau',
   },
   {
-    src: 'projekte/bogenfenster.webp',
-    title: 'Bogenfenster, Sondermaß',
-    location: 'Altbau-Sanierung',
-    category: 'Sondermaß',
-    span: '',
-    aspect: 'aspect-[4/3]',
+    src: `${BASE}projekte/bogenfenster.webp`,
+    alt: 'Bogenfenster Sondermaß',
+    caption: 'Bogenfenster, Sondermaß',
+    meta: 'Sondermaß · Altbau-Sanierung',
   },
   {
-    src: 'projekte/mehrfamilien.webp',
-    title: 'Komplett-Fassade Mehrfamilienhaus',
-    location: 'Sauerland',
-    category: 'Sanierung',
-    span: 'sm:col-span-2',
-    aspect: 'aspect-[16/9]',
+    src: `${BASE}projekte/mehrfamilien.webp`,
+    alt: 'Komplett-Fassade Mehrfamilienhaus',
+    caption: 'Komplett-Fassade Mehrfamilienhaus',
+    meta: 'Sanierung · Sauerland',
   },
   {
-    src: 'projekte/industrie-glasfront.webp',
-    title: 'Industrie-Glasfront',
-    location: 'Gewerbeobjekt',
-    category: 'Industrie',
-    span: '',
-    aspect: 'aspect-[4/3]',
+    src: `${BASE}projekte/industrie-glasfront.webp`,
+    alt: 'Industrie-Glasfront',
+    caption: 'Industrie-Glasfront',
+    meta: 'Industrie · Gewerbeobjekt',
   },
   {
-    src: 'projekte/grossbaustelle.webp',
-    title: 'Neubau-Großbaustelle',
-    location: 'Mehrfamilienhaus',
-    category: 'Neubau',
-    span: '',
-    aspect: 'aspect-[4/3]',
+    src: `${BASE}projekte/grossbaustelle.webp`,
+    alt: 'Neubau-Großbaustelle Mehrfamilien',
+    caption: 'Neubau-Großbaustelle',
+    meta: 'Neubau · Mehrfamilienhaus',
   },
   {
-    src: 'projekte/industriehalle.webp',
-    title: 'Industriehalle, Glasband',
-    location: 'Sanierung',
-    category: 'Industrie',
-    span: 'sm:col-span-2',
-    aspect: 'aspect-[16/9]',
+    src: `${BASE}projekte/industriehalle.webp`,
+    alt: 'Industriehalle Glasband',
+    caption: 'Industriehalle, Glasband',
+    meta: 'Sanierung · Industrie',
   },
-] as const;
+];
 
 const CATEGORIES = [
   {
@@ -94,7 +81,7 @@ export function ProjektePage() {
     <main className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="Projekte"
-        title="Referenzen aus dem Sauerland und ganz Westfalen."
+        title="Referenzen aus dem Sauerland und ganz Nordrhein-Westfalen."
         intro="Jedes Objekt hat seine eigene Geschichte — von der kleinen Sanierung bis zum Gewerbeobjekt. Seit 2003 begleiten wir Bauherren in drei Regionen mit Fachhandwerk auf hohem Niveau."
       />
 
@@ -136,9 +123,9 @@ export function ProjektePage() {
         </div>
       </section>
 
-      <section className="relative px-6 md:px-12 py-16 md:py-24 border-t border-white/10">
+      <section className="relative px-6 md:px-12 py-16 md:py-24 border-t border-white/10 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <BlurIn className="mb-10 md:mb-14 max-w-3xl">
+          <BlurIn className="mb-8 md:mb-12 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               Referenzen
             </p>
@@ -146,52 +133,14 @@ export function ProjektePage() {
               Aus unserer Werkstatt.
             </h2>
             <p className="mt-5 text-white/80 text-base md:text-lg leading-relaxed">
-              Eine Auswahl realisierter Objekte — vom Bungalow bis zur
-              Gewerbehalle. Klick auf ein Bild zeigt es größer.
+              Ziehen Sie das Karussell — oder tippen Sie ein Bild an, um es im
+              Vollformat zu sehen.
             </p>
           </BlurIn>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-3 md:gap-4">
-            {PROJECTS.map((p, idx) => (
-              <BlurIn
-                key={p.src}
-                delay={idx * 0.05}
-                className={`${p.span} group`}
-              >
-                <a
-                  href={`${BASE}${p.src}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`relative block ${p.aspect} rounded-2xl overflow-hidden border border-white/10 bg-neutral-900 no-shadow`}
-                  aria-label={`${p.title} — ${p.location}, ${p.category}`}
-                >
-                  <img
-                    src={`${BASE}${p.src}`}
-                    alt={`${p.title} (${p.category})`}
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                    style={{
-                      background:
-                        'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0) 100%)',
-                    }}
-                    aria-hidden="true"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 p-4 md:p-5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                    <p className="text-white/70 text-[10px] tracking-[0.25em] uppercase mb-1">
-                      {p.category} · {p.location}
-                    </p>
-                    <p className="text-white text-base md:text-lg font-medium leading-snug">
-                      {p.title}
-                    </p>
-                  </div>
-                </a>
-              </BlurIn>
-            ))}
-          </div>
+          <BlurIn delay={0.2}>
+            <ThreeDPhotoCarousel slides={PROJECT_SLIDES} />
+          </BlurIn>
         </div>
       </section>
 

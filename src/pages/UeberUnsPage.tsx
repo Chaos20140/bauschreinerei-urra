@@ -21,7 +21,7 @@ const MILESTONES = [
   },
   {
     year: 'Heute',
-    title: 'Westfalen',
+    title: 'Nordrhein-Westfalen',
     body: 'Wir sind im Sauerland, in Ostwestfalen-Lippe und im Ruhrgebiet fest verwurzelt. Weiterhin inhabergeführt.',
   },
 ] as const;
@@ -41,7 +41,7 @@ const PRINCIPLES = [
   },
   {
     key: 'Regional',
-    body: 'Wir kennen das Wetter, die Häuser und die Menschen in Westfalen. Das macht uns zu einem Partner, der versteht, was vor Ort wirklich gebraucht wird.',
+    body: 'Wir kennen das Wetter, die Häuser und die Menschen in Nordrhein-Westfalen. Das macht uns zu einem Partner, der versteht, was vor Ort wirklich gebraucht wird.',
   },
 ] as const;
 
@@ -74,7 +74,7 @@ export function UeberUnsPage() {
           <div className="grid md:grid-cols-12 gap-x-10 gap-y-10 items-end">
             <BlurIn delay={0.15} className="md:col-span-9">
               <p
-                className="hero-title text-white font-medium text-[8vw] md:text-[4.2vw] lg:text-[3.4vw] leading-[1.15] max-w-5xl"
+                className="hero-title text-white font-medium text-[5.5vw] md:text-[2.6vw] lg:text-[2.1vw] leading-[1.3] max-w-4xl"
                 style={{ textWrap: 'balance' }}
               >
                 „Qualität ist kein Zufall — sie ist das Ergebnis harter Arbeit,
