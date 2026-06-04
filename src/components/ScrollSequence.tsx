@@ -187,8 +187,15 @@ export function ScrollSequenceCanvas({
 
     const tick = () => {
       const diff = targetFrame.current - currentFrame.current;
-      if (Math.abs(diff) > 0.005) {
-        currentFrame.current += diff * easing;
+      const absDiff = Math.abs(diff);
+      if (absDiff > 0.005) {
+        // Velocity-aware easing: bei großen Frame-Sprüngen (schnelles
+        // Scrollen / harte Cuts im Quellvideo) wird das Easing degressiv
+        // reduziert. So gleitet die Animation auch durch abrupte Stellen
+        // sanft hinüber, statt mit einem sichtbaren Bild-Ruck zu reagieren.
+        // Bei kleinen Diffs bleibt das Easing nahezu unverändert.
+        const damping = 1 / (1 + absDiff * 0.12);
+        currentFrame.current += diff * easing * damping;
         draw(currentFrame.current);
       } else if (currentFrame.current !== targetFrame.current) {
         currentFrame.current = targetFrame.current;

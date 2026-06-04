@@ -89,9 +89,11 @@ export function GlobalBackground() {
       loadedCount={loadedCount}
       progress={effective}
       maxDpr={isMobile ? 1.5 : 2}
-      easing={isMobile ? 0.16 : 0.13}
+      easing={isMobile ? 0.14 : 0.11}
       bgPositionY={0.5}
-      interpolate={!isMobile}
+      // Cross-Fade ist bei 140 Mobile-Frames günstiger als gedacht und
+      // glättet harte Cuts im Quellvideo wirkungsvoll. Wieder aktivieren.
+      interpolate={true}
     />
   );
 }
