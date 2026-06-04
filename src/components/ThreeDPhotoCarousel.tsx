@@ -20,6 +20,11 @@ type Props = {
   slides: CarouselSlide[];
   /** Höhe des Karussell-Bühnenbereichs in px. */
   height?: number;
+  /**
+   * Optionaler Click-Handler. Wenn gesetzt, ersetzt er das Overlay-
+   * Verhalten — z. B. für Navigation zur Detail-Seite.
+   */
+  onSlideClick?: (slide: CarouselSlide) => void;
 };
 
 const transition = {
@@ -137,12 +142,23 @@ const Cylinder = memo(function Cylinder({
   );
 });
 
-export function ThreeDPhotoCarousel({ slides, height = 520 }: Props) {
+export function ThreeDPhotoCarousel({
+  slides,
+  height = 520,
+  onSlideClick,
+}: Props) {
   const [active, setActive] = useState<CarouselSlide | null>(null);
   const isCarouselActive = active === null;
   const controls = useAnimation();
 
   const handleClose = () => setActive(null);
+  const handlePick = (slide: CarouselSlide) => {
+    if (onSlideClick) {
+      onSlideClick(slide);
+      return;
+    }
+    setActive(slide);
+  };
 
   return (
     <motion.div layout className="relative">
@@ -201,7 +217,7 @@ export function ThreeDPhotoCarousel({ slides, height = 520 }: Props) {
           slides={slides}
           isActive={isCarouselActive}
           controls={controls}
-          onPick={setActive}
+          onPick={handlePick}
         />
       </div>
     </motion.div>

@@ -19,6 +19,7 @@ export const hero = {
 export const navigation = [
   { label: 'Leistungen', href: '/leistungen' },
   { label: 'Projekte', href: '/projekte' },
+  { label: 'Partner', href: '/partner' },
   { label: 'Über uns', href: '/ueber-uns' },
   { label: 'Kontakt', href: '/kontakt' },
 ] as const;
@@ -192,6 +193,205 @@ export const features = {
       title: 'Regional verwurzelt',
       body:
         'Olsberg, Brilon, Meschede und das gesamte Sauerland — wir kennen die Häuser, die Menschen und das Wetter hier.',
+    },
+  ],
+} as const;
+
+// ----------------------------------------------------------------------------
+// Projekt-Referenzen für /projekte und /projekte/:slug.
+//   Jedes Projekt hat einen URL-tauglichen `slug`, eine kurze `summary` und
+//   eine `details`-Liste mit Stichpunkten zur ausführlichen Vorstellung.
+//   `gallery` ist die Liste der Bilder im public/projekte-Ordner; das erste
+//   Bild ist auch das Hero-Bild der Detail-Seite. Weitere Bilder können
+//   später ergänzt werden.
+// ----------------------------------------------------------------------------
+export type Project = {
+  slug: string;
+  title: string;
+  location: string;
+  year: string;
+  category: string;
+  summary: string;
+  hero: string;
+  gallery: string[];
+  details: string[];
+};
+
+export const projectList: Project[] = [
+  {
+    slug: 'bungalow-anthrazit-tuer',
+    title: 'Bungalow mit anthrazit-Tür',
+    location: 'Sauerland',
+    year: '2024',
+    category: 'Privatbau',
+    summary:
+      'Moderne Eingangs-Komposition mit anthrazitfarbener Haustür, abgesetzten Holzakzenten und passenden Bodentief-Fenstern.',
+    hero: 'projekte/privatbau-haus.webp',
+    gallery: ['projekte/privatbau-haus.webp'],
+    details: [
+      'Haustür mit Aluminium-Profil, anthrazit RAL 7016, hochwertige Holz-Inlays',
+      'Mehrfach-Verriegelung, Sicherheitsbeschlag RC 2 N',
+      'Bodentiefe Festverglasungen mit 3-fach-Wärmedämmverglasung',
+      'EnEV-konforme Anschlussfugen, RAL-zertifizierte Montage durch eigenes Team',
+    ],
+  },
+  {
+    slug: 'grossformat-schiebeelemente',
+    title: 'Großformat-Schiebeelemente',
+    location: 'Gewerbeobjekt',
+    year: '2024',
+    category: 'Gewerbe',
+    summary:
+      'Reihe großformatiger Schiebe- und Hebeschiebe-Elemente für ein Logistik- und Verwaltungsgebäude — schlank, statisch belastbar, lichtoffen.',
+    hero: 'projekte/gewerbe-schiebe.webp',
+    gallery: ['projekte/gewerbe-schiebe.webp'],
+    details: [
+      'Aluminium-Hebeschiebe-System mit thermisch getrennten Profilen',
+      'Großflächige Verglasung für maximalen Tageslicht-Einfall',
+      'Schiebeläufer-Mechanik mit präzisem Lauf trotz Eigengewicht',
+      'Brandschutz- und Fluchtweg-Anforderungen in Planung mit eingeflossen',
+    ],
+  },
+  {
+    slug: 'bogenfenster-sondermass',
+    title: 'Bogenfenster, Sondermaß',
+    location: 'Altbau-Sanierung',
+    year: '2023',
+    category: 'Sondermaß',
+    summary:
+      'Sanierung eines historischen Bogenfensters samt Türelement — präzise nachgefertigt, original-konform, energetisch auf modernen Stand gebracht.',
+    hero: 'projekte/bogenfenster.webp',
+    gallery: ['projekte/bogenfenster.webp'],
+    details: [
+      'Sondermaß-Fertigung nach exaktem Aufmaß mit der metiscale-App',
+      'Historische Sprossen-Optik, modern verglast und gedämmt',
+      'Anpassung an unregelmäßiges Bestandsmauerwerk',
+      'Originalgetreue Farbgebung in Abstimmung mit der Eigentümerin',
+    ],
+  },
+  {
+    slug: 'komplett-fassade-mehrfamilien',
+    title: 'Komplett-Fassade Mehrfamilienhaus',
+    location: 'Sauerland',
+    year: '2023',
+    category: 'Sanierung',
+    summary:
+      'Energetische Komplett-Sanierung der Fenster eines Backstein-Mehrfamilienhauses — sämtliche Etagen, abgestimmt auf die historische Fassade.',
+    hero: 'projekte/mehrfamilien.webp',
+    gallery: ['projekte/mehrfamilien.webp'],
+    details: [
+      'Komplettaustausch sämtlicher Fenster über drei Etagen',
+      'Sprossen-Teilung zur Wahrung des architektonischen Charakters',
+      '3-fach-Wärmedämmverglasung, Schallschutz-Verbund',
+      'Demontage und umweltgerechte Entsorgung der Altelemente inklusive',
+    ],
+  },
+  {
+    slug: 'industrie-glasfront',
+    title: 'Industrie-Glasfront',
+    location: 'Gewerbeobjekt',
+    year: '2022',
+    category: 'Industrie',
+    summary:
+      'Glasfront für ein Industriegebäude — großflächige Lichtbänder mit minimalen Rahmenanteilen, statisch ausgelegt für die hohe Bauteilhöhe.',
+    hero: 'projekte/industrie-glasfront.webp',
+    gallery: ['projekte/industrie-glasfront.webp'],
+    details: [
+      'Aluminium-Pfosten-Riegel-Konstruktion mit thermischer Trennung',
+      'Großflächige Festverglasung, kombiniert mit Lüftungselementen',
+      'Statische Berechnung für die Höhe und Windlasten der Halle',
+      'Demontage der vorherigen Fassade in Etappen ohne Betriebsunterbrechung',
+    ],
+  },
+  {
+    slug: 'neubau-grossbaustelle',
+    title: 'Neubau-Großbaustelle',
+    location: 'Mehrfamilienhaus',
+    year: '2024',
+    category: 'Neubau',
+    summary:
+      'Komplettlieferung aller Fenster und Türen für einen Neubau-Komplex inklusive Aufmaß-Planung, Just-in-time-Lieferung und Etagen-weiser Montage.',
+    hero: 'projekte/grossbaustelle.webp',
+    gallery: ['projekte/grossbaustelle.webp'],
+    details: [
+      'Aufmaß bereits in der Rohbauphase abgestimmt mit dem Bauleiter',
+      'Lieferung in Etagen-Tranchen passend zum Bauablauf',
+      'Energieeffiziente Standard-Verglasung mit Wärmedurchgangskoeffizient < 1,0 W/m²K',
+      'Übergabe sämtlicher Dokumente pro Wohneinheit inkl. Pflegehinweis',
+    ],
+  },
+  {
+    slug: 'industriehalle-glasband',
+    title: 'Industriehalle, Glasband',
+    location: 'Industrie-Sanierung',
+    year: '2023',
+    category: 'Industrie',
+    summary:
+      'Sanierung des umlaufenden Glasbands einer Produktions- und Lagerhalle — bei laufendem Betrieb in Etappen umgesetzt.',
+    hero: 'projekte/industriehalle.webp',
+    gallery: ['projekte/industriehalle.webp'],
+    details: [
+      'Demontage der alten Verglasung in vier Bauabschnitten',
+      'Gerüstplanung und Sicherung in Abstimmung mit der Werkleitung',
+      'Neues System mit verbesserter Wärmedämmung und reduzierter Aufheizung',
+      'Komplette Ausführung ohne Stillstand der Produktion',
+    ],
+  },
+];
+
+// ----------------------------------------------------------------------------
+// HINWEIS für spätere Anpassung mit ECHTEN Hersteller-Partnern:
+//   Die hier gepflegten Partner sind neutral formulierte Platzhalter.
+//   Sobald die echten Hersteller-Partnerschaften feststehen, kann dieser
+//   Array um Name, Kategorie und ggf. URL ergänzt/ausgetauscht werden.
+// ----------------------------------------------------------------------------
+export const partners = {
+  eyebrow: 'Partner',
+  title: 'Mit wem wir bauen.',
+  subtitle:
+    'Wir arbeiten ausschließlich mit etablierten Herstellern für Fenster, Türen, Garagentore und Beschläge — alle nach europäischen Normen geprüft und für den Sauerländer Anspruch ausgewählt.',
+  items: [
+    {
+      key: 'kunststoff',
+      name: 'Premium Kunststoff-Profile',
+      category: 'Fenster-Systeme',
+      body:
+        'Mehrkammer-Profile mit hoher Wärmedämmung und Stahlverstärkung. Verarbeitet als Standard für Neubau und Sanierung.',
+    },
+    {
+      key: 'aluminium',
+      name: 'Aluminium-Systeme',
+      category: 'Großformat & Objekt',
+      body:
+        'Schlanke Ansichten, hohe Statik. Ideal für Schiebetüren, Hebeschiebe und gewerbliche Festverglasungen.',
+    },
+    {
+      key: 'holz',
+      name: 'Holz / Holz-Alu',
+      category: 'Wertbestand',
+      body:
+        'Natürliche Optik innen, wetterfest außen. Für historische Bauten und gehobene Architektur.',
+    },
+    {
+      key: 'haustueren',
+      name: 'Haustüren-Manufaktur',
+      category: 'Eingangs-Elemente',
+      body:
+        'Sicherheitstüren mit Mehrfach-Verriegelung, RC-Klassen und individuellen Designs in Aluminium oder Kunststoff.',
+    },
+    {
+      key: 'beschlaege',
+      name: 'Beschläge & Verriegelung',
+      category: 'Mechanik',
+      body:
+        'Bewährte Beschlagsysteme für Dreh-, Kipp- und Schiebefunktion — Einbruchhemmung bis RC 2 N und höher.',
+    },
+    {
+      key: 'tore',
+      name: 'Tor- & Antriebs-Systeme',
+      category: 'Garagentore',
+      body:
+        'Sektional-, Roll- und Industrietore mit elektrischen Antrieben renommierter Hersteller. Wartungsfreundlich und langlebig.',
     },
   ],
 } as const;

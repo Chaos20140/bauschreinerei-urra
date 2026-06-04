@@ -9,6 +9,8 @@ import { GlobalBackground } from './components/GlobalBackground';
 import { HomePage } from './pages/HomePage';
 import { LeistungenPage } from './pages/LeistungenPage';
 import { ProjektePage } from './pages/ProjektePage';
+import { ProjectDetailPage } from './pages/ProjectDetailPage';
+import { PartnerPage } from './pages/PartnerPage';
 import { UeberUnsPage } from './pages/UeberUnsPage';
 import { KontaktPage } from './pages/KontaktPage';
 import { ImpressumPage } from './pages/ImpressumPage';
@@ -25,6 +27,8 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/leistungen" element={<LeistungenPage />} />
           <Route path="/projekte" element={<ProjektePage />} />
+          <Route path="/projekte/:slug" element={<ProjectDetailPage />} />
+          <Route path="/partner" element={<PartnerPage />} />
           <Route path="/ueber-uns" element={<UeberUnsPage />} />
           <Route path="/kontakt" element={<KontaktPage />} />
           <Route path="/impressum" element={<ImpressumPage />} />

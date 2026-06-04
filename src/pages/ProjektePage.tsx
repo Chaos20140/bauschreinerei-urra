@@ -1,55 +1,12 @@
+import { useNavigate, Link } from 'react-router-dom';
+import { ArrowUpRight } from 'lucide-react';
 import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
 import { ThreeDPhotoCarousel } from '../components/ThreeDPhotoCarousel';
-import { regions } from '../data/content';
+import { projectList, regions } from '../data/content';
 
 const BASE = import.meta.env.BASE_URL;
-
-const PROJECT_SLIDES = [
-  {
-    src: `${BASE}projekte/privatbau-haus.webp`,
-    alt: 'Bungalow mit anthrazit-Tür',
-    caption: 'Bungalow mit anthrazit-Tür',
-    meta: 'Privatbau · Sauerland',
-  },
-  {
-    src: `${BASE}projekte/gewerbe-schiebe.webp`,
-    alt: 'Großformat-Schiebeelemente',
-    caption: 'Großformat-Schiebeelemente',
-    meta: 'Gewerbe · Objektbau',
-  },
-  {
-    src: `${BASE}projekte/bogenfenster.webp`,
-    alt: 'Bogenfenster Sondermaß',
-    caption: 'Bogenfenster, Sondermaß',
-    meta: 'Sondermaß · Altbau-Sanierung',
-  },
-  {
-    src: `${BASE}projekte/mehrfamilien.webp`,
-    alt: 'Komplett-Fassade Mehrfamilienhaus',
-    caption: 'Komplett-Fassade Mehrfamilienhaus',
-    meta: 'Sanierung · Sauerland',
-  },
-  {
-    src: `${BASE}projekte/industrie-glasfront.webp`,
-    alt: 'Industrie-Glasfront',
-    caption: 'Industrie-Glasfront',
-    meta: 'Industrie · Gewerbeobjekt',
-  },
-  {
-    src: `${BASE}projekte/grossbaustelle.webp`,
-    alt: 'Neubau-Großbaustelle Mehrfamilien',
-    caption: 'Neubau-Großbaustelle',
-    meta: 'Neubau · Mehrfamilienhaus',
-  },
-  {
-    src: `${BASE}projekte/industriehalle.webp`,
-    alt: 'Industriehalle Glasband',
-    caption: 'Industriehalle, Glasband',
-    meta: 'Sanierung · Industrie',
-  },
-];
 
 const CATEGORIES = [
   {
@@ -76,7 +33,17 @@ const HIGHLIGHTS = [
   { value: 'RAL', label: 'zertifizierte Montage' },
 ] as const;
 
+const CAROUSEL_SLIDES = projectList.map((p) => ({
+  src: `${BASE}${p.hero}`,
+  alt: p.title,
+  caption: p.title,
+  meta: `${p.category} · ${p.location}`,
+  slug: p.slug,
+}));
+
 export function ProjektePage() {
+  const navigate = useNavigate();
+
   return (
     <main className="relative min-h-screen text-white pb-12">
       <PageHero
@@ -123,9 +90,9 @@ export function ProjektePage() {
         </div>
       </section>
 
-      <section className="relative px-6 md:px-12 py-16 md:py-24 border-t border-white/10 overflow-hidden">
+      <section className="relative px-6 md:px-12 py-16 md:py-24 border-t border-white/10">
         <div className="max-w-7xl mx-auto">
-          <BlurIn className="mb-8 md:mb-12 max-w-3xl">
+          <BlurIn className="mb-10 md:mb-14 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               Referenzen
             </p>
@@ -133,14 +100,46 @@ export function ProjektePage() {
               Aus unserer Werkstatt.
             </h2>
             <p className="mt-5 text-white/80 text-base md:text-lg leading-relaxed">
-              Ziehen Sie das Karussell — oder tippen Sie ein Bild an, um es im
-              Vollformat zu sehen.
+              Stöbern Sie durchs Karussell oder klicken Sie auf ein Projekt
+              für die ausführliche Vorstellung mit Eckdaten und Bildern.
             </p>
           </BlurIn>
 
-          <BlurIn delay={0.2}>
-            <ThreeDPhotoCarousel slides={PROJECT_SLIDES} />
+          <BlurIn delay={0.1}>
+            <ThreeDPhotoCarousel
+              slides={CAROUSEL_SLIDES}
+              onSlideClick={(s) =>
+                navigate(
+                  `/projekte/${(s as (typeof CAROUSEL_SLIDES)[number]).slug}`
+                )
+              }
+            />
           </BlurIn>
+
+          <div className="mt-10 md:mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            {projectList.map((p, idx) => (
+              <BlurIn key={p.slug} delay={idx * 0.05}>
+                <Link
+                  to={`/projekte/${p.slug}`}
+                  className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:border-white/30 hover:bg-white/[0.06] transition-all duration-500 no-shadow"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase">
+                      {p.category} · {p.year}
+                    </p>
+                    <ArrowUpRight
+                      className="h-4 w-4 text-white/40 group-hover:text-white group-hover:rotate-45 transition-all duration-300"
+                      strokeWidth={2}
+                    />
+                  </div>
+                  <h3 className="hero-title text-white text-base md:text-lg font-medium leading-snug">
+                    {p.title}
+                  </h3>
+                  <p className="text-white/55 text-xs mt-1">{p.location}</p>
+                </Link>
+              </BlurIn>
+            ))}
+          </div>
         </div>
       </section>
 

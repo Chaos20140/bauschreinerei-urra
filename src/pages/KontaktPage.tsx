@@ -1,6 +1,7 @@
 import { PageHero } from '../components/PageHero';
 import { BlurIn } from '../components/BlurIn';
 import { MapEmbed } from '../components/MapEmbed';
+import { ContactForm } from '../components/ContactForm';
 import { contact, regions } from '../data/content';
 
 const HOURS = [
@@ -76,32 +77,7 @@ export function KontaktPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-10">
-              <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-6">
-                Anfrage in Stichpunkten
-              </p>
-              <ul className="space-y-3 text-white/85 text-sm md:text-base">
-                {[
-                  'Objekt & Adresse',
-                  'Gewünschte Elemente (Fenster, Haustüren, …)',
-                  'Material-Präferenz, falls vorhanden',
-                  'Wunsch-Zeitfenster für Aufmaß & Montage',
-                  'Beste Rückruf-Zeit',
-                ].map((item) => (
-                  <li
-                    key={item}
-                    className="border-t border-white/10 pt-3 flex items-start gap-3"
-                  >
-                    <span className="text-white/40 mt-1">—</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-6 text-white/65 text-xs md:text-sm leading-relaxed">
-                Je präziser Ihre Angaben, desto schneller können wir ein
-                belastbares Angebot vorbereiten.
-              </p>
-            </div>
+            <ContactForm />
           </BlurIn>
 
           <BlurIn className="md:col-span-5 md:col-start-8 space-y-6" delay={0.2}>
