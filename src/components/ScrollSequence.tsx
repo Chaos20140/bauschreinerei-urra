@@ -126,13 +126,12 @@ export function ScrollSequenceCanvas({
       draw(currentFrame.current);
     };
 
-    const draw = (frameIndex: number) => {
-      const target = Math.round(frameIndex);
-      const img = findNearest(target);
-      if (!img) return;
-      lastDrawn.current = target;
-      const cw = canvas.width / dpr;
-      const ch = canvas.height / dpr;
+    const drawSingle = (
+      img: HTMLImageElement,
+      cw: number,
+      ch: number,
+      alpha = 1
+    ) => {
       const iw = img.naturalWidth;
       const ih = img.naturalHeight;
       if (!iw || !ih) return;
@@ -141,14 +140,47 @@ export function ScrollSequenceCanvas({
       const dh = ih * scale;
       const dx = (cw - dw) / 2;
       const dy = (ch - dh) * bgPositionY;
+      if (alpha < 1) ctx.globalAlpha = alpha;
+      ctx.drawImage(img, dx, dy, dw, dh);
+      if (alpha < 1) ctx.globalAlpha = 1;
+    };
+
+    // Cross-Fade-Interpolation: bei Subpixel-Frame-Position (z. B. 23.4)
+    // wird Frame 23 als Basis gezeichnet und Frame 24 darüber mit Alpha
+    // 0.4 — so blendet die Sequenz weich zwischen den Frames hin und her,
+    // statt hart von einem Bild zum nächsten zu springen.
+    const draw = (frameIndex: number) => {
+      const cw = canvas.width / dpr;
+      const ch = canvas.height / dpr;
+
+      const lo = Math.max(0, Math.floor(frameIndex));
+      const hi = Math.min(count - 1, lo + 1);
+      const frac = frameIndex - lo;
+
+      const imgLo = findNearest(lo);
+      if (!imgLo) return;
+
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, cw, ch);
-      ctx.drawImage(img, dx, dy, dw, dh);
+
+      drawSingle(imgLo, cw, ch, 1);
+
+      if (frac > 0.02 && hi !== lo) {
+        // Nur direkt geladene Frames für die Hi-Schicht verwenden —
+        // andernfalls könnte das Fallback-Frame mit lo identisch sein
+        // und das Blending fügt nichts hinzu.
+        const imgHi = framesRef.current[hi];
+        if (imgHi && imgHi !== imgLo) {
+          drawSingle(imgHi, cw, ch, Math.min(1, frac));
+        }
+      }
+
+      lastDrawn.current = Math.round(frameIndex);
     };
 
     const tick = () => {
       const diff = targetFrame.current - currentFrame.current;
-      if (Math.abs(diff) > 0.01) {
+      if (Math.abs(diff) > 0.005) {
         currentFrame.current += diff * easing;
         draw(currentFrame.current);
       } else if (currentFrame.current !== targetFrame.current) {

@@ -86,7 +86,7 @@ export function GlobalBackground() {
       loadedCount={loadedCount}
       progress={effective}
       maxDpr={isMobile ? 1.5 : 2}
-      easing={isMobile ? 0.3 : 0.18}
+      easing={isMobile ? 0.22 : 0.13}
       bgPositionY={0.5}
     />
   );
