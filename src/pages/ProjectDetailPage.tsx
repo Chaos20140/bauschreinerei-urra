@@ -26,6 +26,18 @@ export function ProjectDetailPage() {
           aria-hidden="true"
         />
         <div className="relative max-w-7xl mx-auto">
+          <BlurIn delay={0.02}>
+            <Link
+              to="/projekte"
+              className="group inline-flex items-center gap-2 mb-6 md:mb-8 px-4 md:px-5 py-2.5 rounded-full border border-white/20 bg-white/[0.04] text-white/85 hover:text-white hover:border-white/40 hover:bg-white/[0.08] transition-all text-sm md:text-[15px] no-shadow"
+            >
+              <ArrowLeft
+                className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1"
+                strokeWidth={2}
+              />
+              <span>Zurück zu Projekten</span>
+            </Link>
+          </BlurIn>
           <BlurIn delay={0.05}>
             <nav
               aria-label="breadcrumb"
