@@ -70,6 +70,12 @@ type Props = {
   maxDpr?: number;
   easing?: number;
   bgPositionY?: number;
+  /**
+   * Cross-Fade zwischen aufeinanderfolgenden Frames aktivieren.
+   * Bei hoher Frame-Density (z. B. 140 Frames) ist das visuell überflüssig
+   * und doppelt nur die GPU-Last — empfehlenswert auf Mobile auszuschalten.
+   */
+  interpolate?: boolean;
 };
 
 export function ScrollSequenceCanvas({
@@ -80,6 +86,7 @@ export function ScrollSequenceCanvas({
   maxDpr = 2,
   easing = 0.18,
   bgPositionY = 0.5,
+  interpolate = true,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -165,7 +172,7 @@ export function ScrollSequenceCanvas({
 
       drawSingle(imgLo, cw, ch, 1);
 
-      if (frac > 0.02 && hi !== lo) {
+      if (interpolate && frac > 0.02 && hi !== lo) {
         // Nur direkt geladene Frames für die Hi-Schicht verwenden —
         // andernfalls könnte das Fallback-Frame mit lo identisch sein
         // und das Blending fügt nichts hinzu.
@@ -205,7 +212,7 @@ export function ScrollSequenceCanvas({
       window.removeEventListener('resize', resize);
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [count, maxDpr, easing, bgPositionY, framesRef]);
+  }, [count, maxDpr, easing, bgPositionY, framesRef, interpolate]);
 
   // loadedCount Änderungen reichern die useRef-Daten an; der oben
   // laufende rAF-Loop pickt sie automatisch beim nächsten Tick auf.

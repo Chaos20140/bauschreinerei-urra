@@ -68,7 +68,10 @@ export function GlobalBackground() {
   }, [location.pathname]);
 
   const folder = isMobile ? 'frames-mobile' : 'frames';
-  const { framesRef, state, count, loadedCount } = useFrames(folder, 70);
+  // Mobile hat jetzt 140 Frames für höhere Density (~43 px pro Frame-Step)
+  // → Cross-Fade wird unnötig, nur 1 drawImage pro Tick, weniger GPU-Last.
+  const frameCount = isMobile ? 140 : 70;
+  const { framesRef, state, count, loadedCount } = useFrames(folder, frameCount);
   const effective = reduceMotion ? 0 : progress;
 
   if (suppressed) {
@@ -86,8 +89,9 @@ export function GlobalBackground() {
       loadedCount={loadedCount}
       progress={effective}
       maxDpr={isMobile ? 1.5 : 2}
-      easing={isMobile ? 0.22 : 0.13}
+      easing={isMobile ? 0.16 : 0.13}
       bgPositionY={0.5}
+      interpolate={!isMobile}
     />
   );
 }
