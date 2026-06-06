@@ -50,4 +50,66 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  @keyframes urra-mesh-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(4%, -3%, 0) scale(1.08);
+    }
+  }
+  @keyframes urra-mesh-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-3%, 4%, 0) scale(1.06);
+    }
+  }
+  @keyframes urra-sheen {
+    0% {
+      transform: translate3d(-30%, 0, 0) rotate(-12deg);
+      opacity: 0;
+    }
+    18% {
+      opacity: 0.55;
+    }
+    82% {
+      opacity: 0.55;
+    }
+    100% {
+      transform: translate3d(70%, 0, 0) rotate(-12deg);
+      opacity: 0;
+    }
+  }
+  @keyframes urra-wa-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    70% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+  }
+
+  .animate-urra-mesh-a {
+    animation: urra-mesh-a 22s ease-in-out infinite;
+  }
+  .animate-urra-mesh-b {
+    animation: urra-mesh-b 26s ease-in-out infinite;
+  }
+  .animate-urra-sheen {
+    animation: urra-sheen 18s linear infinite;
+  }
+  .animate-urra-wa-pulse {
+    animation: urra-wa-pulse 2.6s ease-out infinite;
+  }
 }

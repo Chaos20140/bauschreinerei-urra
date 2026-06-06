@@ -97,7 +97,10 @@ export function ContactForm() {
   };
 
   return (
-    <div className="rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-9 no-shadow">
+    <div
+      id="kontaktformular"
+      className="rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-9 no-shadow scroll-mt-28"
+    >
       <AnimatePresence mode="wait">
         {status === 'success' ? (
           <motion.div

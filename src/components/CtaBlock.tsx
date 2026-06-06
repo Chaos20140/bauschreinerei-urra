@@ -26,18 +26,18 @@ export function CtaBlock({
         </BlurIn>
         <BlurIn delay={0.3}>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center no-shadow">
-            <a
-              href={contact.phone.href}
+            <Link
+              to={contact.appointmentHref}
               className="px-6 md:px-8 py-4 rounded-full bg-white text-black text-sm md:text-base font-medium hover:bg-neutral-200 transition-colors"
             >
               {contact.cta}
-            </a>
-            <Link
-              to="/kontakt"
+            </Link>
+            <a
+              href={contact.phone.href}
               className="px-6 md:px-8 py-4 rounded-full border border-white/30 text-white text-sm md:text-base font-medium hover:bg-white/10 transition-colors"
             >
-              Zum Kontaktformular
-            </Link>
+              {contact.callCta}
+            </a>
           </div>
         </BlurIn>
       </div>

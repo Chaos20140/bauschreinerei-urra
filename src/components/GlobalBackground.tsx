@@ -1,18 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ScrollSequenceCanvas, useFrames } from './ScrollSequence';
+import { SubPageBackground } from './SubPageBackground';
 
 const MOBILE_QUERY = '(max-width: 767px)';
 
-// Routen, die einen eigenen Hintergrund (LegalBackdrop) haben.
-// GlobalBackground rendert dort nichts — der Canvas wäre durch den
-// LegalBackdrop verdeckt und nur Last für nichts.
+// Routen mit komplett opakem Hintergrund (Legal-Texte) — wir rendern
+// hier weder Video noch animierten SubPage-Hintergrund.
 const SUPPRESSED_ROUTES = ['/impressum', '/datenschutz'];
+
+// Nur diese Routen zeigen die Scroll-Video-Sequenz. Alle anderen
+// (nicht-suppressed) Routen bekommen den ruhigeren SubPageBackground.
+const VIDEO_ROUTES = ['/'];
 
 export function GlobalBackground() {
   const location = useLocation();
-  const suppressed = SUPPRESSED_ROUTES.includes(location.pathname);
 
+  if (SUPPRESSED_ROUTES.includes(location.pathname)) {
+    return null;
+  }
+  if (!VIDEO_ROUTES.includes(location.pathname)) {
+    return <SubPageBackground />;
+  }
+  return <VideoBackground />;
+}
+
+function VideoBackground() {
+  const location = useLocation();
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia(MOBILE_QUERY).matches;
@@ -50,8 +64,6 @@ export function GlobalBackground() {
       setProgress(Math.min(Math.max(window.scrollY / total, 0), 1));
     };
 
-    // Throttle über rAF: max. ein setProgress pro Frame, statt einmal pro
-    // Scroll-Event (auf Mobile feuert Scroll bei Fling hunderte Male/s).
     const onScroll = () => {
       if (rafId !== null) return;
       rafId = window.requestAnimationFrame(runCompute);
@@ -68,15 +80,9 @@ export function GlobalBackground() {
   }, [location.pathname]);
 
   const folder = isMobile ? 'frames-mobile' : 'frames';
-  // Mobile hat jetzt 140 Frames für höhere Density (~43 px pro Frame-Step)
-  // → Cross-Fade wird unnötig, nur 1 drawImage pro Tick, weniger GPU-Last.
   const frameCount = isMobile ? 140 : 70;
   const { framesRef, state, count, loadedCount } = useFrames(folder, frameCount);
   const effective = reduceMotion ? 0 : progress;
-
-  if (suppressed) {
-    return null;
-  }
 
   if (state !== 'ready') {
     return <div className="fixed inset-0 z-0 bg-black" aria-hidden="true" />;
@@ -91,8 +97,6 @@ export function GlobalBackground() {
       maxDpr={isMobile ? 1.5 : 2}
       easing={isMobile ? 0.14 : 0.11}
       bgPositionY={0.5}
-      // Cross-Fade ist bei 140 Mobile-Frames günstiger als gedacht und
-      // glättet harte Cuts im Quellvideo wirkungsvoll. Wieder aktivieren.
       interpolate={true}
     />
   );

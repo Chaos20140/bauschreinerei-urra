@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { contact } from '../data/content';
 import { BlurIn } from './BlurIn';
 
@@ -60,15 +61,15 @@ export function Contact() {
               werktags innerhalb von 24 Stunden zurück und vereinbaren einen
               unverbindlichen Aufmaß-Termin bei Ihnen vor Ort.
             </p>
-            <a
-              href={contact.phone.href}
+            <Link
+              to={contact.appointmentHref}
               className="inline-flex items-center justify-between gap-6 bg-white text-black rounded-full pl-8 pr-2 py-2 hover:bg-neutral-200 transition-colors w-full md:w-auto"
             >
               <span className="text-base md:text-lg">{contact.cta}</span>
               <span className="bg-black text-white rounded-full px-5 py-3 text-sm">
                 →
               </span>
-            </a>
+            </Link>
           </BlurIn>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { navigation, brand, contact } from '../data/content';
+import { navigation, brand, contact, whatsapp } from '../data/content';
 import { Logo } from './Logo';
 
 export function Navbar() {
@@ -57,12 +57,12 @@ export function Navbar() {
           </ul>
 
           <div className="flex items-center gap-2 no-shadow">
-            <a
-              href={contact.phone.href}
+            <Link
+              to={contact.appointmentHref}
               className="hidden sm:inline-block bg-white text-black text-sm font-normal rounded-full px-5 md:px-6 py-3 hover:bg-neutral-200 transition-colors"
             >
               {contact.cta}
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
@@ -116,14 +116,22 @@ export function Navbar() {
               ))}
             </motion.ul>
 
-            <div className="mt-auto pt-10 space-y-4">
-              <a
-                href={contact.phone.href}
+            <div className="mt-auto pt-10 space-y-3">
+              <Link
+                to={contact.appointmentHref}
                 className="block w-full text-center bg-white text-black rounded-full py-4 text-base font-medium hover:bg-neutral-200 transition-colors"
               >
                 {contact.cta}
+              </Link>
+              <a
+                href={whatsapp.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center rounded-full py-4 text-base font-medium bg-[#25D366] text-white hover:bg-[#1ebe5b] transition-colors"
+              >
+                {whatsapp.label}
               </a>
-              <div className="text-white/60 text-xs space-y-1 text-center">
+              <div className="text-white/60 text-xs space-y-1 text-center pt-2">
                 <p>{contact.phone.display}</p>
                 <p>{contact.email.display}</p>
               </div>
