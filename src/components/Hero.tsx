@@ -1,5 +1,15 @@
 import { hero, brand } from '../data/content';
 import { BlurIn } from './BlurIn';
+import { CanvasText } from './CanvasText';
+
+const HERO_HIGHLIGHT_COLORS = [
+  'rgba(0, 0, 0, 0.92)',
+  'rgba(0, 0, 0, 0.7)',
+  'rgba(0, 0, 0, 0.5)',
+  'rgba(0, 0, 0, 0.32)',
+  'rgba(0, 0, 0, 0.18)',
+  'rgba(0, 0, 0, 0.08)',
+];
 
 const SHADOW_SOFT = { textShadow: '0 1px 18px rgba(0,0,0,0.55)' } as const;
 const SHADOW_HEAVY = { textShadow: '0 4px 48px rgba(0,0,0,0.45)' } as const;
@@ -42,7 +52,15 @@ export function Hero() {
             >
               Fenster.
               <br />
-              Und Türen.
+              Und{' '}
+              <CanvasText
+                text="Türen."
+                backgroundClassName="bg-white"
+                colors={HERO_HIGHLIGHT_COLORS}
+                lineGap={6}
+                animationDuration={20}
+                textClassName="text-black"
+              />
             </h1>
           </BlurIn>
           <BlurIn delay={0.55} className="mt-6 md:mt-8">
