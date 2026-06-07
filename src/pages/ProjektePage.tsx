@@ -45,7 +45,7 @@ export function ProjektePage() {
   const navigate = useNavigate();
 
   return (
-    <main className="relative min-h-screen text-white pb-12">
+    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="Projekte"
         title="Referenzen aus dem Sauerland und ganz Nordrhein-Westfalen."

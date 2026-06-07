@@ -5,20 +5,14 @@ import { SubPageBackground } from './SubPageBackground';
 
 const MOBILE_QUERY = '(max-width: 767px)';
 
-// Routen mit komplett opakem Hintergrund (Legal-Texte) — wir rendern
-// hier weder Video noch animierten SubPage-Hintergrund.
-const SUPPRESSED_ROUTES = ['/impressum', '/datenschutz'];
-
-// Nur diese Routen zeigen die Scroll-Video-Sequenz. Alle anderen
-// (nicht-suppressed) Routen bekommen den ruhigeren SubPageBackground.
+// Nur diese Route zeigt die Scroll-Video-Sequenz. Alle anderen
+// (inkl. Impressum/Datenschutz) bekommen den ästhetischen Beige-
+// Hintergrund.
 const VIDEO_ROUTES = ['/'];
 
 export function GlobalBackground() {
   const location = useLocation();
 
-  if (SUPPRESSED_ROUTES.includes(location.pathname)) {
-    return null;
-  }
   if (!VIDEO_ROUTES.includes(location.pathname)) {
     return <SubPageBackground />;
   }

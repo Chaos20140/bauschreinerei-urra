@@ -73,7 +73,7 @@ const MATERIALS = [
 
 export function LeistungenPage() {
   return (
-    <main className="relative min-h-screen text-white pb-12">
+    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="Leistungen"
         title="Rundum-Service vom Aufmaß bis zur fachgerechten Montage."

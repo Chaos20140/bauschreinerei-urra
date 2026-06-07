@@ -1,12 +1,10 @@
 import { PageHero } from '../components/PageHero';
 import { BlurIn } from '../components/BlurIn';
-import { LegalBackdrop } from '../components/LegalBackdrop';
 import { impressum } from '../data/legal';
 
 export function ImpressumPage() {
   return (
-    <main className="relative min-h-screen text-white pb-16">
-      <LegalBackdrop />
+    <main data-theme="beige" className="relative min-h-screen text-white pb-16">
       <PageHero
         eyebrow="Impressum"
         title="Impressum."

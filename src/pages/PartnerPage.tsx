@@ -24,7 +24,7 @@ const STANDARDS = [
 
 export function PartnerPage() {
   return (
-    <main className="relative min-h-screen text-white pb-12">
+    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="Partner"
         title="Sorgfältig ausgewählt, langjährig bewährt."

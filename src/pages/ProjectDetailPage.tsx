@@ -15,7 +15,7 @@ export function ProjectDetailPage() {
   }
 
   return (
-    <main className="relative min-h-screen text-white pb-12">
+    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
       <section className="relative pt-32 md:pt-40 pb-10 md:pb-14 px-6 md:px-12 overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none opacity-60"
