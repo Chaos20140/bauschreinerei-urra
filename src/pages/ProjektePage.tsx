@@ -1,9 +1,8 @@
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
-import { ThreeDPhotoCarousel } from '../components/ThreeDPhotoCarousel';
 import { projectList, regions } from '../data/content';
 
 const BASE = import.meta.env.BASE_URL;
@@ -33,17 +32,7 @@ const HIGHLIGHTS = [
   { value: 'RAL', label: 'zertifizierte Montage' },
 ] as const;
 
-const CAROUSEL_SLIDES = projectList.map((p) => ({
-  src: `${BASE}${p.hero}`,
-  alt: p.title,
-  caption: p.title,
-  meta: `${p.category} · ${p.location}`,
-  slug: p.slug,
-}));
-
 export function ProjektePage() {
-  const navigate = useNavigate();
-
   return (
     <main data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
@@ -92,7 +81,7 @@ export function ProjektePage() {
 
       <section className="relative px-6 md:px-12 py-16 md:py-24 border-t border-white/10">
         <div className="max-w-7xl mx-auto">
-          <BlurIn className="mb-10 md:mb-14 max-w-3xl">
+          <BlurIn className="mb-12 md:mb-20 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               Referenzen
             </p>
@@ -100,45 +89,67 @@ export function ProjektePage() {
               Aus unserer Werkstatt.
             </h2>
             <p className="mt-5 text-white/80 text-base md:text-lg leading-relaxed">
-              Stöbern Sie durchs Karussell oder klicken Sie auf ein Projekt
+              Eine Auswahl realisierter Objekte — klicken Sie auf ein Projekt
               für die ausführliche Vorstellung mit Eckdaten und Bildern.
             </p>
           </BlurIn>
 
-          <BlurIn delay={0.1}>
-            <ThreeDPhotoCarousel
-              slides={CAROUSEL_SLIDES}
-              onSlideClick={(s) =>
-                navigate(
-                  `/projekte/${(s as (typeof CAROUSEL_SLIDES)[number]).slug}`
-                )
-              }
-            />
-          </BlurIn>
+          <div className="space-y-16 md:space-y-24 lg:space-y-32">
+            {projectList.map((p, idx) => {
+              const reversed = idx % 2 === 1;
+              return (
+                <BlurIn key={p.slug} delay={0.05}>
+                  <Link
+                    to={`/projekte/${p.slug}`}
+                    className="group block no-shadow"
+                  >
+                    <article className="grid md:grid-cols-12 gap-6 md:gap-10 lg:gap-14 items-center">
+                      <div
+                        className={`md:col-span-7 ${
+                          reversed ? 'md:order-2' : ''
+                        }`}
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-900">
+                          <img
+                            src={`${BASE}${p.hero}`}
+                            alt={p.title}
+                            loading="lazy"
+                            decoding="async"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                          />
+                          <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-inset ring-white/10 group-hover:ring-white/30 transition-all duration-500" />
+                        </div>
+                      </div>
 
-          <div className="mt-10 md:mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            {projectList.map((p, idx) => (
-              <BlurIn key={p.slug} delay={idx * 0.05}>
-                <Link
-                  to={`/projekte/${p.slug}`}
-                  className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:border-white/30 hover:bg-white/[0.06] transition-all duration-500 no-shadow"
-                >
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase">
-                      {p.category} · {p.year}
-                    </p>
-                    <ArrowUpRight
-                      className="h-4 w-4 text-white/40 group-hover:text-white group-hover:rotate-45 transition-all duration-300"
-                      strokeWidth={2}
-                    />
-                  </div>
-                  <h3 className="hero-title text-white text-base md:text-lg font-medium leading-snug">
-                    {p.title}
-                  </h3>
-                  <p className="text-white/55 text-xs mt-1">{p.location}</p>
-                </Link>
-              </BlurIn>
-            ))}
+                      <div
+                        className={`md:col-span-5 ${
+                          reversed ? 'md:order-1' : ''
+                        }`}
+                      >
+                        <p className="text-white/55 text-[10px] md:text-xs tracking-[0.3em] uppercase mb-4">
+                          {p.category} · {p.location} · {p.year}
+                        </p>
+                        <h3 className="hero-title text-white font-medium text-[9vw] md:text-[3.4vw] lg:text-[2.8vw] leading-[1] mb-5">
+                          {p.title}
+                        </h3>
+                        <p className="text-white/80 text-base md:text-lg leading-relaxed mb-7">
+                          {p.summary}
+                        </p>
+                        <span className="inline-flex items-center gap-3 text-sm md:text-base text-white/75 group-hover:text-white transition-colors">
+                          <span className="border-b border-white/30 group-hover:border-white pb-0.5 transition-colors">
+                            Projekt ansehen
+                          </span>
+                          <ArrowUpRight
+                            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5"
+                            strokeWidth={2}
+                          />
+                        </span>
+                      </div>
+                    </article>
+                  </Link>
+                </BlurIn>
+              );
+            })}
           </div>
         </div>
       </section>

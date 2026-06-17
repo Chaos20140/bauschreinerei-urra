@@ -1,6 +1,8 @@
+import { ArrowUpRight } from 'lucide-react';
 import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
+import { PARTNER_LOGOS, type PartnerLogoKey } from '../components/PartnerLogos';
 import { partners } from '../data/content';
 
 const STANDARDS = [
@@ -28,7 +30,7 @@ export function PartnerPage() {
       <PageHero
         eyebrow="Partner"
         title="Sorgfältig ausgewählt, langjährig bewährt."
-        intro="Eine Bauschreinerei ist nur so gut wie die Hersteller hinter ihren Produkten. Wir setzen auf etablierte Partner — vom Profil über die Beschläge bis zum Antrieb."
+        intro="Eine Bauschreinerei ist nur so gut wie die Hersteller hinter ihren Produkten. Wir setzen auf etablierte Partner — vom Profil über Beschläge und Antriebe bis zum Garagentor."
       />
 
       <section className="relative px-6 md:px-12 py-12 md:py-20">
@@ -46,26 +48,49 @@ export function PartnerPage() {
           </BlurIn>
 
           <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-            {partners.items.map((p, idx) => (
-              <BlurIn key={p.key} delay={idx * 0.06}>
-                <li className="group h-full rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7 flex flex-col transition-all duration-500 hover:border-white/35 hover:bg-white/[0.07] hover:-translate-y-1">
-                  <div className="flex items-center gap-4 mb-5">
-                    <span className="h-12 w-12 rounded-2xl border border-white/15 bg-white/[0.06] grid place-items-center text-white/90 text-base font-medium tracking-tight">
-                      {p.name.slice(0, 2)}
-                    </span>
-                    <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase">
-                      {p.category}
-                    </p>
-                  </div>
-                  <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
-                    {p.name}
-                  </h3>
-                  <p className="text-white/80 text-sm md:text-[15px] leading-relaxed">
-                    {p.body}
-                  </p>
-                </li>
-              </BlurIn>
-            ))}
+            {partners.items.map((p, idx) => {
+              const Logo = PARTNER_LOGOS[p.key as PartnerLogoKey];
+              return (
+                <BlurIn key={p.key} delay={idx * 0.06}>
+                  <li className="h-full">
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group h-full rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7 flex flex-col transition-all duration-500 hover:border-white/35 hover:bg-white/[0.07] hover:-translate-y-1 no-shadow"
+                    >
+                      <div className="flex items-start justify-between gap-4 mb-6">
+                        <div className="h-9 md:h-10 flex items-center">
+                          {Logo ? (
+                            <Logo className="h-full w-auto max-w-[180px]" />
+                          ) : (
+                            <span className="text-xl font-semibold tracking-tight">
+                              {p.name}
+                            </span>
+                          )}
+                        </div>
+                        <ArrowUpRight
+                          className="h-4 w-4 mt-1 text-white/45 group-hover:text-white group-hover:rotate-45 transition-all duration-300 shrink-0"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-3">
+                        {p.category}
+                      </p>
+                      <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
+                        {p.name}
+                      </h3>
+                      <p className="text-white/80 text-sm md:text-[15px] leading-relaxed flex-1">
+                        {p.body}
+                      </p>
+                      <span className="mt-5 text-[10px] tracking-[0.3em] uppercase text-white/55 group-hover:text-white transition-colors">
+                        Webseite besuchen
+                      </span>
+                    </a>
+                  </li>
+                </BlurIn>
+              );
+            })}
           </ul>
         </div>
       </section>

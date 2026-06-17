@@ -365,49 +365,55 @@ export const partners = {
   eyebrow: 'Partner',
   title: 'Mit wem wir bauen.',
   subtitle:
-    'Wir arbeiten ausschließlich mit etablierten Herstellern für Fenster, Türen, Garagentore und Beschläge — alle nach europäischen Normen geprüft und für den Sauerländer Anspruch ausgewählt.',
+    'Wir arbeiten ausschließlich mit etablierten Herstellern für Fenster, Türen, Garagentore, Sonnenschutz und Antriebe — alle nach europäischen Normen geprüft und für den Sauerländer Anspruch ausgewählt.',
   items: [
     {
-      key: 'kunststoff',
-      name: 'Premium Kunststoff-Profile',
-      category: 'Fenster-Systeme',
+      key: 'schueco',
+      name: 'Schüco',
+      category: 'Aluminium- & Kunststoff-Systeme',
       body:
-        'Mehrkammer-Profile mit hoher Wärmedämmung und Stahlverstärkung. Verarbeitet als Standard für Neubau und Sanierung.',
+        'Premium-Systemhaus aus Bielefeld für hochwärmegedämmte Fenster, Türen und Fassaden. Verarbeiten wir bevorzugt für großformatige Verglasungen und gehobene Objekte.',
+      url: 'https://www.schueco.com/de',
     },
     {
-      key: 'aluminium',
-      name: 'Aluminium-Systeme',
-      category: 'Großformat & Objekt',
+      key: 'koemmerling',
+      name: 'Kömmerling',
+      category: 'Kunststoff-Profile',
       body:
-        'Schlanke Ansichten, hohe Statik. Ideal für Schiebetüren, Hebeschiebe und gewerbliche Festverglasungen.',
+        'Mehrkammer-Kunststoffprofile aus Pirmasens mit hoher Wärmedämmung und langlebiger Stahlverstärkung — unser Standard für Neubau und energetische Sanierung.',
+      url: 'https://www.koemmerling.com/de/',
     },
     {
-      key: 'holz',
-      name: 'Holz / Holz-Alu',
-      category: 'Wertbestand',
+      key: 'warema',
+      name: 'Warema',
+      category: 'Sonnenschutz',
       body:
-        'Natürliche Optik innen, wetterfest außen. Für historische Bauten und gehobene Architektur.',
+        'Raffstoren, Markisen und Rollläden Made in Marktheidenfeld. Funktional, langlebig und stilsicher — für Wohngebäude wie Gewerbeobjekte.',
+      url: 'https://www.warema.com/de-de/',
     },
     {
-      key: 'haustueren',
-      name: 'Haustüren-Manufaktur',
-      category: 'Eingangs-Elemente',
+      key: 'somfy',
+      name: 'Somfy',
+      category: 'Motoren & Smart-Antriebe',
       body:
-        'Sicherheitstüren mit Mehrfach-Verriegelung, RC-Klassen und individuellen Designs in Aluminium oder Kunststoff.',
+        'Smart-Home-Antriebe für Rollläden, Markisen, Garagentore und Markisen. Steuerung bequem per Funk, App oder Wandschalter.',
+      url: 'https://shop.somfy.de',
     },
     {
-      key: 'beschlaege',
-      name: 'Beschläge & Verriegelung',
-      category: 'Mechanik',
+      key: 'roma',
+      name: 'Roma',
+      category: 'Rollläden & Raffstoren',
       body:
-        'Bewährte Beschlagsysteme für Dreh-, Kipp- und Schiebefunktion — Einbruchhemmung bis RC 2 N und höher.',
+        'Premium-Rollläden, Raffstoren und Insektenschutz aus Burgau. Hohe Wertigkeit, leiser Lauf und makellose Optik bis ins Detail.',
+      url: 'https://www.roma.de',
     },
     {
-      key: 'tore',
-      name: 'Tor- & Antriebs-Systeme',
-      category: 'Garagentore',
+      key: 'hoermann',
+      name: 'Hörmann',
+      category: 'Garagentore & Industrie-Elemente',
       body:
-        'Sektional-, Roll- und Industrietore mit elektrischen Antrieben renommierter Hersteller. Wartungsfreundlich und langlebig.',
+        'Markenführer für Garagen- und Industrietore aus Steinhagen. Sektional-, Roll- und Schwingtore mit zuverlässigen Antrieben.',
+      url: 'https://www.hoermann.de',
     },
   ],
 } as const;
