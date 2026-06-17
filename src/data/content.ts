@@ -374,6 +374,7 @@ export const partners = {
       body:
         'Premium-Systemhaus aus Bielefeld für hochwärmegedämmte Fenster, Türen und Fassaden. Verarbeiten wir bevorzugt für großformatige Verglasungen und gehobene Objekte.',
       url: 'https://www.schueco.com/de',
+      logo: 'partners/schueco.svg',
     },
     {
       key: 'koemmerling',
@@ -382,6 +383,7 @@ export const partners = {
       body:
         'Mehrkammer-Kunststoffprofile aus Pirmasens mit hoher Wärmedämmung und langlebiger Stahlverstärkung — unser Standard für Neubau und energetische Sanierung.',
       url: 'https://www.koemmerling.com/de/',
+      logo: 'partners/koemmerling.png',
     },
     {
       key: 'warema',
@@ -390,6 +392,7 @@ export const partners = {
       body:
         'Raffstoren, Markisen und Rollläden Made in Marktheidenfeld. Funktional, langlebig und stilsicher — für Wohngebäude wie Gewerbeobjekte.',
       url: 'https://www.warema.com/de-de/',
+      logo: 'partners/warema.svg',
     },
     {
       key: 'somfy',
@@ -398,6 +401,7 @@ export const partners = {
       body:
         'Smart-Home-Antriebe für Rollläden, Markisen, Garagentore und Markisen. Steuerung bequem per Funk, App oder Wandschalter.',
       url: 'https://shop.somfy.de',
+      logo: 'partners/somfy.svg',
     },
     {
       key: 'roma',
@@ -406,6 +410,7 @@ export const partners = {
       body:
         'Premium-Rollläden, Raffstoren und Insektenschutz aus Burgau. Hohe Wertigkeit, leiser Lauf und makellose Optik bis ins Detail.',
       url: 'https://www.roma.de',
+      logo: 'partners/roma.png',
     },
     {
       key: 'hoermann',
@@ -414,6 +419,7 @@ export const partners = {
       body:
         'Markenführer für Garagen- und Industrietore aus Steinhagen. Sektional-, Roll- und Schwingtore mit zuverlässigen Antrieben.',
       url: 'https://www.hoermann.de',
+      logo: 'partners/hoermann.svg',
     },
   ],
 } as const;
