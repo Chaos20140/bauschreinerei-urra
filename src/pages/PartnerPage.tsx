@@ -1,10 +1,87 @@
+import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
+import { Logo } from '../components/Logo';
 import { partners } from '../data/content';
 
 const BASE = import.meta.env.BASE_URL;
+
+type PartnerItem = (typeof partners.items)[number];
+
+function PartnerCardContent({ p }: { p: PartnerItem }) {
+  const isUrra = p.key === 'urra';
+  const featured = 'featured' in p && p.featured === true;
+  return (
+    <>
+      {featured && (
+        <span className="absolute -top-3 left-6 px-3 py-1 text-[9px] tracking-[0.3em] uppercase rounded-full bg-stone-900 text-stone-50 no-shadow">
+          Handwerksbetrieb
+        </span>
+      )}
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div className="h-10 md:h-12 flex items-center">
+          {isUrra ? (
+            <Logo className="h-full w-auto" />
+          ) : (
+            <img
+              src={`${BASE}${p.logo}`}
+              alt={`${p.name} Logo`}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-auto max-w-[180px] object-contain"
+            />
+          )}
+        </div>
+        <ArrowUpRight
+          className="h-4 w-4 mt-1 text-white/45 group-hover:text-white group-hover:rotate-45 transition-all duration-300 shrink-0"
+          strokeWidth={2}
+        />
+      </div>
+      <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-3">
+        {p.category}
+      </p>
+      <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
+        {p.name}
+      </h3>
+      <p className="text-white/80 text-sm md:text-[15px] leading-relaxed flex-1">
+        {p.body}
+      </p>
+      <span className="mt-5 text-[10px] tracking-[0.3em] uppercase text-white/55 group-hover:text-white transition-colors">
+        {isUrra ? 'Zur Startseite' : 'Webseite besuchen'}
+      </span>
+    </>
+  );
+}
+
+function PartnerCard({ p }: { p: PartnerItem }) {
+  const isInternal = p.url.startsWith('/');
+  const featured = 'featured' in p && p.featured === true;
+  const cardClass = `relative group h-full rounded-2xl border p-6 md:p-7 flex flex-col transition-all duration-500 hover:-translate-y-1 no-shadow ${
+    featured
+      ? 'border-white/30 bg-white/[0.08] hover:border-white/45 hover:bg-white/[0.12]'
+      : 'border-white/15 bg-white/[0.04] hover:border-white/35 hover:bg-white/[0.07]'
+  }`;
+
+  if (isInternal) {
+    return (
+      <Link to={p.url} className={cardClass}>
+        <PartnerCardContent p={p} />
+      </Link>
+    );
+  }
+  return (
+    <a
+      href={p.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cardClass}
+    >
+      <PartnerCardContent p={p} />
+    </a>
+  );
+}
 
 const STANDARDS = [
   {
@@ -52,40 +129,7 @@ export function PartnerPage() {
             {partners.items.map((p, idx) => (
               <BlurIn key={p.key} delay={idx * 0.06}>
                 <li className="h-full">
-                  <a
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group h-full rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7 flex flex-col transition-all duration-500 hover:border-white/35 hover:bg-white/[0.07] hover:-translate-y-1 no-shadow"
-                  >
-                    <div className="flex items-start justify-between gap-4 mb-6">
-                      <div className="h-10 md:h-12 flex items-center">
-                        <img
-                          src={`${BASE}${p.logo}`}
-                          alt={`${p.name} Logo`}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-full w-auto max-w-[180px] object-contain"
-                        />
-                      </div>
-                      <ArrowUpRight
-                        className="h-4 w-4 mt-1 text-white/45 group-hover:text-white group-hover:rotate-45 transition-all duration-300 shrink-0"
-                        strokeWidth={2}
-                      />
-                    </div>
-                    <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-3">
-                      {p.category}
-                    </p>
-                    <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
-                      {p.name}
-                    </h3>
-                    <p className="text-white/80 text-sm md:text-[15px] leading-relaxed flex-1">
-                      {p.body}
-                    </p>
-                    <span className="mt-5 text-[10px] tracking-[0.3em] uppercase text-white/55 group-hover:text-white transition-colors">
-                      Webseite besuchen
-                    </span>
-                  </a>
+                  <PartnerCard p={p} />
                 </li>
               </BlurIn>
             ))}

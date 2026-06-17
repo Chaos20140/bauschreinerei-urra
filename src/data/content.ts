@@ -368,6 +368,16 @@ export const partners = {
     'Wir arbeiten ausschließlich mit etablierten Herstellern für Fenster, Türen, Garagentore, Sonnenschutz und Antriebe — alle nach europäischen Normen geprüft und für den Sauerländer Anspruch ausgewählt.',
   items: [
     {
+      key: 'urra',
+      name: 'Bauschreinerei Urra',
+      category: 'Ihr Handwerksbetrieb · Olsberg',
+      body:
+        'Wir bringen die Premium-Produkte unserer Partner zu Ihnen — RAL-zertifizierte Montage durch eigene Teams seit 2003. Inhabergeführt und regional verwurzelt im Sauerland.',
+      url: '/',
+      logo: '__urra__',
+      featured: true as const,
+    },
+    {
       key: 'schueco',
       name: 'Schüco',
       category: 'Aluminium- & Kunststoff-Systeme',
