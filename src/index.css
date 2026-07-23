@@ -256,6 +256,66 @@
   }
 }
 
+/* ───────────────────────────────────────────────────────────────────
+ * Bearbeiten-Modus: Markierung der editierbaren Stellen
+ *
+ * Bewusst ausserhalb der Tailwind-Layer und ohne weiss-basierte Farben:
+ * die Unterseiten laufen im Beige-Theme, dort war die frühere
+ * `outline-white/40`-Markierung praktisch unsichtbar. Blau = bearbeitbar,
+ * Grün = geändert; beide Töne werden pro Theme nachgezogen, damit der
+ * Kontrast auf Schwarz UND auf Creme sitzt.
+ * Greift nur, wenn Editable/EditableImage die data-Attribute setzen —
+ * für normale Besucher existiert keine dieser Regeln im DOM.
+ * ─────────────────────────────────────────────────────────────────── */
+[data-ed-id],
+[data-ed-img] {
+  outline: 2px dashed rgba(56, 189, 248, 0.85);
+  outline-offset: 3px;
+  border-radius: 3px;
+  background-color: rgba(56, 189, 248, 0.18);
+  /* Mehrzeilige Inline-Texte: Rundung/Hintergrund auf jedem Fragment. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    background-color 0.15s ease,
+    outline-color 0.15s ease;
+}
+
+[data-ed-id]:hover,
+[data-ed-img]:hover {
+  background-color: rgba(56, 189, 248, 0.32);
+  outline-color: rgb(125, 211, 252);
+}
+
+[data-ed-id]:focus {
+  outline-style: solid;
+  outline-color: rgb(125, 211, 252);
+  background-color: rgba(56, 189, 248, 0.32);
+}
+
+/* Geändert, aber noch nicht gespeichert. */
+[data-ed-id][data-ed-dirty='1'] {
+  outline: 2px solid rgba(52, 211, 153, 0.95);
+  background-color: rgba(52, 211, 153, 0.26);
+}
+
+/* Helle Unterseiten: kräftigere, dunklere Töne. */
+main[data-theme='beige'] [data-ed-id],
+main[data-theme='beige'] [data-ed-img] {
+  outline-color: rgba(2, 132, 199, 0.9);
+  background-color: rgba(2, 132, 199, 0.16);
+}
+main[data-theme='beige'] [data-ed-id]:hover,
+main[data-theme='beige'] [data-ed-img]:hover,
+main[data-theme='beige'] [data-ed-id]:focus {
+  outline-color: rgb(3, 105, 161);
+  background-color: rgba(2, 132, 199, 0.28);
+}
+main[data-theme='beige'] [data-ed-id][data-ed-dirty='1'] {
+  outline-color: rgba(4, 120, 87, 0.95);
+  background-color: rgba(5, 150, 105, 0.24);
+}
+
 /* Bewegungsreduzierung: Dauer-Animationen anhalten. Inhalte bleiben
  * dabei immer sichtbar — die Einblend-Effekte werden in BlurIn.tsx über
  * useReducedMotion() deaktiviert, nicht hier per opacity. */

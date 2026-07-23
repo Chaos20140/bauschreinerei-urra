@@ -59,12 +59,10 @@ export function Editable({ id, children, as = 'span', rich = false, className, s
     return createElement(as, { className, style }, children);
   }
 
-  // Geänderte Felder heben sich ab (durchgehender Rahmen), unveränderte tragen
-  // einen gestrichelten „editierbar"-Rahmen.
-  const marker = isDirty(id)
-    ? 'outline outline-2 outline-emerald-400/80 bg-emerald-400/10'
-    : 'outline outline-1 outline-dashed outline-white/40';
-  const cls = `${className ?? ''} ${marker} outline-offset-2 rounded-sm cursor-text`.trim();
+  // Die Markierung selbst liegt in index.css an `[data-ed-id]` — bewusst nicht
+  // als Tailwind-Weiß-Utility, sonst verschwindet sie auf den hellen
+  // Beige-Unterseiten. `data-ed-dirty` schaltet auf „geändert" (grün).
+  const cls = `${className ?? ''} cursor-text`.trim();
 
   const onInput = (e: React.FormEvent<HTMLElement>) => {
     const el = e.currentTarget;
@@ -82,6 +80,7 @@ export function Editable({ id, children, as = 'span', rich = false, className, s
       suppressContentEditableWarning: true,
       spellCheck: false,
       'data-ed-id': id,
+      'data-ed-dirty': isDirty(id) ? '1' : undefined,
       title: 'Zum Bearbeiten klicken',
       onInput,
       onClick,

@@ -2,6 +2,7 @@ import { PageHero } from '../components/PageHero';
 import { BlurIn } from '../components/BlurIn';
 import { impressum } from '../data/legal';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import { Editable } from '../components/editor/Editable';
 
 export function ImpressumPage() {
   useDocumentMeta({
@@ -13,6 +14,7 @@ export function ImpressumPage() {
   return (
     <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-16">
       <PageHero
+        idPrefix="impressum"
         eyebrow="Impressum"
         title="Impressum."
         intro={impressum.subtitle}
@@ -25,18 +27,22 @@ export function ImpressumPage() {
             <BlurIn key={block.heading} delay={idx * 0.05}>
               <article>
                 <h2 className="hero-title text-white text-xl md:text-2xl font-medium mb-4 border-b border-white/15 pb-3">
-                  {block.heading}
+                  <Editable id={`impressum.b${idx}.heading`}>{block.heading}</Editable>
                 </h2>
                 {'lines' in block && block.lines && (
                   <ul className="space-y-1 text-white/85 text-sm md:text-base leading-relaxed">
-                    {block.lines.map((l) => (
-                      <li key={l}>{l}</li>
+                    {block.lines.map((l, lidx) => (
+                      <li key={l}>
+                        <Editable id={`impressum.b${idx}.line${lidx}`}>{l}</Editable>
+                      </li>
                     ))}
                   </ul>
                 )}
                 {'body' in block && block.body && (
                   <p className="text-white/85 text-sm md:text-base leading-relaxed">
-                    {block.body}
+                    <Editable id={`impressum.b${idx}.body`} rich>
+                      {block.body}
+                    </Editable>
                   </p>
                 )}
               </article>
@@ -45,7 +51,9 @@ export function ImpressumPage() {
 
           <BlurIn delay={0.6}>
             <p className="text-white/45 text-xs leading-relaxed pt-6 border-t border-white/10">
-              Stand: Mai 2026. Diese Angaben werden bei Änderungen aktualisiert.
+              <Editable id="impressum.stand">
+                Stand: Mai 2026. Diese Angaben werden bei Änderungen aktualisiert.
+              </Editable>
             </p>
           </BlurIn>
         </div>

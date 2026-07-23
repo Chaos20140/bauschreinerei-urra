@@ -1,13 +1,18 @@
 import { Link } from 'react-router-dom';
-import { footer, brand, navigation, contact } from '../data/content';
+import { footer, brand, contact } from '../data/content';
+import { useNavItems } from '../lib/nav';
+import { Editable } from './editor/Editable';
 import { Logo } from './Logo';
 
+// Pflichtangaben — stehen unabhängig vom verwalteten Hauptmenü immer im Fuß.
 const LEGAL = [
-  { label: 'impressum', href: '/impressum' },
-  { label: 'datenschutz', href: '/datenschutz' },
+  { key: 'impressum', label: 'impressum', href: '/impressum' },
+  { key: 'datenschutz', label: 'datenschutz', href: '/datenschutz' },
 ] as const;
 
 export function Footer() {
+  const navigation = useNavItems();
+
   return (
     <footer className="relative bg-black text-white border-t border-white/15">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-14 md:py-20">
@@ -20,13 +25,13 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-white/65 text-sm md:text-base max-w-md leading-relaxed">
-              {footer.tagline}
+              <Editable id="footer.tagline">{footer.tagline}</Editable>
             </p>
           </div>
 
           <div className="md:col-span-3 md:col-start-7">
             <p className="text-white/45 text-xs tracking-[0.3em] uppercase mb-4">
-              Navigation
+              <Editable id="footer.nav.title">Navigation</Editable>
             </p>
             <ul className="space-y-2">
               {navigation.map((n) => (
@@ -44,7 +49,7 @@ export function Footer() {
 
           <div className="md:col-span-3">
             <p className="text-white/45 text-xs tracking-[0.3em] uppercase mb-4">
-              Kontakt
+              <Editable id="footer.kontakt.title">Kontakt</Editable>
             </p>
             <ul className="space-y-2 text-sm md:text-base">
               <li className="text-white/80">
@@ -74,7 +79,7 @@ export function Footer() {
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-white/15 pt-6">
           <p className="text-white/45 text-xs tracking-widest uppercase">
-            {footer.copyright}
+            <Editable id="footer.copyright">{footer.copyright}</Editable>
           </p>
           <ul className="flex flex-wrap items-center gap-5 md:gap-6">
             {LEGAL.map((l) => (
@@ -83,7 +88,7 @@ export function Footer() {
                   to={l.href}
                   className="text-white/65 hover:text-white text-xs tracking-widest uppercase transition-colors"
                 >
-                  {l.label}
+                  <Editable id={`footer.legal.${l.key}`}>{l.label}</Editable>
                 </Link>
               </li>
             ))}

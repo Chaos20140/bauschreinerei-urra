@@ -5,8 +5,13 @@ import { CtaBlock } from '../components/CtaBlock';
 import { ProjectImage } from '../components/ProjectImage';
 import { projectList } from '../data/content';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import { Editable } from '../components/editor/Editable';
 
 const BASE = import.meta.env.BASE_URL;
+
+// Projektname und Kurzbeschreibung teilen sich die IDs mit der Projektliste —
+// einmal geändert, steht überall dasselbe. Die Beschriftungen der Abschnitte
+// (Eckdaten, Galerie …) gelten dagegen für alle Projektseiten gemeinsam.
 
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -49,7 +54,9 @@ export function ProjectDetailPage() {
                 className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1"
                 strokeWidth={2}
               />
-              <span>Zurück zu Projekten</span>
+              <span>
+                <Editable id="projektdetail.back">Zurück zu Projekten</Editable>
+              </span>
             </Link>
           </BlurIn>
           <BlurIn delay={0.05}>
@@ -78,7 +85,10 @@ export function ProjectDetailPage() {
                 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] lg:text-[4.5vw] leading-[0.95]"
                 style={{ textWrap: 'balance' }}
               >
-                {project.title}.
+                <Editable id={`projekte.item.${project.slug}.title`}>
+                  {project.title}
+                </Editable>
+                .
               </h1>
             </BlurIn>
             <BlurIn delay={0.4} className="md:col-span-4 md:pb-3">
@@ -86,7 +96,9 @@ export function ProjectDetailPage() {
                 className="text-white/90 text-base md:text-lg leading-relaxed"
                 style={{ textWrap: 'pretty' }}
               >
-                {project.summary}
+                <Editable id={`projekte.item.${project.slug}.summary`}>
+                  {project.summary}
+                </Editable>
               </p>
             </BlurIn>
           </div>
@@ -114,22 +126,28 @@ export function ProjectDetailPage() {
         <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-8 md:gap-12">
           <BlurIn className="md:col-span-4">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Eckdaten
+              <Editable id="projektdetail.eckdaten.eyebrow">Eckdaten</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[3.4vw] leading-[1] mb-6">
-              Was umgesetzt wurde.
+              <Editable id="projektdetail.eckdaten.title">Was umgesetzt wurde.</Editable>
             </h2>
             <dl className="space-y-3 text-sm md:text-base">
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/60">Kategorie</dt>
+                <dt className="text-white/60">
+                  <Editable id="projektdetail.eckdaten.kategorie">Kategorie</Editable>
+                </dt>
                 <dd className="text-white">{project.category}</dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/60">Standort</dt>
+                <dt className="text-white/60">
+                  <Editable id="projektdetail.eckdaten.standort">Standort</Editable>
+                </dt>
                 <dd className="text-white">{project.location}</dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/60">Jahr</dt>
+                <dt className="text-white/60">
+                  <Editable id="projektdetail.eckdaten.jahr">Jahr</Editable>
+                </dt>
                 <dd className="text-white">{project.year}</dd>
               </div>
             </dl>
@@ -137,14 +155,14 @@ export function ProjectDetailPage() {
 
           <BlurIn delay={0.15} className="md:col-span-7 md:col-start-6">
             <ul className="space-y-4">
-              {project.details.map((d) => (
+              {project.details.map((d, idx) => (
                 <li
                   key={d}
                   className="flex items-start gap-4 border-t border-white/10 pt-4"
                 >
                   <span className="text-white/40 text-sm mt-1 shrink-0">—</span>
                   <p className="text-white/85 text-base md:text-lg leading-relaxed">
-                    {d}
+                    <Editable id={`projekte.item.${project.slug}.detail${idx}`}>{d}</Editable>
                   </p>
                 </li>
               ))}
@@ -158,10 +176,10 @@ export function ProjectDetailPage() {
           <div className="max-w-7xl mx-auto">
             <BlurIn className="mb-8 md:mb-10 max-w-3xl">
               <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-                Galerie
+                <Editable id="projektdetail.galerie.eyebrow">Galerie</Editable>
               </p>
               <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5vw] leading-[0.95]">
-                Mehr Eindrücke.
+                <Editable id="projektdetail.galerie.title">Mehr Eindrücke.</Editable>
               </h2>
             </BlurIn>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
@@ -194,19 +212,20 @@ export function ProjectDetailPage() {
             className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm md:text-base transition-colors no-shadow"
           >
             <ArrowLeft className="h-4 w-4" strokeWidth={2} />
-            Alle Projekte
+            <Editable id="projektdetail.alle">Alle Projekte</Editable>
           </Link>
           <Link
             to="/kontakt"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/25 text-white hover:bg-white/10 text-sm md:text-base transition-colors no-shadow"
           >
-            Ähnliches Projekt anfragen
+            <Editable id="projektdetail.anfragen">Ähnliches Projekt anfragen</Editable>
             <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
           </Link>
         </div>
       </section>
 
       <CtaBlock
+        idPrefix="projektdetail"
         title="Ihr Projekt als Nächstes?"
         body="Schicken Sie uns die Eckdaten — wir kommen vor Ort, messen auf und beraten ergebnisoffen."
       />

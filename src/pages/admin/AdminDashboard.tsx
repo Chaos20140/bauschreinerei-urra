@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Inbox,
   FileText,
-  CalendarDays,
   Images,
   Files,
   Pencil,
@@ -15,33 +14,34 @@ import { useContent } from '../../lib/content';
 import { brand } from '../../data/content';
 
 type CountKey = 'anfragen' | 'bewerbungen';
-type Action = 'edit';
+/** Ohne `to` ist die Kachel keine Route, sondern startet den Bearbeiten-Modus. */
 type Tile = {
   key: string;
   to?: string;
-  action?: Action;
   label: string;
   Icon: LucideIcon;
   hint: string;
-  active: boolean;
   countKey?: CountKey;
 };
 
-// Etappe 3: „Anfragen", „Bewerbungen" und „Seite bearbeiten" sind aktiv. Die
-// übrigen Kacheln zeigen den Ausbaupfad, sind aber noch nicht verlinkt.
+// Alle Kacheln sind aktiv. „Termine" (Online-Terminbuchung) ist bewusst nicht
+// Teil der Verwaltung — Termine laufen weiter über Anfrage und Telefon.
 const TILES: Tile[] = [
-  { key: 'anfragen', to: '/admin/anfragen', label: 'Anfragen', Icon: Inbox, hint: '', active: true, countKey: 'anfragen' },
-  { key: 'bewerbungen', to: '/admin/bewerbungen', label: 'Bewerbungen', Icon: FileText, hint: '', active: true, countKey: 'bewerbungen' },
-  { key: 'termine', label: 'Termine', Icon: CalendarDays, hint: 'In Vorbereitung', active: false },
-  { key: 'mediathek', to: '/admin/mediathek', label: 'Mediathek', Icon: Images, hint: 'Bilder verwalten & ungenutzte löschen', active: true },
-  { key: 'seiten', label: 'Seiten & Menü', Icon: Files, hint: 'In Vorbereitung', active: false },
+  { key: 'anfragen', to: '/admin/anfragen', label: 'Anfragen', Icon: Inbox, hint: '', countKey: 'anfragen' },
+  { key: 'bewerbungen', to: '/admin/bewerbungen', label: 'Bewerbungen', Icon: FileText, hint: '', countKey: 'bewerbungen' },
+  { key: 'mediathek', to: '/admin/mediathek', label: 'Mediathek', Icon: Images, hint: 'Bilder verwalten & ungenutzte löschen' },
+  {
+    key: 'seiten',
+    to: '/admin/seiten',
+    label: 'Seiten & Menü',
+    Icon: Files,
+    hint: 'Menü beschriften, sortieren, ein- und ausblenden',
+  },
   {
     key: 'bearbeiten',
-    action: 'edit',
     label: 'Seite bearbeiten',
     Icon: Pencil,
-    hint: 'Texte direkt auf der Website ändern',
-    active: true,
+    hint: 'Texte und Bilder direkt auf der Website ändern',
   },
 ];
 
@@ -91,7 +91,7 @@ export function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {TILES.map(({ key, to, action, label, Icon, hint, active, countKey }) => {
+        {TILES.map(({ key, to, label, Icon, hint, countKey }) => {
           const count = countKey ? counts[countKey] : null;
           const inner = (
             <>
@@ -119,38 +119,27 @@ export function AdminDashboard() {
             </>
           );
 
-          const base = 'rounded-2xl border p-6 transition-colors block text-left';
-          const activeCls = `${base} bg-white/[0.04] border-white/15 hover:border-white/35 focus-ring`;
+          const cls =
+            'rounded-2xl border p-6 transition-colors block text-left bg-white/[0.04] border-white/15 hover:border-white/35 focus-ring';
 
-          if (active && to) {
+          if (to) {
             return (
-              <Link key={key} to={to} className={activeCls}>
+              <Link key={key} to={to} className={cls}>
                 {inner}
               </Link>
             );
           }
-          if (active && action === 'edit') {
-            return (
-              <button
-                key={key}
-                onClick={() => {
-                  enterEditMode(pw());
-                  navigate('/');
-                }}
-                className={activeCls}
-              >
-                {inner}
-              </button>
-            );
-          }
           return (
-            <div
+            <button
               key={key}
-              aria-disabled="true"
-              className={`${base} bg-white/[0.02] border-white/10 opacity-60 cursor-not-allowed`}
+              onClick={() => {
+                enterEditMode(pw());
+                navigate('/');
+              }}
+              className={cls}
             >
               {inner}
-            </div>
+            </button>
           );
         })}
       </div>

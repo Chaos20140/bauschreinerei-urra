@@ -4,6 +4,7 @@ import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
 import { partners } from '../data/content';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import { Editable } from '../components/editor/Editable';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -36,6 +37,7 @@ export function PartnerPage() {
   return (
     <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
+        idPrefix="partner"
         eyebrow="Partner"
         title="Sorgfältig ausgewählt, langjährig bewährt."
         intro="Eine Bauschreinerei ist nur so gut wie die Hersteller hinter ihren Produkten. Wir setzen auf etablierte Partner — vom Profil über Beschläge und Antriebe bis zum Garagentor."
@@ -45,13 +47,13 @@ export function PartnerPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-10 md:mb-14 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              {partners.eyebrow}
+              <Editable id="partner.hersteller.eyebrow">{partners.eyebrow}</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              {partners.title}
+              <Editable id="partner.hersteller.title">{partners.title}</Editable>
             </h2>
             <p className="mt-5 text-white/85 text-base md:text-lg leading-relaxed">
-              {partners.subtitle}
+              <Editable id="partner.hersteller.subtitle">{partners.subtitle}</Editable>
             </p>
           </BlurIn>
 
@@ -82,16 +84,16 @@ export function PartnerPage() {
                     />
                   </div>
                   <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-3">
-                    {p.category}
+                    <Editable id={`partner.item.${p.key}.category`}>{p.category}</Editable>
                   </p>
                   <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
-                    {p.name}
+                    <Editable id={`partner.item.${p.key}.name`}>{p.name}</Editable>
                   </h3>
                   <p className="text-white/80 text-sm md:text-[15px] leading-relaxed flex-1">
-                    {p.body}
+                    <Editable id={`partner.item.${p.key}.body`}>{p.body}</Editable>
                   </p>
                   <span className="mt-5 text-[10px] tracking-[0.3em] uppercase text-white/55 group-hover:text-white transition-colors">
-                    Webseite besuchen
+                    <Editable id="partner.item.cta">Webseite besuchen</Editable>
                   </span>
                 </a>
               </BlurIn>
@@ -104,14 +106,16 @@ export function PartnerPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-10 md:mb-14 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Standards
+              <Editable id="partner.standards.eyebrow">Standards</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Nach welchen Normen wir bauen.
+              <Editable id="partner.standards.title">Nach welchen Normen wir bauen.</Editable>
             </h2>
             <p className="mt-5 text-white/85 text-base md:text-lg leading-relaxed">
-              Damit Qualität nicht Verhandlungssache bleibt, halten wir uns an
-              klar definierte technische und rechtliche Standards.
+              <Editable id="partner.standards.intro">
+                Damit Qualität nicht Verhandlungssache bleibt, halten wir uns an
+                klar definierte technische und rechtliche Standards.
+              </Editable>
             </p>
           </BlurIn>
           <ul className="grid sm:grid-cols-2 gap-5 md:gap-6">
@@ -123,10 +127,10 @@ export function PartnerPage() {
                 className="rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7"
               >
                 <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
-                  {s.title}
+                  <Editable id={`partner.standard${idx}.title`}>{s.title}</Editable>
                 </h3>
                 <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                  {s.body}
+                  <Editable id={`partner.standard${idx}.body`}>{s.body}</Editable>
                 </p>
               </BlurIn>
             ))}
@@ -135,6 +139,7 @@ export function PartnerPage() {
       </section>
 
       <CtaBlock
+        idPrefix="partner"
         title="Welcher Hersteller passt zu Ihrem Objekt?"
         body="Wir beraten ergebnisoffen — entscheidend ist nicht der Markenname, sondern was zu Ihrem Bauvorhaben und Budget passt."
       />

@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { navigation, brand, contact, whatsapp } from '../data/content';
+import { brand, contact, whatsapp } from '../data/content';
+import { useNavItems } from '../lib/nav';
 import { Logo } from './Logo';
 
 export function Navbar() {
+  // Beschriftung, Reihenfolge und Sichtbarkeit kommen aus „Seiten & Menü".
+  const navigation = useNavItems();
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const toggleRef = useRef<HTMLButtonElement | null>(null);

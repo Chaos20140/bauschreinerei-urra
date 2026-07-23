@@ -73,13 +73,19 @@ export function EditableImage({ id, src, alt, className, eager }: Props) {
       role="button"
       tabIndex={0}
       aria-label={`Bild ändern: ${alt}`}
-      className="relative block group/edimg cursor-pointer focus-ring rounded-sm"
+      // data-ed-img trägt dieselbe Markierung wie editierbare Texte (index.css)
+      // — so ist auch ohne Hover erkennbar, welche Bilder austauschbar sind.
+      data-ed-img=""
+      className="relative block group/edimg cursor-pointer focus-ring"
       onClick={openPicker}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') openPicker(e);
       }}
     >
       <img src={effectiveSrc} alt={alt} decoding="async" className={className} />
+      <span className="absolute top-2 left-2 z-10 inline-flex items-center gap-1.5 rounded-full bg-sky-500 text-white text-[11px] font-medium px-2.5 py-1 shadow group-hover/edimg:opacity-0 transition-opacity">
+        <ImageUp size={12} /> Bild
+      </span>
       <span className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover/edimg:opacity-100 transition-opacity">
         <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-black text-sm font-medium">
           {busy ? <Loader2 size={15} className="animate-spin" /> : <ImageUp size={15} />}

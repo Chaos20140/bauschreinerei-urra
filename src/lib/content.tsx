@@ -29,6 +29,16 @@ type ContentCtx = {
   save: () => Promise<{ ok: boolean; error?: string }>;
   /** Ein Bild hochladen und als Override für die ID setzen (sofort wirksam). */
   uploadImage: (id: string, file: File) => Promise<{ ok: boolean; error?: string }>;
+  /**
+   * Werte direkt speichern (ohne Bearbeiten-Modus) — für Verwaltungs-Ansichten
+   * wie „Seiten & Menü". Das Passwort kommt dort aus dem Admin-Kontext.
+   */
+  saveValues: (
+    values: Record<string, string>,
+    pw?: string
+  ) => Promise<{ ok: boolean; error?: string }>;
+  /** Overrides löschen → die Code-Texte greifen wieder. */
+  resetValues: (ids: string[], pw?: string) => Promise<{ ok: boolean; error?: string }>;
 };
 
 const Ctx = createContext<ContentCtx | null>(null);
@@ -97,32 +107,75 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     pwRef.current = '';
   }, []);
 
+  const saveValues = useCallback(
+    async (
+      values: Record<string, string>,
+      pw?: string
+    ): Promise<{ ok: boolean; error?: string }> => {
+      const ids = Object.keys(values);
+      if (ids.length === 0) return { ok: true };
+      try {
+        const res = await fetch(ADMIN_FN_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${FN_KEY}`,
+            apikey: FN_KEY,
+          },
+          body: JSON.stringify({
+            action: 'save-content',
+            password: pw ?? pwRef.current,
+            overrides: values,
+          }),
+        });
+        if (!res.ok) return { ok: false, error: String(res.status) };
+        setOverrides((o) => ({ ...o, ...values }));
+        return { ok: true };
+      } catch {
+        return { ok: false, error: 'network' };
+      }
+    },
+    []
+  );
+
+  const resetValues = useCallback(
+    async (ids: string[], pw?: string): Promise<{ ok: boolean; error?: string }> => {
+      if (ids.length === 0) return { ok: true };
+      try {
+        const res = await fetch(ADMIN_FN_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${FN_KEY}`,
+            apikey: FN_KEY,
+          },
+          body: JSON.stringify({
+            action: 'reset-content',
+            password: pw ?? pwRef.current,
+            keys: ids,
+          }),
+        });
+        if (!res.ok) return { ok: false, error: String(res.status) };
+        setOverrides((o) => {
+          const next = { ...o };
+          for (const id of ids) delete next[id];
+          return next;
+        });
+        return { ok: true };
+      } catch {
+        return { ok: false, error: 'network' };
+      }
+    },
+    []
+  );
+
   const save = useCallback(async (): Promise<{ ok: boolean; error?: string }> => {
-    const ids = Object.keys(pending);
-    if (ids.length === 0) return { ok: true };
-    try {
-      const res = await fetch(ADMIN_FN_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${FN_KEY}`,
-          apikey: FN_KEY,
-        },
-        body: JSON.stringify({
-          action: 'save-content',
-          password: pwRef.current,
-          overrides: pending,
-        }),
-      });
-      if (!res.ok) return { ok: false, error: String(res.status) };
-      // Lokal übernehmen: die gespeicherten Werte werden zu Overrides, pending leert.
-      setOverrides((o) => ({ ...o, ...pending }));
-      setPendingState({});
-      return { ok: true };
-    } catch {
-      return { ok: false, error: 'network' };
-    }
-  }, [pending]);
+    if (Object.keys(pending).length === 0) return { ok: true };
+    const r = await saveValues(pending);
+    // Erst nach erfolgreichem Speichern gilt nichts mehr als „ungespeichert".
+    if (r.ok) setPendingState({});
+    return r;
+  }, [pending, saveValues]);
 
   const uploadImage = useCallback(
     async (id: string, file: File): Promise<{ ok: boolean; error?: string }> => {
@@ -169,8 +222,22 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       leaveEditMode,
       save,
       uploadImage,
+      saveValues,
+      resetValues,
     }),
-    [get, editMode, isDirty, pending, setPending, enterEditMode, leaveEditMode, save, uploadImage]
+    [
+      get,
+      editMode,
+      isDirty,
+      pending,
+      setPending,
+      enterEditMode,
+      leaveEditMode,
+      save,
+      uploadImage,
+      saveValues,
+      resetValues,
+    ]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

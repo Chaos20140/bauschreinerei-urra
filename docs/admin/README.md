@@ -1,8 +1,12 @@
 # Verwaltungsmodus — Bau-Referenz
 
-> Passwortgeschützter Admin-Bereich unter `/admin`. Etappe 1: Login, Dashboard,
-> Anfragen-Verwaltung. Weitere Module (Bewerbungen, Termine, Mediathek,
-> Seiten & Menü, Seite bearbeiten) folgen in späteren Runden.
+> Passwortgeschützter Admin-Bereich unter `/admin` mit fünf Modulen: **Anfragen**,
+> **Bewerbungen**, **Mediathek**, **Seiten & Menü** und **Seite bearbeiten**
+> (Texte + Bilder direkt auf der Website).
+>
+> **Termine bewusst nicht enthalten** (Entscheidung des Betreibers, Juli 2026):
+> Termine laufen weiter über Anfrage und Telefon. Wer das später nachrüstet,
+> beachte den Hinweis am Ende des Bewerbungs-Kapitels zur Generalisierung.
 >
 > Muster übernommen aus den Projekten **Cura Doma** (gleicher Stack) und
 > **devries**. Bei jeder Änderung am Admin diese Datei fortschreiben.
@@ -132,6 +136,58 @@ Der Betreiber ändert Texte direkt auf der Website. Muster von Cura Doma.
 > `dangerouslySetInnerHTML` wird ausschließlich in `Editable.tsx` genutzt und
 > nur mit serverseitig sanitisierten Werten — das ist der bewusste, sichere Fall.
 
+### Markierung im Bearbeiten-Modus (index.css)
+
+Die editierbaren Stellen sind an eigenen CSS-Regeln erkennbar (`[data-ed-id]`,
+`[data-ed-img]`), **nicht** an Tailwind-Weiß-Utilities: alle Unterseiten laufen
+im Beige-Theme, dort war die frühere `outline-white/40`-Markierung unsichtbar.
+Blau gestrichelt = bearbeitbar, Grün durchgezogen = geändert; beide Töne werden
+unter `main[data-theme='beige']` nachgezogen, damit der Kontrast auf Schwarz UND
+auf Creme sitzt. Die EditToolbar zeigt dieselbe Legende.
+
+> Wichtig: `Editable` setzt `data-ed-id` **nur** im Bearbeiten-Modus. Im DOM
+> normaler Besucher existiert keine dieser Markierungen.
+
+## Seiten & Menü (Etappe 5)
+
+Verwaltet, wie die Seiten im Hauptmenü erscheinen — **ohne eigenen
+Backend-Endpunkt**: gespeichert wird in denselben `site_content`-Overrides wie
+die Texte, also mit derselben Passwortprüfung, Sanitisierung und ID-Validierung.
+
+- **Verwaltbar:** Beschriftung, Reihenfolge, Sichtbarkeit im Menü.
+  Schlüssel je Seite (`key` = Pfad ohne Schrägstrich):
+  `nav.<key>.label`, `nav.<key>.hidden` (`"1"`), `nav.<key>.order` (10, 20, 30 …).
+- **Nicht verwaltbar:** die Seiten selbst. Routen stehen in `App.tsx` — eine
+  ausgeblendete Seite bleibt über ihre Adresse erreichbar und indexierbar
+  (live geprüft), sie steht nur nicht mehr im Menü.
+- **Nur Abweichungen werden gespeichert.** Entspricht ein Wert wieder dem Code,
+  wird der Override gelöscht (`reset-content`) statt geschrieben — so greifen
+  spätere Code-Änderungen wieder durch und die Tabelle bleibt sauber.
+  „Auf Standard zurücksetzen" + Speichern leert alle `nav.*`-Schlüssel.
+- **Leser:** `useNavItems()` in `src/lib/nav.ts`; genutzt von Navbar (Desktop +
+  Mobil), Footer und der 404-Seite. `plainLabel()` macht aus dem sanitisierten
+  Rich-Text wieder reinen Text (`&amp;` → `&`) — ohne DOM, damit es auch beim
+  Vorrendern funktioniert. Labels werden als React-Textknoten gerendert, nie
+  als HTML.
+- **Schutz:** Speichern ist blockiert, wenn kein einziger Menüpunkt sichtbar
+  bliebe. Impressum und Datenschutz stehen fest im Fuß und sind nicht
+  ausblendbar (Pflichtangaben).
+
+## Editor Runde 2 — Reichweite
+
+Zusätzlich editierbar: Projekt-Detailseiten (Projektname und Kurzbeschreibung
+teilen sich die IDs mit der Projektliste — einmal geändert, steht überall
+dasselbe; Abschnittsbeschriftungen wie „Eckdaten"/„Galerie" gelten für alle
+Projektseiten gemeinsam), Partner-Seite, 404-Seite, Footer sowie **Impressum
+und Datenschutz** zeilenweise.
+
+> Rechtsseiten: der Betreiber kann sie ändern und trägt dafür die
+> Verantwortung. Kontaktdaten (Telefon, E-Mail, Adresse) sind bewusst **nicht**
+> editierbar — sie stecken zusätzlich in `tel:`/`mailto:`-Links, im
+> Structured-Data-Block und im Impressum; ein editierbarer Anzeigetext würde
+> stillschweigend von der tatsächlich verlinkten Nummer abweichen.
+> Änderungen daher weiter in `src/data/content.ts`.
+
 ## Änderungsprotokoll
 
 | Datum | Was | Warum |
@@ -139,4 +195,6 @@ Der Betreiber ändert Texte direkt auf der Website. Muster von Cura Doma.
 | 2026-07-23 | Etappe 1: Login + Dashboard + Anfragen-Verwaltung (Function, Migration, Frontend) | Betreiber-Backoffice; Anfragen waren nur per Formular-Eingang sichtbar |
 | 2026-07-23 | Etappe 2: Bewerbungen — Karriere-Seite + Formular (urra-apply, privater CV-Bucket) und Admin-Ansicht mit CV-Download | „Bewerbungen einsehen" aus der ursprünglichen Anfrage; Eingang gab es bei Urra noch nicht |
 | 2026-07-23 | Etappe 3: Inline-Editor „Seite bearbeiten" — site_content + save-content, ContentProvider/Editable/EditToolbar, 136 editierbare Texte auf allen Hauptseiten | Zweites Kernanliegen der ursprünglichen Anfrage („Seite vollständig bearbeiten") |
+| 2026-07-24 | Etappe 5: „Seiten & Menü" (Beschriftung/Reihenfolge/Sichtbarkeit über site_content, kein neuer Endpunkt), Editor Runde 2 (Projekt-Detail, Partner, 404, Footer, Impressum, Datenschutz), Termine-Kachel entfernt, alle Kacheln aktiv | Restliche Module aus dem ursprünglichen Auftrag; Termine auf Wunsch gestrichen |
+| 2026-07-24 | Markierung im Bearbeiten-Modus theme-sicher (eigene CSS-Regeln statt outline-white/40) + Legende in der EditToolbar | Auf den hellen Beige-Unterseiten war nicht erkennbar, welcher Text bearbeitbar ist (Meldung des Betreibers) |
 | 2026-07-23 | Etappe 4: Bilder im Editor + Mediathek — öffentlicher Bucket site-images, urra-admin upload/list/delete-image, EditableImage, AdminMedia. Bild-Override als URL in site_content. Leistungen-Tools- und Projekt-Bilder austauschbar. CSP img-src um *.supabase.co erweitert (sonst blockte sie die hochgeladenen Bilder). Content-Type aus Magic-Bytes, nicht vom Client. | Erweiterung von „Seite bearbeiten" um Bilder (in Runde 1 bewusst ausgelassen) |

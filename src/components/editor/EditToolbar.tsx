@@ -46,6 +46,18 @@ export function EditToolbar() {
         <Pencil size={15} className="text-emerald-300" />
         Bearbeiten
       </span>
+      {/* Legende: erklärt die Farben der Markierung auf der Seite. */}
+      <span className="hidden md:inline-flex items-center gap-3 text-[11px] text-white/55 border-l border-white/15 pl-3">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-[2px] bg-sky-400/40 ring-1 ring-sky-300" />
+          bearbeitbar
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-[2px] bg-emerald-400/50 ring-1 ring-emerald-300" />
+          geändert
+        </span>
+      </span>
+
       <span className="text-white/55 text-xs min-w-[6.5rem]">
         {msg ? (
           <span className="text-emerald-300 inline-flex items-center gap-1">
