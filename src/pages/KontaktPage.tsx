@@ -2,9 +2,10 @@ import { PageHero } from '../components/PageHero';
 import { BlurIn } from '../components/BlurIn';
 import { MapEmbed } from '../components/MapEmbed';
 import { ContactForm } from '../components/ContactForm';
-import { contact, regions } from '../data/content';
+import { contact } from '../data/content';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { Editable } from '../components/editor/Editable';
+import { CONTACT_IDS, useContactInfo, useRegionAreas } from '../lib/siteData';
 
 const HOURS = [
   { day: 'Montag — Freitag', value: '08:00 — 17:00' },
@@ -13,9 +14,10 @@ const HOURS = [
 ] as const;
 
 export function KontaktPage() {
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    `${contact.address.street}, ${contact.address.zip} ${contact.address.city}`
-  )}`;
+  // Adresse, Nummer und E-Mail kommen aus den gemeinsamen Overrides; die Links
+  // werden daraus abgeleitet und können deshalb nicht davon abweichen.
+  const info = useContactInfo();
+  const areas = useRegionAreas();
 
   useDocumentMeta({
     title: 'Kontakt · Angebot anfragen | Bauschreinerei Urra Olsberg',
@@ -46,12 +48,12 @@ export function KontaktPage() {
                     <Editable id="kontakt.reach.werkstatt">Werkstatt</Editable>
                   </p>
                   <p className="text-white text-lg md:text-xl leading-snug">
-                    {contact.address.street}
+                    <Editable id={CONTACT_IDS.street}>{info.street}</Editable>
                     <br />
-                    {contact.address.zip} {contact.address.city}
+                    <Editable id={CONTACT_IDS.city}>{info.city}</Editable>
                   </p>
                   <a
-                    href={mapsUrl}
+                    href={info.mapsHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block mt-3 text-white/70 hover:text-white text-sm underline underline-offset-2 transition-colors"
@@ -65,10 +67,10 @@ export function KontaktPage() {
                     <Editable id="kontakt.reach.telefon">Telefon</Editable>
                   </p>
                   <a
-                    href={contact.phone.href}
+                    href={info.phoneHref}
                     className="text-white text-lg md:text-xl hover:text-white/75 transition-colors no-shadow"
                   >
-                    {contact.phone.display}
+                    <Editable id={CONTACT_IDS.phone}>{info.phone}</Editable>
                   </a>
                 </div>
 
@@ -77,10 +79,10 @@ export function KontaktPage() {
                     <Editable id="kontakt.reach.emaillabel">E-Mail</Editable>
                   </p>
                   <a
-                    href={contact.email.href}
+                    href={info.emailHref}
                     className="text-white text-lg md:text-xl hover:text-white/75 transition-colors break-all no-shadow"
                   >
-                    {contact.email.display}
+                    <Editable id={CONTACT_IDS.email}>{info.email}</Editable>
                   </a>
                 </div>
               </div>
@@ -95,13 +97,17 @@ export function KontaktPage() {
                 <Editable id="kontakt.hours.label">Öffnungszeiten</Editable>
               </p>
               <ul className="space-y-3 text-sm md:text-base">
-                {HOURS.map((h) => (
+                {HOURS.map((h, idx) => (
                   <li
                     key={h.day}
                     className="flex justify-between gap-4 border-t border-white/10 pt-3"
                   >
-                    <span className="text-white/70">{h.day}</span>
-                    <span className="text-white">{h.value}</span>
+                    <span className="text-white/70">
+                      <Editable id={`kontakt.hours.day${idx}`}>{h.day}</Editable>
+                    </span>
+                    <span className="text-white">
+                      <Editable id={`kontakt.hours.value${idx}`}>{h.value}</Editable>
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -114,14 +120,15 @@ export function KontaktPage() {
             </div>
 
             <a
-              href={contact.phone.href}
+              href={info.phoneHref}
               className="block rounded-2xl bg-white text-black p-7 md:p-9 hover:bg-neutral-200 transition-colors no-shadow"
             >
               <p className="text-black/55 text-xs tracking-[0.3em] uppercase mb-3">
                 <Editable id="kontakt.callcard.label">Direkt anrufen</Editable>
               </p>
               <p className="hero-title text-3xl md:text-4xl font-medium tracking-tight">
-                {contact.phone.display}
+                {/* Dieselbe ID wie oben — die Nummer steht nur einmal im System. */}
+                <Editable id={CONTACT_IDS.phone}>{info.phone}</Editable>
               </p>
               <p className="text-black/65 text-sm mt-2">
                 <Editable id="kontakt.callcard.sub">{contact.cta} — Wir freuen uns auf Ihr Projekt.</Editable>
@@ -136,9 +143,11 @@ export function KontaktPage() {
                 <Editable id="kontakt.service.intro">Wir sind in drei Regionen unterwegs:</Editable>
               </p>
               <ul className="space-y-1 text-white/80 text-sm">
-                {regions.areas.map((a) => (
+                {/* Spiegelt die Regionen-Liste; bearbeitet wird sie auf der
+                    Start- oder Projekte-Seite, hier steht nur der Auszug. */}
+                {areas.map((a) => (
                   <li key={a.key}>
-                    <span className="text-white">{a.key}</span>{' '}
+                    <span className="text-white">{a.title}</span>{' '}
                     <span className="text-white/50">— {a.cities.slice(0, 3).join(' · ')} …</span>
                   </li>
                 ))}

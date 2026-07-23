@@ -27,22 +27,29 @@ type Props = {
  * einen Override gelangen.
  */
 export function Editable({ id, children, as = 'span', rich = false, className, style }: Props) {
-  const { get, editMode, setPending, isDirty } = useContent();
+  const { get, editMode, setPending, isDirty, pendingValue, seedVersion } = useContent();
   const override = get(id);
 
   // Startinhalt für das editierbare Feld — einmal beim Eintritt erfassen, sonst
-  // würde React beim Tippen den Cursor zurücksetzen.
+  // würde React beim Tippen den Cursor zurücksetzen. `seedVersion` zählt hoch,
+  // wenn der Inhalt von außen geändert wurde (Rückgängig, Verwerfen); dann muss
+  // der Text neu aufgebaut werden, sonst bliebe der alte im Feld stehen.
   const seed = useRef<ReactNode>(null);
   const seededFor = useRef<string | null>(null);
+  const seedKey = `${id}#${seedVersion}`;
   if (editMode) {
-    if (seededFor.current !== id) {
-      seed.current =
-        override != null ? (
-          <span dangerouslySetInnerHTML={{ __html: override }} />
-        ) : (
-          children
-        );
-      seededFor.current = id;
+    if (seededFor.current !== seedKey) {
+      const draft = pendingValue(id);
+      if (draft != null) {
+        // Ungespeicherter Stand: bei Rich-Text als HTML, sonst als reiner Text
+        // (der Entwurf kommt dort aus innerText und ist kein Markup).
+        seed.current = rich ? <span dangerouslySetInnerHTML={{ __html: draft }} /> : draft;
+      } else if (override != null) {
+        seed.current = <span dangerouslySetInnerHTML={{ __html: override }} />;
+      } else {
+        seed.current = children;
+      }
+      seededFor.current = seedKey;
     }
   } else {
     seededFor.current = null;
@@ -74,6 +81,11 @@ export function Editable({ id, children, as = 'span', rich = false, className, s
   return createElement(
     as,
     {
+      // Der Schlüssel enthält seedVersion und erzwingt bei Rückgängig/Verwerfen
+      // einen Neuaufbau des Elements. Ohne das bliebe der von Hand getippte
+      // Text stehen: React kennt die Eingabe im contentEditable nicht und
+      // würde beim gleichen Sollwert gar nichts anfassen.
+      key: seedKey,
       className: cls,
       style,
       contentEditable: true,

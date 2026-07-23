@@ -4,9 +4,10 @@ import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
 import { ProjectImage } from '../components/ProjectImage';
-import { projectList, regions } from '../data/content';
+import { projectList } from '../data/content';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import { Editable } from '../components/editor/Editable';
+import { regionIds, useRegionAreas } from '../lib/siteData';
 
 const CATEGORIES = [
   {
@@ -34,6 +35,8 @@ const HIGHLIGHTS = [
 ] as const;
 
 export function ProjektePage() {
+  const areas = useRegionAreas();
+
   useDocumentMeta({
     title: 'Projekte · Referenzen aus dem Sauerland | Bauschreinerei Urra',
     description:
@@ -208,16 +211,19 @@ export function ProjektePage() {
             </h2>
           </BlurIn>
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-            {regions.areas.map((area, idx) => (
+            {areas.map((area, idx) => (
               <BlurIn key={area.key} delay={idx * 0.08}>
                 <div>
                   <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-5 border-b border-white/15 pb-3">
-                    <Editable id={`projekte.region${idx}.title`}>{area.key}</Editable>
+                    {/* Gleiche IDs wie auf der Startseite — ein Servicegebiet. */}
+                    <Editable id={regionIds(idx).title}>{area.title}</Editable>
                   </h3>
                   <ul className="flex flex-wrap gap-x-3 gap-y-2 text-white/75 text-sm md:text-base">
                     {area.cities.map((city, cidx) => (
                       <li key={city} className="flex items-center gap-3">
-                        <span>{city}</span>
+                        <span>
+                          <Editable id={regionIds(idx).city(cidx)}>{city}</Editable>
+                        </span>
                         {cidx < area.cities.length - 1 && (
                           <span className="text-white/30">·</span>
                         )}

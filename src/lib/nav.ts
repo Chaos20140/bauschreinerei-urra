@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { navigation } from '../data/content';
 import { useContent } from './content';
+import { plainText } from './plainText';
 
 /**
  * Hauptmenü mit Betreiber-Anpassungen.
@@ -38,24 +39,6 @@ export const navIds = (key: string) => ({
   order: `nav.${key}.order`,
 });
 
-/**
- * Overrides werden serverseitig als Rich-Text sanitisiert (`&` → `&amp;`).
- * Menü-Beschriftungen sind aber reiner Text — Tags entfernen und die Entities
- * zurückwandeln, sonst stünde „Fenster &amp; Türen" im Menü.
- * Ohne DOM gelöst, damit das auch beim Vorrendern funktioniert.
- */
-export function plainLabel(value: string): string {
-  return value
-    .replace(/<[^>]*>/g, '')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .trim();
-}
-
 /** Abstand zwischen zwei Standard-Positionen — lässt Platz zum Umsortieren. */
 const STEP = 10;
 
@@ -71,7 +54,7 @@ export function useNavItems(includeHidden = false): NavItem[] {
       const key = navKey(n.href);
       const ids = navIds(key);
       const rawLabel = get(ids.label);
-      const label = rawLabel != null ? plainLabel(rawLabel) : '';
+      const label = rawLabel != null ? plainText(rawLabel) : '';
       const rawOrder = get(ids.order);
       const defaultOrder = (i + 1) * STEP;
       return {

@@ -2,23 +2,27 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { MapPin, ExternalLink } from 'lucide-react';
-import { contact } from '../data/content';
+import { Editable } from './editor/Editable';
+import { useContactInfo } from '../lib/siteData';
 
 // Two-Click-Solution nach DSGVO-Best-Practice: bis der Nutzer aktiv
 // auf „Karte aktivieren" klickt, wird KEINE Verbindung zu Google
 // hergestellt — keine IP-Übertragung, keine Cookies, kein Tracking.
 // Erst nach explizitem Consent lädt das iframe.
-const FULL_ADDRESS = `${contact.address.street}, ${contact.address.zip} ${contact.address.city}`;
-const EMBED_URL =
-  'https://maps.google.com/maps?q=' +
-  encodeURIComponent(FULL_ADDRESS) +
-  '&t=&z=15&ie=UTF8&iwloc=&output=embed';
-const DIRECTIONS_URL =
-  'https://www.google.com/maps/dir/?api=1&destination=' +
-  encodeURIComponent(FULL_ADDRESS);
 
 export function MapEmbed() {
   const [activated, setActivated] = useState(false);
+  // Karte und Route folgen der bearbeiteten Adresse — sonst zeigte die Karte
+  // weiter auf die alte Werkstatt, während daneben die neue Adresse steht.
+  const { street, city } = useContactInfo();
+  const fullAddress = `${street}, ${city}`;
+  const embedUrl =
+    'https://maps.google.com/maps?q=' +
+    encodeURIComponent(fullAddress) +
+    '&t=&z=15&ie=UTF8&iwloc=&output=embed';
+  const directionsUrl =
+    'https://www.google.com/maps/dir/?api=1&destination=' +
+    encodeURIComponent(fullAddress);
 
   return (
     <div className="relative w-full aspect-[4/3] md:aspect-[16/10] rounded-2xl overflow-hidden border border-white/15 bg-neutral-900">
@@ -53,10 +57,11 @@ export function MapEmbed() {
                 <MapPin className="h-6 w-6 md:h-7 md:w-7 text-white" strokeWidth={1.75} />
               </span>
               <p className="text-white/55 text-[10px] md:text-xs tracking-[0.3em] uppercase mb-2">
-                So findest du uns
+                {/* Siezen wie auf der übrigen Website (hier stand „du"). */}
+                <Editable id="map.eyebrow">So finden Sie uns</Editable>
               </p>
               <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-3">
-                Karte anzeigen
+                <Editable id="map.title">Karte anzeigen</Editable>
               </h3>
               <p className="text-white/70 text-sm md:text-[15px] max-w-md leading-relaxed mb-6">
                 Beim Aktivieren wird eine Verbindung zu Google Maps hergestellt.
@@ -75,7 +80,7 @@ export function MapEmbed() {
                 onClick={() => setActivated(true)}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-neutral-200 transition-colors focus-ring"
               >
-                Karte aktivieren
+                <Editable id="map.button">Karte aktivieren</Editable>
               </button>
             </div>
           </motion.div>
@@ -90,14 +95,14 @@ export function MapEmbed() {
           >
             <iframe
               title="Standort Bauschreinerei Heribert Urra, Olsberg"
-              src={EMBED_URL}
+              src={embedUrl}
               className="absolute inset-0 w-full h-full"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               allow="fullscreen"
             />
             <a
-              href={DIRECTIONS_URL}
+              href={directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="absolute top-3 right-3 inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/80 text-white text-xs hover:bg-black transition-colors no-shadow focus-ring"

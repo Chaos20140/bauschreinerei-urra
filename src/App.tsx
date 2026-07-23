@@ -9,6 +9,7 @@ import { CookieBanner } from './components/CookieBanner';
 import { GlobalBackground } from './components/GlobalBackground';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { EditToolbar } from './components/editor/EditToolbar';
+import { StructuredDataSync } from './components/StructuredDataSync';
 import { HomePage } from './pages/HomePage';
 
 const ROUTER_BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -74,6 +75,9 @@ function PublicSite() {
       </a>
 
       <ScrollToTop />
+      {/* Hält die strukturierten Daten (Google) mit bearbeiteten Kontaktdaten
+          in Deckung — rendert nichts. */}
+      <StructuredDataSync />
       <GlobalBackground />
       <Navbar />
 

@@ -3,12 +3,16 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { brand, contact, whatsapp } from '../data/content';
-import { useNavItems } from '../lib/nav';
+import { navIds, useNavItems } from '../lib/nav';
+import { CONTACT_IDS, useContactInfo } from '../lib/siteData';
+import { Editable } from './editor/Editable';
 import { Logo } from './Logo';
 
 export function Navbar() {
-  // Beschriftung, Reihenfolge und Sichtbarkeit kommen aus „Seiten & Menü".
+  // Beschriftung, Reihenfolge und Sichtbarkeit kommen aus „Seiten & Menü";
+  // die Beschriftung ist zusätzlich direkt hier bearbeitbar (gleicher Wert).
   const navigation = useNavItems();
+  const info = useContactInfo();
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const toggleRef = useRef<HTMLButtonElement | null>(null);
@@ -98,7 +102,7 @@ export function Navbar() {
                     }`
                   }
                 >
-                  {item.label}
+                  <Editable id={navIds(item.key).label}>{item.defaultLabel}</Editable>
                 </NavLink>
               </li>
             ))}
@@ -109,7 +113,7 @@ export function Navbar() {
               to={contact.appointmentHref}
               className="hidden sm:inline-block bg-white text-black text-sm font-normal rounded-full px-5 md:px-6 py-3 hover:bg-neutral-200 transition-colors"
             >
-              {contact.cta}
+              <Editable id={CONTACT_IDS.cta}>{contact.cta}</Editable>
             </Link>
             <button
               ref={toggleRef}
@@ -165,7 +169,7 @@ export function Navbar() {
                       }`
                     }
                   >
-                    {item.label}
+                    <Editable id={navIds(item.key).label}>{item.defaultLabel}</Editable>
                   </NavLink>
                 </motion.li>
               ))}
@@ -176,7 +180,7 @@ export function Navbar() {
                 to={contact.appointmentHref}
                 className="block w-full text-center bg-white text-black rounded-full py-4 text-base font-medium hover:bg-neutral-200 transition-colors"
               >
-                {contact.cta}
+                <Editable id={CONTACT_IDS.cta}>{contact.cta}</Editable>
               </Link>
               <a
                 href={whatsapp.href}
@@ -187,8 +191,8 @@ export function Navbar() {
                 {whatsapp.label}
               </a>
               <div className="text-white/60 text-xs space-y-1 text-center pt-2">
-                <p>{contact.phone.display}</p>
-                <p>{contact.email.display}</p>
+                <p>{info.phone}</p>
+                <p>{info.email}</p>
               </div>
             </div>
           </motion.div>

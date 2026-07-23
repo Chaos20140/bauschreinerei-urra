@@ -94,6 +94,8 @@ type AdminCtx = {
   exportJobs: (includeArchived?: boolean) => Promise<void>;
   listImages: () => Promise<MediaItem[]>;
   deleteImage: (name: string, force?: boolean) => Promise<'ok' | 'in_use' | 'error'>;
+  /** Bild in die Mediathek laden, ohne es irgendwo einzusetzen. */
+  uploadToLibrary: (file: File) => Promise<'ok' | 'unauthorized' | 'error'>;
 };
 
 /** Ein Bild in der Mediathek. */
@@ -232,13 +234,42 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const uploadToLibrary = useCallback(
+    async (file: File): Promise<'ok' | 'unauthorized' | 'error'> => {
+      try {
+        const dataBase64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => reject(new Error('read_failed'));
+          reader.readAsDataURL(file);
+        });
+        // Dateiname wird serverseitig entschärft; „standalone" heißt: nur in
+        // die Mediathek, kein Eintrag für eine Stelle auf der Website.
+        const base = file.name.replace(/\.[^.]+$/, '');
+        const id = (base.replace(/[^a-zA-Z0-9.-]/g, '-').slice(0, 60) || 'bild').toLowerCase();
+        const res = await post({
+          action: 'upload-image',
+          password: pwRef.current,
+          id,
+          dataBase64,
+          standalone: true,
+        });
+        if (res.status === 401) return 'unauthorized';
+        return res.ok ? 'ok' : 'error';
+      } catch {
+        return 'error';
+      }
+    },
+    []
+  );
+
   return (
     <Ctx.Provider
       value={{
         authed, login, logout, pw,
         listContacts, updateContact, deleteContact, exportContacts,
         listJobs, updateJob, deleteJob, cvUrl, exportJobs,
-        listImages, deleteImage,
+        listImages, deleteImage, uploadToLibrary,
       }}
     >
       {children}

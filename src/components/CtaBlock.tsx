@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { contact } from '../data/content';
 import { BlurIn } from './BlurIn';
 import { Editable } from './editor/Editable';
+import { CONTACT_IDS, useContactInfo } from '../lib/siteData';
 
 type Props = {
   title?: string;
@@ -15,6 +16,8 @@ export function CtaBlock({
   body = 'Unverbindlich, kostenlos und werktags innerhalb von 24 Stunden zurück.',
   idPrefix,
 }: Props) {
+  const info = useContactInfo();
+
   return (
     <section className="relative px-6 md:px-12 py-24 md:py-32">
       <div className="max-w-5xl mx-auto text-center">
@@ -34,13 +37,13 @@ export function CtaBlock({
               to={contact.appointmentHref}
               className="px-6 md:px-8 py-4 rounded-full bg-white text-black text-sm md:text-base font-medium hover:bg-neutral-200 transition-colors"
             >
-              {contact.cta}
+              <Editable id={CONTACT_IDS.cta}>{contact.cta}</Editable>
             </Link>
             <a
-              href={contact.phone.href}
+              href={info.phoneHref}
               className="px-6 md:px-8 py-4 rounded-full border border-white/30 text-white text-sm md:text-base font-medium hover:bg-white/10 transition-colors"
             >
-              {contact.callCta}
+              <Editable id={CONTACT_IDS.callCta}>{contact.callCta}</Editable>
             </a>
           </div>
         </BlurIn>

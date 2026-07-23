@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { absoluteUrl, OG_IMAGE } from '../data/site';
+import { useContent } from '../lib/content';
+import { plainText } from '../lib/plainText';
+import { seoIds } from '../lib/seo';
 
 type Meta = {
   /** Vollständiger <title> der Seite, inkl. Marke. */
@@ -36,9 +39,20 @@ function upsertMeta(
  */
 export function useDocumentMeta({ title, description, noindex }: Meta): void {
   const { pathname } = useLocation();
+  const { get } = useContent();
+
+  // „SEO & Titel" in der Bearbeiten-Leiste kann beides pro Seite überschreiben;
+  // ohne Eintrag bleibt der Text aus dem Code.
+  const ids = seoIds(pathname);
+  const titleOverride = get(ids.title);
+  const descOverride = get(ids.desc);
+  const effectiveTitle = (titleOverride ? plainText(titleOverride) : '') || title;
+  const effectiveDesc = (descOverride ? plainText(descOverride) : '') || description;
 
   useEffect(() => {
     const url = absoluteUrl(pathname);
+    const title = effectiveTitle;
+    const description = effectiveDesc;
 
     document.title = title;
 
@@ -81,5 +95,5 @@ export function useDocumentMeta({ title, description, noindex }: Meta): void {
     // SPA-Navigation für sie unbemerkt.
     const announcer = document.getElementById('route-announcer');
     if (announcer) announcer.textContent = title;
-  }, [title, description, noindex, pathname]);
+  }, [effectiveTitle, effectiveDesc, noindex, pathname]);
 }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { footer, brand, contact } from '../data/content';
-import { useNavItems } from '../lib/nav';
+import { footer, brand } from '../data/content';
+import { navIds, useNavItems } from '../lib/nav';
+import { CONTACT_IDS, useContactInfo } from '../lib/siteData';
 import { Editable } from './editor/Editable';
 import { Logo } from './Logo';
 
@@ -12,6 +13,7 @@ const LEGAL = [
 
 export function Footer() {
   const navigation = useNavItems();
+  const info = useContactInfo();
 
   return (
     <footer className="relative bg-black text-white border-t border-white/15">
@@ -40,7 +42,9 @@ export function Footer() {
                     to={n.href}
                     className="text-white/80 hover:text-white text-sm md:text-base transition-colors"
                   >
-                    {n.label}
+                    {/* Schreibt auf denselben Wert wie „Seiten & Menü" — eine
+                        Beschriftung, egal wo sie geändert wird. */}
+                    <Editable id={navIds(n.key).label}>{n.defaultLabel}</Editable>
                   </Link>
                 </li>
               ))}
@@ -53,24 +57,24 @@ export function Footer() {
             </p>
             <ul className="space-y-2 text-sm md:text-base">
               <li className="text-white/80">
-                {contact.address.street}
+                <Editable id={CONTACT_IDS.street}>{info.street}</Editable>
                 <br />
-                {contact.address.zip} {contact.address.city}
+                <Editable id={CONTACT_IDS.city}>{info.city}</Editable>
               </li>
               <li>
                 <a
-                  href={contact.phone.href}
+                  href={info.phoneHref}
                   className="text-white/80 hover:text-white transition-colors"
                 >
-                  {contact.phone.display}
+                  <Editable id={CONTACT_IDS.phone}>{info.phone}</Editable>
                 </a>
               </li>
               <li>
                 <a
-                  href={contact.email.href}
+                  href={info.emailHref}
                   className="text-white/80 hover:text-white transition-colors break-all"
                 >
-                  {contact.email.display}
+                  <Editable id={CONTACT_IDS.email}>{info.email}</Editable>
                 </a>
               </li>
             </ul>

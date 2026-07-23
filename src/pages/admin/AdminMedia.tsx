@@ -1,14 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, RefreshCw, Loader2, Trash2 } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Loader2, Trash2, ImageUp, Copy, Check } from 'lucide-react';
 import { useAdmin, adminErrorText, type MediaItem } from '../../lib/admin';
 
+const MAX_BYTES = 5 * 1024 * 1024;
+const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/webp']);
+
 export function AdminMedia() {
-  const { listImages, deleteImage } = useAdmin();
+  const { listImages, deleteImage, uploadToLibrary } = useAdmin();
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
   const [busyName, setBusyName] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -25,6 +31,28 @@ export function AdminMedia() {
   useEffect(() => {
     load();
   }, [load]);
+
+  async function onUpload(file: File | null) {
+    if (!file) return;
+    if (file.size > MAX_BYTES) return setErr('Das Bild ist größer als 5 MB.');
+    if (file.type && !ALLOWED.has(file.type)) return setErr('Nur JPG, PNG oder WebP.');
+    setErr('');
+    setUploading(true);
+    const r = await uploadToLibrary(file);
+    setUploading(false);
+    if (r === 'ok') await load();
+    else setErr(r === 'unauthorized' ? 'Sitzung abgelaufen — bitte neu anmelden.' : 'Upload fehlgeschlagen.');
+  }
+
+  async function copyUrl(item: MediaItem) {
+    try {
+      await navigator.clipboard.writeText(item.url);
+      setCopied(item.name);
+      window.setTimeout(() => setCopied(null), 2000);
+    } catch {
+      setErr('Kopieren hat nicht geklappt — Adresse per Rechtsklick übernehmen.');
+    }
+  }
 
   async function del(item: MediaItem) {
     if (busyName) return;
@@ -67,10 +95,35 @@ export function AdminMedia() {
         </button>
       </div>
 
-      <p className="text-white/55 text-sm mb-6">
-        Über den Bearbeiten-Modus hochgeladene Bilder. Genutzte Bilder sind
-        geschützt; ungenutzte kannst du hier entfernen.
+      <p className="text-white/55 text-sm mb-5 leading-relaxed">
+        Alle Bilder, die auf der Website eingesetzt werden können. Lade hier
+        Bilder auf Vorrat hoch — im Bearbeiten-Modus klickst du dann einfach auf
+        ein Bild der Website und wählst eines davon aus. Genutzte Bilder sind
+        gegen Löschen geschützt.
       </p>
+
+      <div className="flex flex-wrap items-center gap-3 mb-6">
+        <button
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          className="inline-flex items-center gap-2 bg-white text-black rounded-full px-5 py-2.5 text-sm font-medium hover:bg-neutral-200 disabled:opacity-40 transition-colors focus-ring"
+        >
+          {uploading ? <Loader2 size={15} className="animate-spin" /> : <ImageUp size={15} />}
+          Bild hochladen
+        </button>
+        <span className="text-white/40 text-xs">JPG, PNG oder WebP · bis 5 MB</span>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={(e) => {
+            const file = e.target.files?.[0] ?? null;
+            e.target.value = '';
+            onUpload(file);
+          }}
+          className="sr-only"
+        />
+      </div>
 
       {err && (
         <p role="alert" className="text-rose-300 text-sm mb-4">
@@ -84,8 +137,8 @@ export function AdminMedia() {
         </div>
       ) : items.length === 0 ? (
         <p className="text-white/50 text-sm py-16 text-center">
-          Noch keine Bilder hochgeladen. Tausche im Bearbeiten-Modus ein Bild aus,
-          dann erscheint es hier.
+          Noch keine Bilder. Lade oben eines hoch — es steht danach im
+          Bearbeiten-Modus überall zur Auswahl.
         </p>
       ) : (
         <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -111,6 +164,14 @@ export function AdminMedia() {
                 <span className="text-white/60 text-xs truncate" title={item.name}>
                   {item.size != null ? `${Math.round(item.size / 1024)} KB` : item.name}
                 </span>
+                <button
+                  onClick={() => copyUrl(item)}
+                  aria-label={`Adresse von ${item.name} kopieren`}
+                  title="Bild-Adresse kopieren"
+                  className="shrink-0 h-8 w-8 grid place-items-center rounded-full border border-white/20 text-white/70 hover:text-white hover:bg-white/10 transition-colors focus-ring"
+                >
+                  {copied === item.name ? <Check size={14} /> : <Copy size={14} />}
+                </button>
                 <button
                   onClick={() => del(item)}
                   disabled={item.inUse || busyName === item.name}

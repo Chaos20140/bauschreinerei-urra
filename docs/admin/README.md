@@ -182,11 +182,64 @@ Projektseiten gemeinsam), Partner-Seite, 404-Seite, Footer sowie **Impressum
 und Datenschutz** zeilenweise.
 
 > Rechtsseiten: der Betreiber kann sie ändern und trägt dafür die
-> Verantwortung. Kontaktdaten (Telefon, E-Mail, Adresse) sind bewusst **nicht**
-> editierbar — sie stecken zusätzlich in `tel:`/`mailto:`-Links, im
-> Structured-Data-Block und im Impressum; ein editierbarer Anzeigetext würde
-> stillschweigend von der tatsächlich verlinkten Nummer abweichen.
-> Änderungen daher weiter in `src/data/content.ts`.
+> Verantwortung.
+
+## Kontaktdaten und Servicegebiet (Etappe 6)
+
+Telefon, E-Mail und Adresse sind editierbar — mit einer Regel, die den Grund
+für die frühere Sperre auflöst: **die Links werden aus dem bearbeiteten Wert
+abgeleitet, nie separat gepflegt.**
+
+- `src/lib/siteData.ts` — `useContactInfo()` liefert Anzeigewert **und**
+  `tel:`/`mailto:`/Karten-Link. Die Nummer wird auf `^\+?\d{5,20}$` geprüft, die
+  E-Mail auf ein striktes Muster; fällt die Prüfung durch, greift der Wert aus
+  dem Code (lieber der alte funktionierende Link als ein toter).
+- **Eine ID pro Angabe, überall dieselbe** (`contact.phone`, `contact.email`,
+  `contact.street`, `contact.city`, `contact.cta`, `contact.callcta`). Vorher
+  hatte die Startseite eigene Schlüssel (`home.contact.phone.value`) — Start-
+  und Kontaktseite wären auseinandergelaufen.
+- `StructuredDataSync` schreibt Telefon, E-Mail und Adresse in den
+  schema.org-Block im Seitenkopf, damit Google nicht die alte Nummer meldet.
+  Der Block ist `application/ld+json`, also kein ausführbares Script — die CSP
+  ist davon nicht betroffen.
+- `MapEmbed` baut Karte und Route aus derselben Adresse.
+- Servicegebiet: `useRegionAreas()` mit gemeinsamen IDs
+  (`regions.area<i>.title`, `regions.area<i>.city<j>`) für Start-, Projekte- und
+  Kontaktseite.
+
+> Offen bleibt: die **Öffnungszeiten** im schema.org-Block. Der Anzeigetext ist
+> editierbar, `openingHoursSpecification` in `index.html` nicht — freien Text
+> („nach Vereinbarung") verlässlich in Zeitangaben zurückzuübersetzen ist
+> unzuverlässig. Bei einer dauerhaften Änderung der Öffnungszeiten also auch
+> `index.html` anfassen.
+
+## Bearbeiten-Leiste und Mediathek (Etappe 6)
+
+- **Reiter am linken Bildschirmrand** statt Leiste unten (Muster: Cura Doma).
+  Aufklappbar, mit Zähler, Rückgängig/Wiederherstellen (auch Strg+Z /
+  Strg+Umschalt+Z), Speichern, Verwerfen, „Seite zurücksetzen", „SEO & Titel",
+  Hilfe und Verlassen.
+- **Verlauf** liegt im `ContentProvider` (Refs + `historyTick`), pro Feld
+  zusammengefasst — ein Klick macht die ganze Feldänderung rückgängig, nicht
+  Buchstabe für Buchstabe.
+- **`seedVersion`**: Zähler, der `Editable` neu aufbauen lässt. Nötig bei
+  Rückgängig/Verwerfen/Speichern. `Editable` setzt `key={id#seedVersion}` und
+  erzwingt damit einen Neuaufbau — ohne den bliebe der von Hand getippte Text
+  stehen, weil React die Eingabe im `contentEditable` nicht kennt und bei
+  gleichem Sollwert nichts anfasst. Beim Speichern zusätzlich nötig, damit
+  mehrfach verwendete Angaben (Telefonnummer) sofort überall gleich stehen.
+- **„SEO & Titel"** überschreibt Titel und Beschreibung pro Route
+  (`seo.<pfad>.title` / `.desc`, gelesen in `useDocumentMeta`).
+- **Mediathek**: Bilder lassen sich dort direkt hochladen (Kachel „Mediathek",
+  Knopf „Bild hochladen") und im Bearbeiten-Modus über den `ImagePicker`
+  (Klick auf ein Bild) einsetzen.
+  - `upload-image` mit `standalone: true` lädt **nur** in den Bucket und
+    schreibt **keinen** `site_content`-Eintrag — sonst entstünde ein Override,
+    der auf nichts zeigt.
+  - `use-image` setzt ein vorhandenes Bild an einer Stelle ein. Die URL wird
+    **serverseitig** aus dem Bucket gebaut und der Dateiname gegen
+    `IMAGE_NAME_RE` geprüft; eine fremde Adresse kann so nicht in die Seite
+    gelangen (live geprüft: `../`-Name → 400, unbekannter Name → 404).
 
 ## Änderungsprotokoll
 
@@ -195,6 +248,7 @@ und Datenschutz** zeilenweise.
 | 2026-07-23 | Etappe 1: Login + Dashboard + Anfragen-Verwaltung (Function, Migration, Frontend) | Betreiber-Backoffice; Anfragen waren nur per Formular-Eingang sichtbar |
 | 2026-07-23 | Etappe 2: Bewerbungen — Karriere-Seite + Formular (urra-apply, privater CV-Bucket) und Admin-Ansicht mit CV-Download | „Bewerbungen einsehen" aus der ursprünglichen Anfrage; Eingang gab es bei Urra noch nicht |
 | 2026-07-23 | Etappe 3: Inline-Editor „Seite bearbeiten" — site_content + save-content, ContentProvider/Editable/EditToolbar, 136 editierbare Texte auf allen Hauptseiten | Zweites Kernanliegen der ursprünglichen Anfrage („Seite vollständig bearbeiten") |
+| 2026-07-24 | Etappe 6: Kontaktdaten/Öffnungszeiten/Städte/Menü-Beschriftungen editierbar (Links + schema.org werden abgeleitet, gemeinsame IDs), Bearbeiten-Leiste als Seitenreiter mit Rückgängig/Verwerfen/Zurücksetzen/SEO/Hilfe, Mediathek mit Upload und Bildauswahl (`use-image`, `standalone`-Upload) | Vom Betreiber gemeldet: mehrere sichtbare Stellen ließen sich nicht bearbeiten; Wunsch nach Bedienung wie bei Cura Doma und Bild-Vorrat in der Mediathek |
 | 2026-07-24 | Etappe 5: „Seiten & Menü" (Beschriftung/Reihenfolge/Sichtbarkeit über site_content, kein neuer Endpunkt), Editor Runde 2 (Projekt-Detail, Partner, 404, Footer, Impressum, Datenschutz), Termine-Kachel entfernt, alle Kacheln aktiv | Restliche Module aus dem ursprünglichen Auftrag; Termine auf Wunsch gestrichen |
 | 2026-07-24 | Markierung im Bearbeiten-Modus theme-sicher (eigene CSS-Regeln statt outline-white/40) + Legende in der EditToolbar | Auf den hellen Beige-Unterseiten war nicht erkennbar, welcher Text bearbeitbar ist (Meldung des Betreibers) |
 | 2026-07-23 | Etappe 4: Bilder im Editor + Mediathek — öffentlicher Bucket site-images, urra-admin upload/list/delete-image, EditableImage, AdminMedia. Bild-Override als URL in site_content. Leistungen-Tools- und Projekt-Bilder austauschbar. CSP img-src um *.supabase.co erweitert (sonst blockte sie die hochgeladenen Bilder). Content-Type aus Magic-Bytes, nicht vom Client. | Erweiterung von „Seite bearbeiten" um Bilder (in Runde 1 bewusst ausgelassen) |

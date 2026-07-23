@@ -55,6 +55,9 @@ function safeImageId(id: string): string {
   return (id || "").replace(/[^a-z0-9.\-]/gi, "_").slice(0, 80) || "bild";
 }
 
+/** Erlaubter Dateiname im Bucket — schließt Pfadwechsel (`/`, `..`) aus. */
+const IMAGE_NAME_RE = /^[\w.\-]{1,120}$/;
+
 // Inline-Editor: erlaubte Editable-IDs, Deckel, Sanitizer.
 const CONTENT_ID_RE = /^[a-z0-9][a-z0-9.\-]{0,80}$/;
 const MAX_CONTENT_IDS = 400;
@@ -324,7 +327,15 @@ async function handle(req: Request): Promise<Response> {
   // ── Bilder im Editor / Mediathek ───────────────────────────────────────────
   if (action === "upload-image") {
     const id = body.id;
-    if (typeof id !== "string" || !CONTENT_ID_RE.test(id)) return json({ error: "bad_id" }, 400, origin);
+    // standalone = Upload aus der Mediathek: es gibt keine Stelle auf der
+    // Website, an die das Bild gehört. `id` ist dann nur ein Dateinamen-
+    // Vorschlag und wird NICHT als Inhalts-Schlüssel gespeichert — sonst
+    // entstünde ein Override, der auf nichts zeigt.
+    const standalone = body.standalone === true;
+    if (typeof id !== "string" || id.length === 0 || id.length > 80) {
+      return json({ error: "bad_id" }, 400, origin);
+    }
+    if (!standalone && !CONTENT_ID_RE.test(id)) return json({ error: "bad_id" }, 400, origin);
     const data = body.dataBase64;
     if (typeof data !== "string" || data.length > Math.ceil(MAX_IMAGE_BYTES * 1.4)) {
       return json({ error: "image_too_big" }, 400, origin);
@@ -341,8 +352,31 @@ async function handle(req: Request): Promise<Response> {
     if (upErr) return json({ error: "upload_failed" }, 500, origin);
 
     const url = sb.storage.from(IMAGES_BUCKET).getPublicUrl(path).data.publicUrl;
+    if (standalone) return json({ ok: true, url, name: path }, 200, origin);
+
     // URL als Override in site_content ablegen — kontrollierte URL aus unserem
     // eigenen Bucket, daher ohne sanitizeRich (die würde & in der URL zerstören).
+    const { error: dbErr } = await sb.from("site_content")
+      .upsert({ key: id, value: url, updated_at: new Date().toISOString() });
+    if (dbErr) return json({ error: "db_error" }, 500, origin);
+    return json({ ok: true, url, name: path }, 200, origin);
+  }
+
+  // Ein bereits hochgeladenes Bild an einer Stelle der Website einsetzen.
+  // Die URL wird SERVERSEITIG aus dem Bucket gebaut, nie vom Client übernommen —
+  // so kann über diesen Weg keine fremde Adresse in die Seite gelangen.
+  if (action === "use-image") {
+    const id = body.id;
+    const name = body.name;
+    if (typeof id !== "string" || !CONTENT_ID_RE.test(id)) return json({ error: "bad_id" }, 400, origin);
+    if (typeof name !== "string" || !IMAGE_NAME_RE.test(name)) {
+      return json({ error: "bad_name" }, 400, origin);
+    }
+    const { data: list, error: listErr } = await sb.storage.from(IMAGES_BUCKET).list("", { limit: 1000 });
+    if (listErr) return json({ error: "list_failed" }, 500, origin);
+    if (!(list ?? []).some((f) => f.name === name)) return json({ error: "not_found" }, 404, origin);
+
+    const url = sb.storage.from(IMAGES_BUCKET).getPublicUrl(name).data.publicUrl;
     const { error: dbErr } = await sb.from("site_content")
       .upsert({ key: id, value: url, updated_at: new Date().toISOString() });
     if (dbErr) return json({ error: "db_error" }, 500, origin);
@@ -372,7 +406,7 @@ async function handle(req: Request): Promise<Response> {
 
   if (action === "delete-image") {
     const name = body.name;
-    if (typeof name !== "string" || !/^[\w.\-]{1,120}$/.test(name)) return json({ error: "bad_name" }, 400, origin);
+    if (typeof name !== "string" || !IMAGE_NAME_RE.test(name)) return json({ error: "bad_name" }, 400, origin);
     const base = sb.storage.from(IMAGES_BUCKET).getPublicUrl("").data.publicUrl.replace(/\/$/, "");
     const url = `${base}/${name}`;
     if (!body.force) {
