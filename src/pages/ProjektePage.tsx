@@ -125,6 +125,7 @@ export function ProjektePage() {
                         <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-900">
                           <ProjectImage
                             src={p.hero}
+                            editId={`projekte.item.${p.slug}.image`}
                             alt={`${p.title} — ${p.category} in ${p.location}, ausgeführt ${p.year}`}
                             // Gemessen: bei 1037 px Viewport ist das Bild
                             // 517 px breit — 50vw trifft das, 58vw ließ den

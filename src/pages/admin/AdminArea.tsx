@@ -6,6 +6,7 @@ import { AdminLoginForm } from './AdminLoginForm';
 import { AdminDashboard } from './AdminDashboard';
 import { AdminInbox } from './AdminInbox';
 import { AdminJobs } from './AdminJobs';
+import { AdminMedia } from './AdminMedia';
 
 /**
  * Der komplette Verwaltungsbereich unter `/admin`. Bewusst AUSSERHALB des
@@ -54,6 +55,7 @@ function AdminRoutes() {
       <Route path="/" element={<AdminDashboard />} />
       <Route path="/anfragen" element={<AdminInbox />} />
       <Route path="/bewerbungen" element={<AdminJobs />} />
+      <Route path="/mediathek" element={<AdminMedia />} />
       {/* Unbekannte Unterpfade zurück auf die Übersicht. */}
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

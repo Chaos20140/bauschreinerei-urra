@@ -27,6 +27,8 @@ type ContentCtx = {
   enterEditMode: (pw: string) => void;
   leaveEditMode: () => void;
   save: () => Promise<{ ok: boolean; error?: string }>;
+  /** Ein Bild hochladen und als Override für die ID setzen (sofort wirksam). */
+  uploadImage: (id: string, file: File) => Promise<{ ok: boolean; error?: string }>;
 };
 
 const Ctx = createContext<ContentCtx | null>(null);
@@ -122,6 +124,40 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     }
   }, [pending]);
 
+  const uploadImage = useCallback(
+    async (id: string, file: File): Promise<{ ok: boolean; error?: string }> => {
+      try {
+        const dataBase64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => reject(new Error('read_failed'));
+          reader.readAsDataURL(file);
+        });
+        const res = await fetch(ADMIN_FN_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${FN_KEY}`,
+            apikey: FN_KEY,
+          },
+          body: JSON.stringify({
+            action: 'upload-image',
+            password: pwRef.current,
+            id,
+            dataBase64,
+          }),
+        });
+        if (!res.ok) return { ok: false, error: String(res.status) };
+        const { url } = await res.json();
+        if (typeof url === 'string') setOverrides((o) => ({ ...o, [id]: url }));
+        return { ok: true };
+      } catch {
+        return { ok: false, error: 'network' };
+      }
+    },
+    []
+  );
+
   const value = useMemo<ContentCtx>(
     () => ({
       get,
@@ -132,8 +168,9 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       enterEditMode,
       leaveEditMode,
       save,
+      uploadImage,
     }),
-    [get, editMode, isDirty, pending, setPending, enterEditMode, leaveEditMode, save]
+    [get, editMode, isDirty, pending, setPending, enterEditMode, leaveEditMode, save, uploadImage]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

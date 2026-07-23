@@ -26,6 +26,35 @@ import {
 const CV_BUCKET = "bewerbungen";
 const CV_SIGNED_URL_TTL_S = 600; // 10 Minuten
 
+// Mediathek / editierbare Bilder.
+const IMAGES_BUCKET = "site-images";
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+function decodeImageBase64(b64: string): Uint8Array {
+  const payload = b64.includes(",") ? b64.slice(b64.indexOf(",") + 1) : b64;
+  const bin = atob(payload.trim());
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+// Bildtyp aus den ersten Bytes ableiten (nicht dem Client vertrauen). Der Bucket
+// ist zwar öffentlich, aber der Content-Type wird aus den gesnifften Bytes
+// gesetzt, damit keine als Bild getarnte HTML-Datei ausgeliefert wird.
+function sniffImage(bytes: Uint8Array): "jpg" | "png" | "webp" | null {
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return "jpg";
+  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return "png";
+  if (
+    bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
+    bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50
+  ) return "webp";
+  return null;
+}
+
+function safeImageId(id: string): string {
+  return (id || "").replace(/[^a-z0-9.\-]/gi, "_").slice(0, 80) || "bild";
+}
+
 // Inline-Editor: erlaubte Editable-IDs, Deckel, Sanitizer.
 const CONTENT_ID_RE = /^[a-z0-9][a-z0-9.\-]{0,80}$/;
 const MAX_CONTENT_IDS = 400;
@@ -289,6 +318,69 @@ async function handle(req: Request): Promise<Response> {
     if (keys.length > MAX_CONTENT_IDS) return json({ error: "too_many" }, 400, origin);
     const { error } = await sb.from("site_content").delete().in("key", keys as string[]);
     if (error) return json({ error: "db_error" }, 500, origin);
+    return json({ ok: true }, 200, origin);
+  }
+
+  // ── Bilder im Editor / Mediathek ───────────────────────────────────────────
+  if (action === "upload-image") {
+    const id = body.id;
+    if (typeof id !== "string" || !CONTENT_ID_RE.test(id)) return json({ error: "bad_id" }, 400, origin);
+    const data = body.dataBase64;
+    if (typeof data !== "string" || data.length > Math.ceil(MAX_IMAGE_BYTES * 1.4)) {
+      return json({ error: "image_too_big" }, 400, origin);
+    }
+    const bytes = decodeImageBase64(data);
+    if (bytes.length === 0 || bytes.length > MAX_IMAGE_BYTES) return json({ error: "image_too_big" }, 400, origin);
+    const ext = sniffImage(bytes);
+    if (!ext) return json({ error: "not_image" }, 400, origin);
+
+    const path = `${safeImageId(id)}-${Date.now()}.${ext}`;
+    const contentType = ext === "jpg" ? "image/jpeg" : `image/${ext}`;
+    const { error: upErr } = await sb.storage.from(IMAGES_BUCKET)
+      .upload(path, bytes, { contentType, upsert: true });
+    if (upErr) return json({ error: "upload_failed" }, 500, origin);
+
+    const url = sb.storage.from(IMAGES_BUCKET).getPublicUrl(path).data.publicUrl;
+    // URL als Override in site_content ablegen — kontrollierte URL aus unserem
+    // eigenen Bucket, daher ohne sanitizeRich (die würde & in der URL zerstören).
+    const { error: dbErr } = await sb.from("site_content")
+      .upsert({ key: id, value: url, updated_at: new Date().toISOString() });
+    if (dbErr) return json({ error: "db_error" }, 500, origin);
+    return json({ ok: true, url }, 200, origin);
+  }
+
+  if (action === "list-images") {
+    const { data: files, error } = await sb.storage.from(IMAGES_BUCKET)
+      .list("", { limit: 1000, sortBy: { column: "created_at", order: "desc" } });
+    if (error) return json({ error: "storage_error" }, 500, origin);
+    const { data: rows } = await sb.from("site_content").select("value");
+    const used = new Set((rows ?? []).map((r) => String(r.value)));
+    const base = sb.storage.from(IMAGES_BUCKET).getPublicUrl("").data.publicUrl.replace(/\/$/, "");
+    const items = (files ?? [])
+      .filter((f) => f && typeof f.name === "string" && !f.name.startsWith("."))
+      .map((f) => {
+        const url = `${base}/${f.name}`;
+        return {
+          name: f.name,
+          url,
+          inUse: used.has(url),
+          size: (f.metadata as { size?: number } | null)?.size ?? null,
+        };
+      });
+    return json({ items }, 200, origin);
+  }
+
+  if (action === "delete-image") {
+    const name = body.name;
+    if (typeof name !== "string" || !/^[\w.\-]{1,120}$/.test(name)) return json({ error: "bad_name" }, 400, origin);
+    const base = sb.storage.from(IMAGES_BUCKET).getPublicUrl("").data.publicUrl.replace(/\/$/, "");
+    const url = `${base}/${name}`;
+    if (!body.force) {
+      const { data: rows } = await sb.from("site_content").select("key").eq("value", url).limit(1);
+      if (rows && rows.length > 0) return json({ error: "in_use" }, 409, origin);
+    }
+    const { error } = await sb.storage.from(IMAGES_BUCKET).remove([name]);
+    if (error) return json({ error: "storage_error" }, 500, origin);
     return json({ ok: true }, 200, origin);
   }
 

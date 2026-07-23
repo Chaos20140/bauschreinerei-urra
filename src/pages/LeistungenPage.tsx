@@ -1,6 +1,7 @@
 import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { Editable } from '../components/editor/Editable';
+import { EditableImage } from '../components/editor/EditableImage';
 import { BlurIn } from '../components/BlurIn';
 import { services, products } from '../data/content';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
@@ -170,11 +171,10 @@ export function LeistungenPage() {
             {TOOLS.map((t, idx) => (
               <BlurIn as="li" className="group rounded-2xl overflow-hidden border border-white/15 bg-white/[0.03] h-full flex flex-col" key={t.src} delay={idx * 0.08}>
                 <div className={`relative ${t.aspect} overflow-hidden bg-neutral-900`}>
-                  <img
+                  <EditableImage
+                    id={`leistungen.tools${idx}.image`}
                     src={`${BASE}${t.src}`}
                     alt={t.alt}
-                    loading="lazy"
-                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>

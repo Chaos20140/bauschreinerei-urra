@@ -33,7 +33,7 @@ const TILES: Tile[] = [
   { key: 'anfragen', to: '/admin/anfragen', label: 'Anfragen', Icon: Inbox, hint: '', active: true, countKey: 'anfragen' },
   { key: 'bewerbungen', to: '/admin/bewerbungen', label: 'Bewerbungen', Icon: FileText, hint: '', active: true, countKey: 'bewerbungen' },
   { key: 'termine', label: 'Termine', Icon: CalendarDays, hint: 'In Vorbereitung', active: false },
-  { key: 'mediathek', label: 'Mediathek', Icon: Images, hint: 'In Vorbereitung', active: false },
+  { key: 'mediathek', to: '/admin/mediathek', label: 'Mediathek', Icon: Images, hint: 'Bilder verwalten & ungenutzte löschen', active: true },
   { key: 'seiten', label: 'Seiten & Menü', Icon: Files, hint: 'In Vorbereitung', active: false },
   {
     key: 'bearbeiten',

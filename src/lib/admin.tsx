@@ -92,6 +92,16 @@ type AdminCtx = {
   deleteJob: (id: string) => Promise<void>;
   cvUrl: (id: string) => Promise<string | null>;
   exportJobs: (includeArchived?: boolean) => Promise<void>;
+  listImages: () => Promise<MediaItem[]>;
+  deleteImage: (name: string, force?: boolean) => Promise<'ok' | 'in_use' | 'error'>;
+};
+
+/** Ein Bild in der Mediathek. */
+export type MediaItem = {
+  name: string;
+  url: string;
+  inUse: boolean;
+  size: number | null;
 };
 
 const Ctx = createContext<AdminCtx | null>(null);
@@ -206,12 +216,29 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const listImages = useCallback(async () => {
+    const res = await post({ action: 'list-images', password: pwRef.current });
+    if (!res.ok) throw new Error(String(res.status));
+    return ((await res.json()).items ?? []) as MediaItem[];
+  }, []);
+
+  const deleteImage = useCallback(
+    async (name: string, force = false): Promise<'ok' | 'in_use' | 'error'> => {
+      const res = await post({ action: 'delete-image', password: pwRef.current, name, force });
+      if (res.ok) return 'ok';
+      if (res.status === 409) return 'in_use';
+      return 'error';
+    },
+    []
+  );
+
   return (
     <Ctx.Provider
       value={{
         authed, login, logout, pw,
         listContacts, updateContact, deleteContact, exportContacts,
         listJobs, updateJob, deleteJob, cvUrl, exportJobs,
+        listImages, deleteImage,
       }}
     >
       {children}

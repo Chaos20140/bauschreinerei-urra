@@ -99,6 +99,7 @@ export function ProjectDetailPage() {
             <div className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 bg-neutral-900">
               <ProjectImage
                 src={project.hero}
+                editId={`projekte.${project.slug}.hero`}
                 alt={`${project.title} — ${project.category} in ${project.location}, ausgeführt ${project.year}`}
                 sizes="(min-width: 1280px) 1280px, 100vw"
                 priority
