@@ -15,3 +15,20 @@ GEMINI.md
 .cursorrules
 .cursor/
 .github/copilot-instructions.md
+
+# Rohmaterial und Debug-Artefakte gehören nicht ins Deployment-Repo.
+# Die Dateien bleiben lokal erhalten, werden aber nicht mehr versioniert —
+# sie machten den Klon rund 21 MB schwerer, ohne je referenziert zu werden.
+*.mp4
+debug-*.png
+/assets/
+
+# Aus media-src/ generierte Bilder. Quelle der Wahrheit sind die Originale
+# unter media-src/ bzw. public/projekte/*.webp — `npm run images` erzeugt
+# diese Ableitungen, im CI läuft das automatisch vor dem Build.
+/public/frames/
+/public/frames-mobile/
+/public/og-image.jpg
+/public/projekte/*-800.webp
+/public/projekte/*-1200.webp
+/public/projekte/*-1600.webp
