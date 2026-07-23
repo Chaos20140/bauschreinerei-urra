@@ -10,6 +10,7 @@ import {
   isAdminStatus,
   isUuid,
   publicContactRecord,
+  publicJobRecord,
   sanitizeNote,
 } from "./admin_util.ts";
 
@@ -64,4 +65,14 @@ test("publicContactRecord entfernt honeypot und user_agent", () => {
   assert.equal(pub.name, "Max");
   assert.equal("honeypot" in pub, false);
   assert.equal("user_agent" in pub, false);
+});
+
+test("publicJobRecord verbirgt cv_path und liefert has_cv", () => {
+  const mitCv = publicJobRecord({ id: "a", name: "Lena", cv_path: "a/lebenslauf.pdf", cv_filename: "lebenslauf.pdf" });
+  assert.equal("cv_path" in mitCv, false);
+  assert.equal(mitCv.has_cv, true);
+  assert.equal(mitCv.cv_filename, "lebenslauf.pdf");
+
+  const ohneCv = publicJobRecord({ id: "b", name: "Tom", cv_path: null });
+  assert.equal(ohneCv.has_cv, false);
 });

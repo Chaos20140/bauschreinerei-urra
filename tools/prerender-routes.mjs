@@ -49,6 +49,12 @@ const ROUTES = [
       'Inhabergeführte Bauschreinerei aus Olsberg: Heribert Urra fertigt und montiert seit 2003 Fenster, Türen und Garagentore im Sauerland.',
   },
   {
+    path: 'karriere',
+    title: 'Karriere · Jobs in der Bauschreinerei | Urra Olsberg',
+    description:
+      'Arbeiten bei der Bauschreinerei Urra: offene Stellen für Schreiner, Monteure und Auszubildende im Sauerland. Jetzt online bewerben — auch initiativ.',
+  },
+  {
     path: 'kontakt',
     title: 'Kontakt · Angebot anfragen | Bauschreinerei Urra Olsberg',
     description:

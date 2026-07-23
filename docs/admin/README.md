@@ -85,8 +85,30 @@ Function-URL: `<SUPABASE_URL>/functions/v1/urra-admin`. Alle POST, JSON-Body mit
 `/admin` wird **nicht** vorgerendert (kein SEO) und läuft über den SPA-Fallback
 (`404.html`); `tools/prerender-routes.mjs` lässt die Route aus.
 
+## Bewerbungen (Etappe 2)
+
+Öffentliche Karriere-Seite (`/karriere`) mit Bewerbungsformular inkl. optionalem
+Lebenslauf-Upload, plus Bewerbungs-Verwaltung im Admin.
+
+- **Eingang:** eigene öffentliche Function **`urra-apply`** (kein Passwort, aber
+  rate-limited über `urra_apply_log`, Honeypot, Feld- und Datei-Validierung).
+  Der Lebenslauf wird per Service-Role in den **privaten** Bucket `bewerbungen`
+  geladen — bewusst kein direkter Client-Insert, damit Lebensläufe nie
+  öffentlich abrufbar sind. Kein E-Mail-Versand (konsistent mit dem
+  Kontaktformular); neue Bewerbungen sieht der Betreiber über den „neu"-Zähler.
+- **Verwaltung:** urra-admin um `list-jobs`, `update-job`, `delete-job` (löscht
+  den Lebenslauf mit), `cv-url` (10-Minuten-Signed-Link) und `export-jobs`
+  erweitert. `job_applications` mit denselben Betreiber-Feldern wie Anfragen.
+- **CV-Sicherheit:** privater Bucket (öffentlicher Zugriff → 400), Magic-Byte-
+  plus Größen-/Typ-Prüfung beim Upload, Download nur über kurzlebige Signed URLs.
+
+> Hinweis: Die Admin-Ansichten für Anfragen und Bewerbungen sind noch getrennte
+> Komponenten (`AdminInbox`/`AdminJobs`). Kommt „Termine" als dritter Typ dazu,
+> lohnt sich eine Generalisierung (eine Liste + ein Detail-Panel, per Typ-Config).
+
 ## Änderungsprotokoll
 
 | Datum | Was | Warum |
 |---|---|---|
 | 2026-07-23 | Etappe 1: Login + Dashboard + Anfragen-Verwaltung (Function, Migration, Frontend) | Betreiber-Backoffice; Anfragen waren nur per Formular-Eingang sichtbar |
+| 2026-07-23 | Etappe 2: Bewerbungen — Karriere-Seite + Formular (urra-apply, privater CV-Bucket) und Admin-Ansicht mit CV-Download | „Bewerbungen einsehen" aus der ursprünglichen Anfrage; Eingang gab es bei Urra noch nicht |

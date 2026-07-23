@@ -13,6 +13,7 @@ import {
 import { useAdmin } from '../../lib/admin';
 import { brand } from '../../data/content';
 
+type CountKey = 'anfragen' | 'bewerbungen';
 type Tile = {
   key: string;
   to?: string;
@@ -20,13 +21,14 @@ type Tile = {
   Icon: LucideIcon;
   hint: string;
   active: boolean;
+  countKey?: CountKey;
 };
 
-// Etappe 1: nur „Anfragen" ist aktiv. Die übrigen Kacheln zeigen den
-// Ausbaupfad, sind aber noch nicht verlinkt.
+// Etappe 2: „Anfragen" und „Bewerbungen" sind aktiv (je mit Live-Zähler). Die
+// übrigen Kacheln zeigen den Ausbaupfad, sind aber noch nicht verlinkt.
 const TILES: Tile[] = [
-  { key: 'anfragen', to: '/admin/anfragen', label: 'Anfragen', Icon: Inbox, hint: '', active: true },
-  { key: 'bewerbungen', label: 'Bewerbungen', Icon: FileText, hint: 'In Vorbereitung', active: false },
+  { key: 'anfragen', to: '/admin/anfragen', label: 'Anfragen', Icon: Inbox, hint: '', active: true, countKey: 'anfragen' },
+  { key: 'bewerbungen', to: '/admin/bewerbungen', label: 'Bewerbungen', Icon: FileText, hint: '', active: true, countKey: 'bewerbungen' },
   { key: 'termine', label: 'Termine', Icon: CalendarDays, hint: 'In Vorbereitung', active: false },
   { key: 'mediathek', label: 'Mediathek', Icon: Images, hint: 'In Vorbereitung', active: false },
   { key: 'seiten', label: 'Seiten & Menü', Icon: Files, hint: 'In Vorbereitung', active: false },
@@ -34,22 +36,28 @@ const TILES: Tile[] = [
 ];
 
 export function AdminDashboard() {
-  const { logout, listContacts } = useAdmin();
-  const [neu, setNeu] = useState<number | null>(null);
+  const { logout, listContacts, listJobs } = useAdmin();
+  const [counts, setCounts] = useState<Record<CountKey, number | null>>({
+    anfragen: null,
+    bewerbungen: null,
+  });
 
   useEffect(() => {
     let alive = true;
+    const neuCount = (items: { admin_status: string }[]) =>
+      items.filter((r) => (r.admin_status ?? 'neu') === 'neu').length;
+
     listContacts()
-      .then((items) => {
-        if (alive) setNeu(items.filter((r) => (r.admin_status ?? 'neu') === 'neu').length);
-      })
-      .catch(() => {
-        if (alive) setNeu(-1);
-      });
+      .then((items) => alive && setCounts((c) => ({ ...c, anfragen: neuCount(items) })))
+      .catch(() => alive && setCounts((c) => ({ ...c, anfragen: -1 })));
+    listJobs()
+      .then((items) => alive && setCounts((c) => ({ ...c, bewerbungen: neuCount(items) })))
+      .catch(() => alive && setCounts((c) => ({ ...c, bewerbungen: -1 })));
+
     return () => {
       alive = false;
     };
-  }, [listContacts]);
+  }, [listContacts, listJobs]);
 
   return (
     <section className="max-w-5xl mx-auto px-6 py-14">
@@ -71,7 +79,8 @@ export function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {TILES.map(({ key, to, label, Icon, hint, active }) => {
+        {TILES.map(({ key, to, label, Icon, hint, active, countKey }) => {
+          const count = countKey ? counts[countKey] : null;
           const inner = (
             <>
               <div className="flex items-center gap-3 mb-4">
@@ -82,13 +91,13 @@ export function AdminDashboard() {
               </div>
               <div className="text-sm text-white/55">
                 {active ? (
-                  neu === null ? (
+                  count === null ? (
                     'lädt …'
-                  ) : neu < 0 ? (
+                  ) : count < 0 ? (
                     '—'
                   ) : (
                     <>
-                      <span className="text-white font-semibold">{neu}</span> neu
+                      <span className="text-white font-semibold">{count}</span> neu
                     </>
                   )
                 ) : (

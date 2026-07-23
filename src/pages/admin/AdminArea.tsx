@@ -5,6 +5,7 @@ import { isAdminConfigured } from '../../lib/admin-config';
 import { AdminLoginForm } from './AdminLoginForm';
 import { AdminDashboard } from './AdminDashboard';
 import { AdminInbox } from './AdminInbox';
+import { AdminJobs } from './AdminJobs';
 
 /**
  * Der komplette Verwaltungsbereich unter `/admin`. Bewusst AUSSERHALB des
@@ -52,6 +53,7 @@ function AdminRoutes() {
     <Routes>
       <Route path="/" element={<AdminDashboard />} />
       <Route path="/anfragen" element={<AdminInbox />} />
+      <Route path="/bewerbungen" element={<AdminJobs />} />
       {/* Unbekannte Unterpfade zurück auf die Übersicht. */}
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

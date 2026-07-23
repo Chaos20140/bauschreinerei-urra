@@ -17,9 +17,14 @@ import {
   fmtDateDe,
   isAdminStatus,
   isUuid,
+  JOB_CSV_COLUMNS,
   publicContactRecord,
+  publicJobRecord,
   sanitizeNote,
 } from "./admin_util.ts";
+
+const CV_BUCKET = "bewerbungen";
+const CV_SIGNED_URL_TTL_S = 600; // 10 Minuten
 
 const EDIT_PW = Deno.env.get("EDIT_PASSWORD") || "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
@@ -163,12 +168,39 @@ async function adminGate(req: Request, origin: string | null): Promise<GateOk | 
   return { ok: true, body, sb };
 }
 
-async function loadContacts(sb: SB, includeArchived: boolean): Promise<Record<string, unknown>[]> {
-  let q = sb.from("contact_requests").select("*").order("created_at", { ascending: false });
+async function loadRows(
+  sb: SB,
+  table: string,
+  includeArchived: boolean,
+): Promise<Record<string, unknown>[]> {
+  let q = sb.from(table).select("*").order("created_at", { ascending: false });
   if (!includeArchived) q = q.eq("admin_archived", false);
   const { data, error } = await q;
   if (error) throw new Error(error.message);
   return (data ?? []) as Record<string, unknown>[];
+}
+
+// Gemeinsame Update-Logik für Anfragen und Bewerbungen (gleiche Betreiber-Felder).
+async function updateRow(
+  sb: SB,
+  table: string,
+  body: Record<string, unknown>,
+  origin: string | null,
+  toPublic: (r: Record<string, unknown>) => Record<string, unknown>,
+): Promise<Response> {
+  const id = body.id;
+  if (!isUuid(id)) return json({ error: "bad_id" }, 400, origin);
+  const patch: Record<string, unknown> = { admin_updated_at: new Date().toISOString() };
+  if ("admin_status" in body) {
+    if (!isAdminStatus(body.admin_status)) return json({ error: "bad_status" }, 400, origin);
+    patch.admin_status = body.admin_status;
+  }
+  if ("admin_note" in body) patch.admin_note = sanitizeNote(body.admin_note);
+  if ("admin_archived" in body) patch.admin_archived = Boolean(body.admin_archived);
+  const { data, error } = await sb.from(table).update(patch).eq("id", id).select("*").maybeSingle();
+  if (error) return json({ error: "db_error" }, 500, origin);
+  if (!data) return json({ error: "not_found" }, 404, origin);
+  return json({ ok: true, item: toPublic(data as Record<string, unknown>) }, 200, origin);
 }
 
 async function handle(req: Request): Promise<Response> {
@@ -191,9 +223,34 @@ async function handle(req: Request): Promise<Response> {
     return json({ ok: true }, 200, origin);
   }
 
+  function csvResponse(
+    items: Record<string, unknown>[],
+    columns: Array<[string, string]>,
+    filename: string,
+  ): Response {
+    const headers = columns.map(([h]) => h);
+    const rows = items.map((r) =>
+      columns.map(([, k]) => {
+        if (k === "created_at") return r[k] ? fmtDateDe(String(r[k])) : "";
+        if (k === "admin_status") return String(r[k] ?? "neu");
+        return r[k] == null ? "" : String(r[k]);
+      })
+    );
+    const csv = "﻿" + buildCsv(headers, rows); // UTF-8-BOM für Excel
+    return new Response(csv, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        ...corsHeaders(origin),
+      },
+    });
+  }
+
+  // ── Anfragen ───────────────────────────────────────────────────────────────
   if (action === "list-contacts") {
     try {
-      const items = await loadContacts(sb, Boolean(body.includeArchived));
+      const items = await loadRows(sb, "contact_requests", Boolean(body.includeArchived));
       return json({ items: items.map(publicContactRecord) }, 200, origin);
     } catch {
       return json({ error: "db_error" }, 500, origin);
@@ -201,22 +258,7 @@ async function handle(req: Request): Promise<Response> {
   }
 
   if (action === "update-contact") {
-    const id = body.id;
-    if (!isUuid(id)) return json({ error: "bad_id" }, 400, origin);
-
-    const patch: Record<string, unknown> = { admin_updated_at: new Date().toISOString() };
-    if ("admin_status" in body) {
-      if (!isAdminStatus(body.admin_status)) return json({ error: "bad_status" }, 400, origin);
-      patch.admin_status = body.admin_status;
-    }
-    if ("admin_note" in body) patch.admin_note = sanitizeNote(body.admin_note);
-    if ("admin_archived" in body) patch.admin_archived = Boolean(body.admin_archived);
-
-    const { data, error } = await sb.from("contact_requests")
-      .update(patch).eq("id", id).select("*").maybeSingle();
-    if (error) return json({ error: "db_error" }, 500, origin);
-    if (!data) return json({ error: "not_found" }, 404, origin);
-    return json({ ok: true, item: publicContactRecord(data as Record<string, unknown>) }, 200, origin);
+    return updateRow(sb, "contact_requests", body, origin, publicContactRecord);
   }
 
   if (action === "delete-contact") {
@@ -229,24 +271,60 @@ async function handle(req: Request): Promise<Response> {
 
   if (action === "export-contacts") {
     try {
-      const items = await loadContacts(sb, Boolean(body.includeArchived));
-      const headers = CONTACT_CSV_COLUMNS.map(([h]) => h);
-      const rows = items.map((r) =>
-        CONTACT_CSV_COLUMNS.map(([, k]) => {
-          if (k === "created_at") return r[k] ? fmtDateDe(String(r[k])) : "";
-          if (k === "admin_status") return String(r[k] ?? "neu");
-          return r[k] == null ? "" : String(r[k]);
-        })
-      );
-      const csv = "﻿" + buildCsv(headers, rows); // UTF-8-BOM für Excel
-      return new Response(csv, {
-        status: 200,
-        headers: {
-          "Content-Type": "text/csv; charset=utf-8",
-          "Content-Disposition": 'attachment; filename="urra-anfragen.csv"',
-          ...corsHeaders(origin),
-        },
-      });
+      const items = await loadRows(sb, "contact_requests", Boolean(body.includeArchived));
+      return csvResponse(items, CONTACT_CSV_COLUMNS, "urra-anfragen.csv");
+    } catch {
+      return json({ error: "db_error" }, 500, origin);
+    }
+  }
+
+  // ── Bewerbungen ────────────────────────────────────────────────────────────
+  if (action === "list-jobs") {
+    try {
+      const items = await loadRows(sb, "job_applications", Boolean(body.includeArchived));
+      return json({ items: items.map(publicJobRecord) }, 200, origin);
+    } catch {
+      return json({ error: "db_error" }, 500, origin);
+    }
+  }
+
+  if (action === "update-job") {
+    return updateRow(sb, "job_applications", body, origin, publicJobRecord);
+  }
+
+  if (action === "delete-job") {
+    const id = body.id;
+    if (!isUuid(id)) return json({ error: "bad_id" }, 400, origin);
+    // Erst den Lebenslauf aus dem Storage holen und mitlöschen.
+    const { data: rec } = await sb.from("job_applications")
+      .select("cv_path").eq("id", id).maybeSingle();
+    const cvPath = rec && typeof rec.cv_path === "string" ? rec.cv_path : null;
+    if (cvPath) {
+      try { await sb.storage.from(CV_BUCKET).remove([cvPath]); } catch { /* egal */ }
+    }
+    const { error } = await sb.from("job_applications").delete().eq("id", id);
+    if (error) return json({ error: "db_error" }, 500, origin);
+    return json({ ok: true }, 200, origin);
+  }
+
+  if (action === "cv-url") {
+    const id = body.id;
+    if (!isUuid(id)) return json({ error: "bad_id" }, 400, origin);
+    const { data: rec } = await sb.from("job_applications")
+      .select("cv_path, cv_filename").eq("id", id).maybeSingle();
+    const cvPath = rec && typeof rec.cv_path === "string" ? rec.cv_path : null;
+    if (!cvPath) return json({ error: "no_cv" }, 404, origin);
+    const filename = rec && typeof rec.cv_filename === "string" ? rec.cv_filename : true;
+    const { data, error } = await sb.storage.from(CV_BUCKET)
+      .createSignedUrl(cvPath, CV_SIGNED_URL_TTL_S, { download: filename });
+    if (error || !data?.signedUrl) return json({ error: "sign_failed" }, 500, origin);
+    return json({ url: data.signedUrl }, 200, origin);
+  }
+
+  if (action === "export-jobs") {
+    try {
+      const items = await loadRows(sb, "job_applications", Boolean(body.includeArchived));
+      return csvResponse(items, JOB_CSV_COLUMNS, "urra-bewerbungen.csv");
     } catch {
       return json({ error: "db_error" }, 500, origin);
     }

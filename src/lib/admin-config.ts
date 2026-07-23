@@ -1,16 +1,21 @@
-// Adresse der Admin-Edge-Function und der öffentliche Key für den Aufruf.
+// Adressen der Supabase-Edge-Functions und der öffentliche Key für den Aufruf.
 //
-// Die Function läuft mit `--no-verify-jwt`; der mitgesendete Publishable Key
+// Die Functions laufen mit `--no-verify-jwt`; der mitgesendete Publishable Key
 // dient nur dem Supabase-Gateway-Routing, nicht der Autorisierung — die
-// übernimmt das Passwort-Gate in der Function selbst.
+// übernimmt bei urra-admin das Passwort-Gate, bei urra-apply das Rate-Limit.
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
 
-export const ADMIN_FN_URL = SUPABASE_URL
-  ? `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/urra-admin`
-  : "";
+const FN_BASE = SUPABASE_URL ? `${SUPABASE_URL.replace(/\/$/, '')}/functions/v1` : '';
 
-export const ADMIN_FN_KEY = PUBLISHABLE_KEY ?? "";
+/** Passwortgeschützte Verwaltung (Anfragen, Bewerbungen …). */
+export const ADMIN_FN_URL = FN_BASE ? `${FN_BASE}/urra-admin` : '';
 
-export const isAdminConfigured = Boolean(ADMIN_FN_URL && ADMIN_FN_KEY);
+/** Öffentlicher Bewerbungs-Eingang (Karriere-Formular). */
+export const APPLY_FN_URL = FN_BASE ? `${FN_BASE}/urra-apply` : '';
+
+export const FN_KEY = PUBLISHABLE_KEY ?? '';
+
+export const isAdminConfigured = Boolean(ADMIN_FN_URL && FN_KEY);
+export const isApplyConfigured = Boolean(APPLY_FN_URL && FN_KEY);

@@ -60,6 +60,26 @@ export function publicContactRecord(r: Record<string, unknown>): Record<string, 
   return out;
 }
 
+// Bewerbung für den Client: der interne Storage-Pfad bleibt verborgen. Der
+// Client bekommt nur, OB ein Lebenslauf da ist (has_cv) und dessen Dateiname;
+// die eigentliche Datei holt er über einen kurzlebigen Signed-Link (cv-url).
+export function publicJobRecord(r: Record<string, unknown>): Record<string, unknown> {
+  const { cv_path, ...rest } = r ?? {};
+  return { ...rest, has_cv: Boolean(cv_path) };
+}
+
+export const JOB_CSV_COLUMNS: Array<[string, string]> = [
+  ["Eingegangen", "created_at"],
+  ["Status", "admin_status"],
+  ["Name", "name"],
+  ["E-Mail", "email"],
+  ["Telefon", "phone"],
+  ["Position", "position"],
+  ["Nachricht", "message"],
+  ["Lebenslauf", "cv_filename"],
+  ["Notiz", "admin_note"],
+];
+
 // Deutsches Anzeige-Datum aus einem ISO-Zeitstempel (für den CSV-Export).
 export function fmtDateDe(iso: string): string {
   const d = new Date(iso);

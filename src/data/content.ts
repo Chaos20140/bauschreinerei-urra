@@ -21,8 +21,40 @@ export const navigation = [
   { label: 'Projekte', href: '/projekte' },
   { label: 'Partner', href: '/partner' },
   { label: 'Über uns', href: '/ueber-uns' },
+  { label: 'Karriere', href: '/karriere' },
   { label: 'Kontakt', href: '/kontakt' },
 ] as const;
+
+// Karriere-Seite. Die Positionen speisen das Dropdown im Bewerbungsformular;
+// „Initiativbewerbung" fängt alles ab, was nicht in die Liste passt. Texte und
+// Stellen hier anpassen — sie sind bewusst zentral gehalten.
+export const career = {
+  eyebrow: 'Karriere',
+  title: 'Werde Teil des Handwerks.',
+  intro:
+    'Wir sind ein inhabergeführtes Team aus dem Sauerland und wachsen mit unseren Projekten. Wenn du sauberes Handwerk, feste Ansprechpartner und ehrliche Arbeit schätzt, freuen wir uns auf deine Bewerbung.',
+  reasons: [
+    {
+      title: 'Festes Team',
+      body: 'Kein Subunternehmer-Karussell — bei uns arbeitest du in einem eingespielten, festangestellten Team.',
+    },
+    {
+      title: 'Moderne Ausstattung',
+      body: 'Digitales Aufmaß per metiscale-App, gepflegte Werkzeuge und Fahrzeuge, saubere Baustellen.',
+    },
+    {
+      title: 'Region statt Fernmontage',
+      body: 'Unsere Projekte liegen im Sauerland, in OWL und im Ruhrgebiet — abends bist du zuhause.',
+    },
+  ],
+  positions: [
+    'Schreiner / Tischler (m/w/d)',
+    'Monteur für Fenster & Türen (m/w/d)',
+    'Auszubildende:r zum Schreiner (m/w/d)',
+    'Bürokraft / Auftragsabwicklung (m/w/d)',
+    'Initiativbewerbung',
+  ],
+} as const;
 
 export const services = {
   title: 'Leistungen',

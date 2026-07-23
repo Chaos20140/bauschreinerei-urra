@@ -32,6 +32,9 @@ const PartnerPage = lazy(() =>
 const UeberUnsPage = lazy(() =>
   import('./pages/UeberUnsPage').then((m) => ({ default: m.UeberUnsPage }))
 );
+const KarrierePage = lazy(() =>
+  import('./pages/KarrierePage').then((m) => ({ default: m.KarrierePage }))
+);
 const KontaktPage = lazy(() =>
   import('./pages/KontaktPage').then((m) => ({ default: m.KontaktPage }))
 );
@@ -86,6 +89,7 @@ function PublicSite() {
             <Route path="/projekte/:slug" element={<ProjectDetailPage />} />
             <Route path="/partner" element={<PartnerPage />} />
             <Route path="/ueber-uns" element={<UeberUnsPage />} />
+            <Route path="/karriere" element={<KarrierePage />} />
             <Route path="/kontakt" element={<KontaktPage />} />
             <Route path="/impressum" element={<ImpressumPage />} />
             <Route path="/datenschutz" element={<DatenschutzPage />} />

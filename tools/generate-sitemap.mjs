@@ -20,6 +20,7 @@ const ROUTES = [
   { path: 'projekte', priority: '0.9', changefreq: 'monthly' },
   { path: 'partner', priority: '0.6', changefreq: 'yearly' },
   { path: 'ueber-uns', priority: '0.7', changefreq: 'yearly' },
+  { path: 'karriere', priority: '0.7', changefreq: 'monthly' },
   { path: 'kontakt', priority: '0.9', changefreq: 'yearly' },
   { path: 'impressum', priority: '0.2', changefreq: 'yearly' },
   { path: 'datenschutz', priority: '0.2', changefreq: 'yearly' },
