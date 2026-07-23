@@ -73,6 +73,17 @@ async function hashIp(ip: string): Promise<string> {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 
+// Entfernt das Unicode-Ersatzzeichen U+FFFD (entsteht, wenn ein Client Text
+// fehlerhaft kodiert sendet, z. B. Latin-1 statt UTF-8) sowie Steuerzeichen
+// (Zeilenumbruch \n und Tabulator \t bleiben fuers Anschreiben erlaubt).
+// So landet nie ein Ersatzzeichen im Admin, egal was ein Client schickt.
+function clean(s: string): string {
+  return s
+    .replace(/\uFFFD/g, '')
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+    .trim();
+}
+
 function sanitizeFilename(name: string): string {
   const cleaned = String(name ?? "")
     .replace(/[^\w.\-]+/g, "_")
@@ -173,11 +184,11 @@ async function handle(req: Request): Promise<Response> {
     await sb.from("urra_apply_log").insert({ ip_hash: ipHash });
   } catch { /* egal */ }
 
-  const name = String(body.name ?? "").trim();
-  const email = String(body.email ?? "").trim();
-  const phone = String(body.phone ?? "").trim();
-  const position = String(body.position ?? "").trim();
-  const message = String(body.message ?? "").trim();
+  const name = clean(String(body.name ?? ""));
+  const email = clean(String(body.email ?? ""));
+  const phone = clean(String(body.phone ?? ""));
+  const position = clean(String(body.position ?? ""));
+  const message = clean(String(body.message ?? ""));
 
   const fields: Record<string, string> = {};
   if (name.length < 2 || name.length > 120) fields.name = "Bitte geben Sie Ihren Namen an.";
