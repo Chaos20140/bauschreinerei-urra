@@ -29,14 +29,18 @@ export function Faq() {
         <ul className="border-t border-white/15">
           {faq.items.map((item, idx) => {
             const isOpen = openIndex === idx;
+            const buttonId = `faq-btn-${idx}`;
+            const panelId = `faq-panel-${idx}`;
             return (
-              <BlurIn key={item.q} delay={idx * 0.04}>
-                <li className="border-b border-white/15">
+              <BlurIn as="li" key={item.q} delay={idx * 0.04} className="border-b border-white/15">
+                <div>
                   <button
+                    id={buttonId}
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : idx)}
                     aria-expanded={isOpen}
-                    className="w-full flex items-start justify-between gap-6 py-6 md:py-8 text-left group no-shadow"
+                    aria-controls={panelId}
+                    className="w-full flex items-start justify-between gap-6 py-6 md:py-8 text-left group no-shadow focus-ring rounded-lg"
                   >
                     <span className="hero-title text-white text-lg md:text-2xl lg:text-3xl font-medium tracking-tight pr-4">
                       {item.q}
@@ -55,6 +59,9 @@ export function Faq() {
                     {isOpen && (
                       <motion.div
                         key="content"
+                        id={panelId}
+                        role="region"
+                        aria-labelledby={buttonId}
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
@@ -67,7 +74,7 @@ export function Faq() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </li>
+                </div>
               </BlurIn>
             );
           })}

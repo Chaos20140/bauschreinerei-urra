@@ -1,10 +1,17 @@
 import { PageHero } from '../components/PageHero';
 import { BlurIn } from '../components/BlurIn';
 import { impressum } from '../data/legal';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 export function ImpressumPage() {
+  useDocumentMeta({
+    title: 'Impressum · Bauschreinerei Urra',
+    description:
+      'Anbieterkennzeichnung nach § 5 DDG: Bauschreinerei Heribert Urra, Am Ochsenberg 13, 59939 Olsberg.',
+  });
+
   return (
-    <main data-theme="beige" className="relative min-h-screen text-white pb-16">
+    <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-16">
       <PageHero
         eyebrow="Impressum"
         title="Impressum."

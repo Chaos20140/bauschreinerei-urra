@@ -1,10 +1,17 @@
 import { PageHero } from '../components/PageHero';
 import { BlurIn } from '../components/BlurIn';
 import { datenschutz } from '../data/legal';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 export function DatenschutzPage() {
+  useDocumentMeta({
+    title: 'Datenschutzerklärung · Bauschreinerei Urra',
+    description:
+      'Wie wir mit Ihren Daten umgehen: Hosting, Kontaktformular, Google Maps mit Zwei-Klick-Lösung, lokal gehostete Schriften und Ihre Rechte nach DSGVO.',
+  });
+
   return (
-    <main data-theme="beige" className="relative min-h-screen text-white pb-16">
+    <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-16">
       <PageHero
         eyebrow="Datenschutz"
         title="Datenschutzerklärung."

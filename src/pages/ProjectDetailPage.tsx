@@ -2,7 +2,9 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { BlurIn } from '../components/BlurIn';
 import { CtaBlock } from '../components/CtaBlock';
+import { ProjectImage } from '../components/ProjectImage';
 import { projectList } from '../data/content';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -10,12 +12,24 @@ export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const project = projectList.find((p) => p.slug === slug);
 
+  // Der Hook muss vor dem bedingten return stehen (Rules of Hooks) — bei
+  // unbekanntem Slug wird ohnehin sofort weitergeleitet.
+  useDocumentMeta({
+    title: project
+      ? `${project.title} · Projekt | Bauschreinerei Urra`
+      : 'Projekt · Bauschreinerei Urra',
+    description:
+      project?.summary ??
+      'Ausgeführtes Fenster- und Türprojekt der Bauschreinerei Urra aus Olsberg.',
+    noindex: !project,
+  });
+
   if (!project) {
     return <Navigate to="/projekte" replace />;
   }
 
   return (
-    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
+    <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <section className="relative pt-32 md:pt-40 pb-10 md:pb-14 px-6 md:px-12 overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none opacity-60"
@@ -83,11 +97,11 @@ export function ProjectDetailPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn delay={0.2}>
             <div className="relative aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 bg-neutral-900">
-              <img
-                src={`${BASE}${project.hero}`}
-                alt={project.title}
-                loading="eager"
-                decoding="async"
+              <ProjectImage
+                src={project.hero}
+                alt={`${project.title} — ${project.category} in ${project.location}, ausgeführt ${project.year}`}
+                sizes="(min-width: 1280px) 1280px, 100vw"
+                priority
                 className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
@@ -158,11 +172,10 @@ export function ProjectDetailPage() {
                     rel="noopener noreferrer"
                     className="block relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-neutral-900 group no-shadow"
                   >
-                    <img
-                      src={`${BASE}${src}`}
-                      alt={`${project.title} — Bild ${idx + 1}`}
-                      loading="lazy"
-                      decoding="async"
+                    <ProjectImage
+                      src={src}
+                      alt={`${project.title}, Detailaufnahme ${idx + 1} von ${project.gallery.length}`}
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   </a>

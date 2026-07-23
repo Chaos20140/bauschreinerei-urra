@@ -1,8 +1,7 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Loader2, Check, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 type FormState = {
   name: string;
@@ -37,21 +36,95 @@ const PROJECT_TYPES = [
 ] as const;
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
+type FieldErrors = Partial<Record<'name' | 'email' | 'message' | 'gdpr', string>>;
+
+/** Absichtlich pragmatisch: kein RFC-5322-Monster, aber es fängt alles ab,
+ *  was offensichtlich keine Adresse ist. Die echte Prüfung ist ohnehin, ob
+ *  die Antwortmail ankommt. */
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+
+/** Mindestabstand zwischen zwei Absendeversuchen. Verhindert Doppel-Klicks
+ *  und dämpft simple Skript-Fluten. Der belastbare Schutz gehört in die
+ *  RLS-Policy bzw. eine Edge Function — siehe supabase/policies.sql. */
+const SUBMIT_COOLDOWN_MS = 5000;
+const REQUEST_TIMEOUT_MS = 15000;
+
+function validate(form: FormState): FieldErrors {
+  const errors: FieldErrors = {};
+  const name = form.name.trim();
+  const email = form.email.trim();
+  const message = form.message.trim();
+
+  if (name.length < 2) errors.name = 'Bitte geben Sie Ihren Namen an.';
+  else if (name.length > 120) errors.name = 'Der Name ist zu lang (max. 120 Zeichen).';
+
+  if (!EMAIL_PATTERN.test(email) || email.length > 200)
+    errors.email = 'Bitte geben Sie eine gültige E-Mail-Adresse an.';
+
+  if (message.length < 10)
+    errors.message = 'Bitte beschreiben Sie Ihr Anliegen in mindestens 10 Zeichen.';
+  else if (message.length > 5000)
+    errors.message = 'Die Nachricht ist zu lang (max. 5000 Zeichen).';
+
+  if (!form.gdpr) errors.gdpr = 'Bitte bestätigen Sie die Datenschutz-Einwilligung.';
+
+  return errors;
+}
 
 export function ContactForm() {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  const mounted = useRef(true);
+  const lastSubmit = useRef(0);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (status === 'sending') return;
 
-    if (!form.gdpr) {
-      setErrorMsg('Bitte bestätigen Sie die Datenschutz-Einwilligung.');
+    // Honeypot: das Feld ist für Menschen unsichtbar. Ist es gefüllt, war es
+    // ein Bot. Wir tun so, als sei alles gut — so lernt das Skript nichts.
+    if (form.honeypot.trim() !== '') {
+      setStatus('success');
+      setForm(INITIAL);
+      return;
+    }
+
+    // Das Formular läuft mit noValidate, damit die Fehlermeldungen zum Design
+    // passen. Dadurch prüft der Browser nichts mehr — required, minLength und
+    // type="email" wären wirkungslos, also validieren wir hier selbst.
+    const errors = validate(form);
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setErrorMsg('Bitte prüfen Sie die markierten Felder.');
       setStatus('error');
       return;
     }
+
+    const now = Date.now();
+    if (now - lastSubmit.current < SUBMIT_COOLDOWN_MS) {
+      setErrorMsg('Ihre Anfrage wird bereits verarbeitet. Einen Moment bitte.');
+      setStatus('error');
+      return;
+    }
+    lastSubmit.current = now;
+
+    setStatus('sending');
+    setErrorMsg('');
+
+    // Client erst beim Absenden laden — er gehört nicht in den Startpfad.
+    const { supabase, isSupabaseConfigured } = await import('../lib/supabase');
+    if (!mounted.current) return;
+
     if (!isSupabaseConfigured || !supabase) {
       setErrorMsg(
         'Das Kontaktformular ist gerade nicht verfügbar. Bitte rufen Sie uns kurz an oder schreiben Sie uns eine E-Mail.'
@@ -60,24 +133,38 @@ export function ContactForm() {
       return;
     }
 
-    setStatus('sending');
-    setErrorMsg('');
+    const controller = new AbortController();
+    const timeout = window.setTimeout(
+      () => controller.abort(),
+      REQUEST_TIMEOUT_MS
+    );
 
-    const { error } = await supabase.from('contact_requests').insert({
-      name: form.name.trim(),
-      email: form.email.trim(),
-      phone: form.phone.trim() || null,
-      address: form.address.trim() || null,
-      project_type: form.projectType || null,
-      message: form.message.trim(),
-      gdpr_consent: form.gdpr,
-      honeypot: form.honeypot,
-      user_agent:
-        typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 500) : null,
-    });
+    const { error } = await supabase
+      .from('contact_requests')
+      .insert({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim() || null,
+        address: form.address.trim() || null,
+        project_type: form.projectType || null,
+        message: form.message.trim(),
+        gdpr_consent: form.gdpr,
+        honeypot: form.honeypot,
+        user_agent:
+          typeof navigator !== 'undefined'
+            ? navigator.userAgent.slice(0, 500)
+            : null,
+      })
+      .abortSignal(controller.signal);
+
+    window.clearTimeout(timeout);
+    // Nach dem await kann die Komponente längst unmountet sein (Navigation
+    // während des Sendens) — dann darf kein setState mehr laufen.
+    if (!mounted.current) return;
 
     if (error) {
       setStatus('error');
+      // Bewusst keine Backend-Fehlertexte an den Client durchreichen.
       setErrorMsg(
         'Wir konnten Ihre Anfrage gerade nicht senden. Bitte versuchen Sie es in einem Moment erneut oder rufen Sie uns direkt an.'
       );
@@ -86,6 +173,7 @@ export function ContactForm() {
 
     setStatus('success');
     setForm(INITIAL);
+    setFieldErrors({});
   };
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
@@ -94,6 +182,12 @@ export function ContactForm() {
       setStatus('idle');
       setErrorMsg('');
     }
+    setFieldErrors((prev) => {
+      if (!(key in prev)) return prev;
+      const next = { ...prev };
+      delete next[key as keyof FieldErrors];
+      return next;
+    });
   };
 
   return (
@@ -123,7 +217,7 @@ export function ContactForm() {
             <button
               type="button"
               onClick={() => setStatus('idle')}
-              className="mt-6 text-white/65 hover:text-white text-sm underline underline-offset-4 transition-colors"
+              className="mt-6 text-white/65 hover:text-white text-sm underline underline-offset-4 transition-colors focus-ring rounded"
             >
               Weitere Anfrage senden
             </button>
@@ -151,8 +245,8 @@ export function ContactForm() {
                 autoComplete="name"
                 value={form.name}
                 onChange={(v) => update('name', v)}
-                minLength={2}
                 maxLength={120}
+                error={fieldErrors.name}
               />
               <Field
                 label="E-Mail"
@@ -163,6 +257,7 @@ export function ContactForm() {
                 value={form.email}
                 onChange={(v) => update('email', v)}
                 maxLength={200}
+                error={fieldErrors.email}
               />
               <Field
                 label="Telefon (optional)"
@@ -195,7 +290,7 @@ export function ContactForm() {
                 id="cf-type"
                 value={form.projectType}
                 onChange={(e) => update('projectType', e.target.value)}
-                className="w-full rounded-xl bg-neutral-900/80 border border-white/15 focus:border-white/40 focus:outline-none px-4 py-3 text-white text-sm md:text-base transition-colors"
+                className="w-full rounded-xl bg-neutral-900/80 border border-white/15 focus:border-white/40 px-4 py-3 text-white text-sm md:text-base transition-colors focus-ring"
               >
                 <option value="">Bitte wählen …</option>
                 {PROJECT_TYPES.map((t) => (
@@ -215,15 +310,20 @@ export function ContactForm() {
               </label>
               <textarea
                 id="cf-message"
-                required
                 value={form.message}
                 onChange={(e) => update('message', e.target.value)}
                 rows={5}
-                minLength={10}
                 maxLength={5000}
+                aria-invalid={fieldErrors.message ? true : undefined}
+                aria-describedby={fieldErrors.message ? 'cf-message-error' : undefined}
                 placeholder="Was möchten Sie umsetzen? Welche Eckdaten gibt es? Wann passt es Ihnen?"
-                className="w-full rounded-xl bg-neutral-900/80 border border-white/15 focus:border-white/40 focus:outline-none px-4 py-3 text-white text-sm md:text-base placeholder:text-white/35 transition-colors resize-y"
+                className="w-full rounded-xl bg-neutral-900/80 border border-white/15 focus:border-white/40 px-4 py-3 text-white text-sm md:text-base placeholder:text-white/35 transition-colors resize-y focus-ring"
               />
+              {fieldErrors.message && (
+                <p id="cf-message-error" className="mt-2 text-rose-300 text-xs">
+                  {fieldErrors.message}
+                </p>
+              )}
             </div>
 
             {/* Honeypot — bleibt visuell unsichtbar, Bots füllen aus */}
@@ -242,31 +342,40 @@ export function ContactForm() {
               />
             </div>
 
-            <label className="flex items-start gap-3 cursor-pointer select-none group">
-              <input
-                type="checkbox"
-                required
-                checked={form.gdpr}
-                onChange={(e) => update('gdpr', e.target.checked)}
-                className="mt-1 h-4 w-4 accent-white cursor-pointer"
-              />
-              <span className="text-white/70 text-xs md:text-sm leading-relaxed group-hover:text-white/85 transition-colors">
-                Ich habe die{' '}
-                <Link
-                  to="/datenschutz"
-                  className="underline underline-offset-2 hover:text-white"
-                >
-                  Datenschutzerklärung
-                </Link>{' '}
-                gelesen und stimme der Verarbeitung meiner Daten zur
-                Bearbeitung meiner Anfrage zu.
-              </span>
-            </label>
+            <div>
+              <label className="flex items-start gap-3 cursor-pointer select-none group">
+                <input
+                  type="checkbox"
+                  checked={form.gdpr}
+                  onChange={(e) => update('gdpr', e.target.checked)}
+                  aria-invalid={fieldErrors.gdpr ? true : undefined}
+                  aria-describedby={fieldErrors.gdpr ? 'cf-gdpr-error' : undefined}
+                  className="mt-1 h-4 w-4 accent-white cursor-pointer focus-ring rounded"
+                />
+                <span className="text-white/70 text-xs md:text-sm leading-relaxed group-hover:text-white/85 transition-colors">
+                  Ich habe die{' '}
+                  <Link
+                    to="/datenschutz"
+                    className="underline underline-offset-2 hover:text-white"
+                  >
+                    Datenschutzerklärung
+                  </Link>{' '}
+                  gelesen und stimme der Verarbeitung meiner Daten zur
+                  Bearbeitung meiner Anfrage zu.
+                </span>
+              </label>
+              {fieldErrors.gdpr && (
+                <p id="cf-gdpr-error" className="mt-2 text-rose-300 text-xs">
+                  {fieldErrors.gdpr}
+                </p>
+              )}
+            </div>
 
-            {status === 'error' && (
+            {status === 'error' && errorMsg && (
               <motion.div
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
+                role="alert"
                 className="flex items-start gap-2 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-rose-100 text-sm"
               >
                 <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" strokeWidth={2} />
@@ -278,7 +387,7 @@ export function ContactForm() {
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="inline-flex items-center justify-center gap-2 bg-white text-black rounded-full px-7 py-3.5 text-sm md:text-base font-medium hover:bg-neutral-200 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-white text-black rounded-full px-7 py-3.5 text-sm md:text-base font-medium hover:bg-neutral-200 disabled:opacity-60 disabled:cursor-not-allowed transition-colors focus-ring"
               >
                 {status === 'sending' ? (
                   <>
@@ -308,8 +417,8 @@ type FieldProps = {
   onChange: (v: string) => void;
   required?: boolean;
   autoComplete?: string;
-  minLength?: number;
   maxLength?: number;
+  error?: string;
 };
 
 function Field({
@@ -320,8 +429,8 @@ function Field({
   onChange,
   required,
   autoComplete,
-  minLength,
   maxLength,
+  error,
 }: FieldProps) {
   return (
     <div>
@@ -334,14 +443,19 @@ function Field({
       <input
         id={id}
         type={type}
-        required={required}
         autoComplete={autoComplete}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        minLength={minLength}
         maxLength={maxLength}
-        className="w-full rounded-xl bg-neutral-900/80 border border-white/15 focus:border-white/40 focus:outline-none px-4 py-3 text-white text-sm md:text-base transition-colors"
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        className="w-full rounded-xl bg-neutral-900/80 border border-white/15 focus:border-white/40 px-4 py-3 text-white text-sm md:text-base transition-colors focus-ring"
       />
+      {error && (
+        <p id={`${id}-error`} className="mt-2 text-rose-300 text-xs">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

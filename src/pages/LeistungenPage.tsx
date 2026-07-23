@@ -2,12 +2,16 @@ import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
 import { services, products } from '../data/content';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const BASE = import.meta.env.BASE_URL;
 
 const TOOLS = [
   {
     src: 'leistungen/aufmass-app.webp',
+    // Eigener alt-Text statt einer Wiederholung der Überschrift: sonst hören
+    // Screenreader denselben Satz zweimal und erfahren nichts über das Bild.
+    alt: 'Tablet mit der metiscale-Aufmaß-App vor einer Fensteröffnung, daneben ein Laser-Distanzmesser',
     eyebrow: 'Digital',
     title: 'metiscale-Aufmaß',
     body: 'Tablet plus Laser-Distanzmesser — millimetergenau in Echtzeit dokumentiert.',
@@ -15,6 +19,7 @@ const TOOLS = [
   },
   {
     src: 'leistungen/montage.webp',
+    alt: 'Monteur richtet einen Fensterrahmen in der Rohbauöffnung aus',
     eyebrow: 'Werkbank',
     title: 'Montage vor Ort',
     body: 'Festes Team, eigene Werkzeuge. RAL-konform fixiert, ausgerichtet, geprüft.',
@@ -22,6 +27,7 @@ const TOOLS = [
   },
   {
     src: 'leistungen/abdichtung.webp',
+    alt: 'Nahaufnahme einer gedämmten und abgedichteten Anschlussfuge zwischen Rahmen und Mauerwerk',
     eyebrow: 'Detail',
     title: 'Anschlussfuge dichten',
     body: 'Fachgerechte Dämmung gegen Wärmebrücken — Schicht für Schicht abgedichtet.',
@@ -72,8 +78,14 @@ const MATERIALS = [
 ] as const;
 
 export function LeistungenPage() {
+  useDocumentMeta({
+    title: 'Leistungen · Fenstermontage nach EnEV | Bauschreinerei Urra',
+    description:
+      'Beratung, digitales Aufmaß, Demontage und Entsorgung sowie RAL-zertifizierte Fachmontage nach EnEV — alles aus einer Hand aus Olsberg im Sauerland.',
+  });
+
   return (
-    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
+    <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="Leistungen"
         title="Rundum-Service vom Aufmaß bis zur fachgerechten Montage."
@@ -99,15 +111,13 @@ export function LeistungenPage() {
 
           <ul className="grid md:grid-cols-3 gap-5 md:gap-7">
             {services.items.map((item, idx) => (
-              <BlurIn key={item.id} delay={idx * 0.1}>
-                <li className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9">
-                  <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-4">
-                    {item.title}
-                  </h3>
-                  <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                    {item.body}
-                  </p>
-                </li>
+              <BlurIn as="li" className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9" key={item.id} delay={idx * 0.1}>
+                <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-4">
+                  {item.title}
+                </h3>
+                <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                  {item.body}
+                </p>
               </BlurIn>
             ))}
           </ul>
@@ -131,15 +141,13 @@ export function LeistungenPage() {
 
           <ol className="grid md:grid-cols-2 gap-x-12 gap-y-10">
             {PROCESS.map((p, idx) => (
-              <BlurIn key={p.title} delay={idx * 0.06}>
-                <li className="border-t border-white/15 pt-6">
-                  <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
-                    {p.title}
-                  </h3>
-                  <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                    {p.body}
-                  </p>
-                </li>
+              <BlurIn as="li" className="border-t border-white/15 pt-6" key={p.title} delay={idx * 0.06}>
+                <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
+                  {p.title}
+                </h3>
+                <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                  {p.body}
+                </p>
               </BlurIn>
             ))}
           </ol>
@@ -158,29 +166,27 @@ export function LeistungenPage() {
           </BlurIn>
           <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {TOOLS.map((t, idx) => (
-              <BlurIn key={t.src} delay={idx * 0.08}>
-                <li className="group rounded-2xl overflow-hidden border border-white/15 bg-white/[0.03] h-full flex flex-col">
-                  <div className={`relative ${t.aspect} overflow-hidden bg-neutral-900`}>
-                    <img
-                      src={`${BASE}${t.src}`}
-                      alt={t.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-6 md:p-7 flex-1 flex flex-col">
-                    <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-2">
-                      {t.eyebrow}
-                    </p>
-                    <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
-                      {t.title}
-                    </h3>
-                    <p className="text-white/80 text-sm leading-relaxed">
-                      {t.body}
-                    </p>
-                  </div>
-                </li>
+              <BlurIn as="li" className="group rounded-2xl overflow-hidden border border-white/15 bg-white/[0.03] h-full flex flex-col" key={t.src} delay={idx * 0.08}>
+                <div className={`relative ${t.aspect} overflow-hidden bg-neutral-900`}>
+                  <img
+                    src={`${BASE}${t.src}`}
+                    alt={t.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-6 md:p-7 flex-1 flex flex-col">
+                  <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-2">
+                    {t.eyebrow}
+                  </p>
+                  <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
+                    {t.title}
+                  </h3>
+                  <p className="text-white/80 text-sm leading-relaxed">
+                    {t.body}
+                  </p>
+                </div>
               </BlurIn>
             ))}
           </ul>
@@ -204,15 +210,13 @@ export function LeistungenPage() {
 
           <ul className="grid md:grid-cols-3 gap-5 md:gap-7">
             {MATERIALS.map((m, idx) => (
-              <BlurIn key={m.name} delay={idx * 0.1}>
-                <li className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9">
-                  <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-4">
-                    {m.name}
-                  </h3>
-                  <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                    {m.body}
-                  </p>
-                </li>
+              <BlurIn as="li" className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9" key={m.name} delay={idx * 0.1}>
+                <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-4">
+                  {m.name}
+                </h3>
+                <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                  {m.body}
+                </p>
               </BlurIn>
             ))}
           </ul>
@@ -231,19 +235,17 @@ export function LeistungenPage() {
           </BlurIn>
           <ul className="grid md:grid-cols-3 gap-5 md:gap-7">
             {products.categories.map((cat, idx) => (
-              <BlurIn key={cat.title} delay={idx * 0.08}>
-                <li className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9">
-                  <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-6">
-                    {cat.title}
-                  </h3>
-                  <ul className="space-y-2 text-white/85 text-sm md:text-base">
-                    {cat.items.map((it) => (
-                      <li key={it} className="border-t border-white/10 pt-2">
-                        {it}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
+              <BlurIn as="li" className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9" key={cat.title} delay={idx * 0.08}>
+                <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-6">
+                  {cat.title}
+                </h3>
+                <ul className="space-y-2 text-white/85 text-sm md:text-base">
+                  {cat.items.map((it) => (
+                    <li key={it} className="border-t border-white/10 pt-2">
+                      {it}
+                    </li>
+                  ))}
+                </ul>
               </BlurIn>
             ))}
           </ul>

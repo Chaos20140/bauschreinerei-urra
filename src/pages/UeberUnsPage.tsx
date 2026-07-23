@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
 import { about, brand, hero, contact } from '../data/content';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const MILESTONES = [
   {
@@ -46,8 +47,14 @@ const PRINCIPLES = [
 ] as const;
 
 export function UeberUnsPage() {
+  useDocumentMeta({
+    title: 'Über uns · Handwerk aus Olsberg seit 2003 | Bauschreinerei Urra',
+    description:
+      'Inhabergeführte Bauschreinerei aus Olsberg: Heribert Urra fertigt und montiert seit 2003 Fenster, Türen und Garagentore im Sauerland.',
+  });
+
   return (
-    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
+    <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <section className="relative pt-32 md:pt-40 pb-16 md:pb-24 px-6 md:px-12 overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none opacity-60"
@@ -73,13 +80,19 @@ export function UeberUnsPage() {
 
           <div className="grid md:grid-cols-12 gap-x-10 gap-y-10 items-end">
             <BlurIn delay={0.15} className="md:col-span-9">
-              <p
+              {/* Diese Seite hatte bisher gar keine <h1> — nur zwei <h2>.
+                  Der sr-only-Teil trägt die eigentliche Seitenaussage für
+                  Screenreader und Suchmaschinen, sichtbar bleibt das Zitat. */}
+              <h1
                 className="hero-title text-white font-medium text-[5.5vw] md:text-[2.6vw] lg:text-[2.1vw] leading-[1.3] max-w-4xl"
                 style={{ textWrap: 'balance' }}
               >
+                <span className="sr-only">
+                  Über die Bauschreinerei Urra aus Olsberg —{' '}
+                </span>
                 „Qualität ist kein Zufall — sie ist das Ergebnis harter Arbeit,
                 kluger Planung und ehrlicher Leidenschaft."
-              </p>
+              </h1>
             </BlurIn>
 
             <BlurIn delay={0.4} className="md:col-span-3 md:pb-2">
@@ -163,20 +176,18 @@ export function UeberUnsPage() {
 
           <ol className="grid md:grid-cols-2 gap-x-12 gap-y-10">
             {MILESTONES.map((m, idx) => (
-              <BlurIn key={m.year} delay={idx * 0.08}>
-                <li className="grid grid-cols-[auto_1fr] gap-5 md:gap-7 border-t border-white/15 pt-6">
-                  <span className="text-white/60 text-sm md:text-base tracking-[0.2em] uppercase">
-                    {m.year}
-                  </span>
-                  <div>
-                    <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
-                      {m.title}
-                    </h3>
-                    <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                      {m.body}
-                    </p>
-                  </div>
-                </li>
+              <BlurIn as="li" className="grid grid-cols-[auto_1fr] gap-5 md:gap-7 border-t border-white/15 pt-6" key={m.year} delay={idx * 0.08}>
+                <span className="text-white/60 text-sm md:text-base tracking-[0.2em] uppercase">
+                  {m.year}
+                </span>
+                <div>
+                  <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
+                    {m.title}
+                  </h3>
+                  <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                    {m.body}
+                  </p>
+                </div>
               </BlurIn>
             ))}
           </ol>
@@ -196,15 +207,13 @@ export function UeberUnsPage() {
 
           <ul className="grid md:grid-cols-2 gap-6 md:gap-10">
             {PRINCIPLES.map((p, idx) => (
-              <BlurIn key={p.key} delay={idx * 0.07}>
-                <li className="border-t border-white/15 pt-6">
-                  <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-3">
-                    {p.key}
-                  </h3>
-                  <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                    {p.body}
-                  </p>
-                </li>
+              <BlurIn as="li" className="border-t border-white/15 pt-6" key={p.key} delay={idx * 0.07}>
+                <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-3">
+                  {p.key}
+                </h3>
+                <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                  {p.body}
+                </p>
               </BlurIn>
             ))}
           </ul>

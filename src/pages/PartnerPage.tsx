@@ -3,6 +3,7 @@ import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
 import { partners } from '../data/content';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -26,8 +27,14 @@ const STANDARDS = [
 ] as const;
 
 export function PartnerPage() {
+  useDocumentMeta({
+    title: 'Partner · Hersteller und Systeme | Bauschreinerei Urra',
+    description:
+      'Mit welchen Herstellern wir arbeiten: Profilsysteme, Beschläge und Antriebe von Marken, die wir seit Jahren im Sauerland verbauen.',
+  });
+
   return (
-    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
+    <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="Partner"
         title="Sorgfältig ausgewählt, langjährig bewährt."
@@ -50,43 +57,43 @@ export function PartnerPage() {
 
           <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {partners.items.map((p, idx) => (
-              <BlurIn key={p.key} delay={idx * 0.06}>
-                <li className="h-full">
-                  <a
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group h-full rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7 flex flex-col transition-all duration-500 hover:border-white/35 hover:bg-white/[0.07] hover:-translate-y-1 no-shadow"
-                  >
-                    <div className="flex items-start justify-between gap-4 mb-6">
-                      <div className="h-10 md:h-12 flex items-center">
-                        <img
-                          src={`${BASE}${p.logo}`}
-                          alt={`${p.name} Logo`}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-full w-auto max-w-[180px] object-contain"
-                        />
-                      </div>
-                      <ArrowUpRight
-                        className="h-4 w-4 mt-1 text-white/45 group-hover:text-white group-hover:rotate-45 transition-all duration-300 shrink-0"
-                        strokeWidth={2}
+              <BlurIn as="li" key={p.key} delay={idx * 0.06} className="h-full">
+                <a
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group h-full rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7 flex flex-col transition-all duration-500 hover:border-white/35 hover:bg-white/[0.07] hover:-translate-y-1 no-shadow"
+                >
+                  <div className="flex items-start justify-between gap-4 mb-6">
+                    {/* Feste Breite reserviert den Platz, bevor das Logo
+                        geladen ist — sonst springt die Karte beim Nachladen. */}
+                    <div className="h-10 md:h-12 w-[180px] flex items-center">
+                      <img
+                        src={`${BASE}${p.logo}`}
+                        alt={`Logo ${p.name}`}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-auto max-w-[180px] object-contain"
                       />
                     </div>
-                    <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-3">
-                      {p.category}
-                    </p>
-                    <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
-                      {p.name}
-                    </h3>
-                    <p className="text-white/80 text-sm md:text-[15px] leading-relaxed flex-1">
-                      {p.body}
-                    </p>
-                    <span className="mt-5 text-[10px] tracking-[0.3em] uppercase text-white/55 group-hover:text-white transition-colors">
-                      Webseite besuchen
-                    </span>
-                  </a>
-                </li>
+                    <ArrowUpRight
+                      className="h-4 w-4 mt-1 text-white/45 group-hover:text-white group-hover:rotate-45 transition-all duration-300 shrink-0"
+                      strokeWidth={2}
+                    />
+                  </div>
+                  <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-3">
+                    {p.category}
+                  </p>
+                  <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
+                    {p.name}
+                  </h3>
+                  <p className="text-white/80 text-sm md:text-[15px] leading-relaxed flex-1">
+                    {p.body}
+                  </p>
+                  <span className="mt-5 text-[10px] tracking-[0.3em] uppercase text-white/55 group-hover:text-white transition-colors">
+                    Webseite besuchen
+                  </span>
+                </a>
               </BlurIn>
             ))}
           </ul>
@@ -109,15 +116,18 @@ export function PartnerPage() {
           </BlurIn>
           <ul className="grid sm:grid-cols-2 gap-5 md:gap-6">
             {STANDARDS.map((s, idx) => (
-              <BlurIn key={s.title} delay={idx * 0.08}>
-                <li className="rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7">
-                  <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
-                    {s.title}
-                  </h3>
-                  <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                    {s.body}
-                  </p>
-                </li>
+              <BlurIn
+                as="li"
+                key={s.title}
+                delay={idx * 0.08}
+                className="rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:p-7"
+              >
+                <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-3">
+                  {s.title}
+                </h3>
+                <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                  {s.body}
+                </p>
               </BlurIn>
             ))}
           </ul>

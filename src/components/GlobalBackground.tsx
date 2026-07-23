@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ScrollSequenceCanvas, useFrames } from './ScrollSequence';
 import { SubPageBackground } from './SubPageBackground';
@@ -10,6 +10,12 @@ const MOBILE_QUERY = '(max-width: 767px)';
 // Hintergrund.
 const VIDEO_ROUTES = ['/'];
 
+// Beide Sequenzen laufen über dieselbe Anzahl Frames. Mobile hat 140 Dateien
+// im Ordner, nutzt aber nur jede zweite: gleiche Bewegung, halber Traffic und
+// halber Speicherbedarf auf genau den Geräten mit dem schwächsten Netz.
+const DESKTOP = { folder: 'frames', count: 70, step: 1 } as const;
+const MOBILE = { folder: 'frames-mobile', count: 70, step: 2 } as const;
+
 export function GlobalBackground() {
   const location = useLocation();
 
@@ -20,13 +26,17 @@ export function GlobalBackground() {
 }
 
 function VideoBackground() {
-  const location = useLocation();
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia(MOBILE_QUERY).matches;
   });
-  const [progress, setProgress] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
+
+  // Scroll-Fortschritt bewusst als Ref statt State: er ändert sich bei jedem
+  // Scroll-Tick, und ein setState pro Tick hat den kompletten React-Baum
+  // 60-mal pro Sekunde neu gerendert. Der rAF-Loop im Canvas liest den Wert
+  // direkt — React sieht davon nichts mehr.
+  const progressRef = useRef(0);
 
   useEffect(() => {
     const mq = window.matchMedia(MOBILE_QUERY);
@@ -45,17 +55,18 @@ function VideoBackground() {
   }, []);
 
   useEffect(() => {
+    if (reduceMotion) {
+      progressRef.current = 0;
+      return;
+    }
+
     let rafId: number | null = null;
 
     const runCompute = () => {
       rafId = null;
-      const total =
-        document.documentElement.scrollHeight - window.innerHeight;
-      if (total <= 0) {
-        setProgress(0);
-        return;
-      }
-      setProgress(Math.min(Math.max(window.scrollY / total, 0), 1));
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      progressRef.current =
+        total <= 0 ? 0 : Math.min(Math.max(window.scrollY / total, 0), 1);
     };
 
     const onScroll = () => {
@@ -71,12 +82,19 @@ function VideoBackground() {
       window.removeEventListener('resize', onScroll);
       if (rafId !== null) cancelAnimationFrame(rafId);
     };
-  }, [location.pathname]);
+  }, [reduceMotion]);
 
-  const folder = isMobile ? 'frames-mobile' : 'frames';
-  const frameCount = isMobile ? 140 : 70;
-  const { framesRef, state, count, loadedCount } = useFrames(folder, frameCount);
-  const effective = reduceMotion ? 0 : progress;
+  const variant = isMobile ? MOBILE : DESKTOP;
+  const { framesRef, state, count } = useFrames(
+    variant.folder,
+    variant.count,
+    variant.step
+  );
+
+  // Fällt die Sequenz komplett aus (Netzfehler, 404 auf den Frames), bleibt
+  // sonst dauerhaft eine schwarze Fläche stehen. Dann lieber den statischen
+  // Beige-Hintergrund zeigen als gar nichts.
+  if (state === 'error') return <SubPageBackground />;
 
   if (state !== 'ready') {
     return <div className="fixed inset-0 z-0 bg-black" aria-hidden="true" />;
@@ -86,12 +104,11 @@ function VideoBackground() {
     <ScrollSequenceCanvas
       framesRef={framesRef}
       count={count}
-      loadedCount={loadedCount}
-      progress={effective}
+      progressRef={progressRef}
       maxDpr={isMobile ? 1.5 : 2}
       easing={isMobile ? 0.14 : 0.11}
       bgPositionY={0.5}
-      interpolate={true}
+      interpolate={!isMobile}
     />
   );
 }

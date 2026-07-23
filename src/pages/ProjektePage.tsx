@@ -3,9 +3,9 @@ import { ArrowUpRight } from 'lucide-react';
 import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
+import { ProjectImage } from '../components/ProjectImage';
 import { projectList, regions } from '../data/content';
-
-const BASE = import.meta.env.BASE_URL;
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const CATEGORIES = [
   {
@@ -33,8 +33,14 @@ const HIGHLIGHTS = [
 ] as const;
 
 export function ProjektePage() {
+  useDocumentMeta({
+    title: 'Projekte · Referenzen aus dem Sauerland | Bauschreinerei Urra',
+    description:
+      'Ausgeführte Fenster- und Türprojekte aus Privatbau, Gewerbe und Industrie — vom Bogenfenster im Sondermaß bis zur kompletten Glasfassade.',
+  });
+
   return (
-    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
+    <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="Projekte"
         title="Referenzen aus dem Sauerland und ganz Nordrhein-Westfalen."
@@ -54,25 +60,28 @@ export function ProjektePage() {
 
           <ul className="grid md:grid-cols-3 gap-5 md:gap-7">
             {CATEGORIES.map((c, idx) => (
-              <BlurIn key={c.title} delay={idx * 0.1}>
-                <li className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9 flex flex-col">
-                  <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-5">
-                    {c.title}
-                  </h3>
-                  <p className="text-white/80 text-sm md:text-base leading-relaxed mb-6 flex-1">
-                    {c.body}
-                  </p>
-                  <ul className="flex flex-wrap gap-2 pt-4 border-t border-white/10">
-                    {c.tags.map((t) => (
-                      <li
-                        key={t}
-                        className="text-white/65 text-xs tracking-wider px-3 py-1 rounded-full border border-white/15"
-                      >
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
+              <BlurIn
+                as="li"
+                key={c.title}
+                delay={idx * 0.1}
+                className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9 flex flex-col"
+              >
+                <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-5">
+                  {c.title}
+                </h3>
+                <p className="text-white/80 text-sm md:text-base leading-relaxed mb-6 flex-1">
+                  {c.body}
+                </p>
+                <ul className="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+                  {c.tags.map((t) => (
+                    <li
+                      key={t}
+                      className="text-white/65 text-xs tracking-wider px-3 py-1 rounded-full border border-white/15"
+                    >
+                      {t}
+                    </li>
+                  ))}
+                </ul>
               </BlurIn>
             ))}
           </ul>
@@ -110,11 +119,13 @@ export function ProjektePage() {
                         }`}
                       >
                         <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-900">
-                          <img
-                            src={`${BASE}${p.hero}`}
-                            alt={p.title}
-                            loading="lazy"
-                            decoding="async"
+                          <ProjectImage
+                            src={p.hero}
+                            alt={`${p.title} — ${p.category} in ${p.location}, ausgeführt ${p.year}`}
+                            // Gemessen: bei 1037 px Viewport ist das Bild
+                            // 517 px breit — 50vw trifft das, 58vw ließ den
+                            // Browser unnötig die 1600er-Variante ziehen.
+                            sizes="(min-width: 768px) 50vw, 100vw"
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                           />
                           <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-inset ring-white/10 group-hover:ring-white/30 transition-all duration-500" />
@@ -166,15 +177,15 @@ export function ProjektePage() {
           </BlurIn>
           <ul className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
             {HIGHLIGHTS.map((h, idx) => (
-              <BlurIn key={h.label} delay={idx * 0.07}>
-                <li className="border-t border-white/15 pt-6">
+              <BlurIn as="li" className="border-t border-white/15 pt-6" key={h.label} delay={idx * 0.07}>
+                <div className="border-t border-white/15 pt-6">
                   <p className="hero-title text-white text-4xl md:text-5xl lg:text-6xl font-medium mb-2">
                     {h.value}
                   </p>
                   <p className="text-white/70 text-xs md:text-sm tracking-[0.2em] uppercase">
                     {h.label}
                   </p>
-                </li>
+                </div>
               </BlurIn>
             ))}
           </ul>

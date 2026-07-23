@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -8,6 +8,8 @@ import { Logo } from './Logo';
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const toggleRef = useRef<HTMLButtonElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setOpen(false);
@@ -20,6 +22,49 @@ export function Navbar() {
     return () => {
       document.body.style.overflow = prev;
     };
+  }, [open]);
+
+  // Tastaturbedienung des Overlays: Escape schließt und gibt den Fokus an den
+  // Toggle-Button zurück, Tab bleibt innerhalb des Menüs gefangen. Ohne das
+  // tabbt man aus dem offenen Menü heraus in den verdeckten Seiteninhalt.
+  useEffect(() => {
+    if (!open) return;
+
+    const focusables = () =>
+      Array.from(
+        overlayRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled])'
+        ) ?? []
+      ).filter((el) => el.offsetParent !== null);
+
+    focusables()[0]?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setOpen(false);
+        toggleRef.current?.focus();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (e.shiftKey && (active === first || !overlayRef.current?.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, [open]);
 
   return (
@@ -64,11 +109,13 @@ export function Navbar() {
               {contact.cta}
             </Link>
             <button
+              ref={toggleRef}
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
               aria-expanded={open}
-              className="md:hidden h-12 w-12 grid place-items-center rounded-full bg-neutral-900/90 backdrop-blur text-white"
+              aria-controls="mobile-menu"
+              className="md:hidden h-12 w-12 grid place-items-center rounded-full bg-neutral-900/90 backdrop-blur text-white focus-ring"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -79,6 +126,11 @@ export function Navbar() {
       <AnimatePresence>
         {open && (
           <motion.div
+            ref={overlayRef}
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Hauptmenü"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

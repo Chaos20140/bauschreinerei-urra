@@ -2,78 +2,127 @@ import { useEffect, useRef, useState } from 'react';
 
 const BASE = import.meta.env.BASE_URL;
 
-const framePath = (folder: string, i: number): string =>
-  `${BASE}${folder}/frame-${String(i).padStart(3, '0')}.jpg`;
+// Bewusst JPEG und nicht WebP: gemessen unter 4-facher CPU-Drosselung
+// dekodiert WebP 2,2-mal langsamer, und diese Dekodierzeit blockiert den
+// Main-Thread — die Sequenz ist CPU- und nicht bandbreitenlimitiert.
+// Auslieferungsgröße erzeugt `npm run images` aus media-src/.
+const framePath = (folder: string, fileIndex: number): string =>
+  `${BASE}${folder}/frame-${String(fileIndex).padStart(3, '0')}.jpg`;
 
 type LoadState = 'loading' | 'ready' | 'error';
 type FrameBuffer = (HTMLImageElement | undefined)[];
 
+/**
+ * Lädt die Frames der Scroll-Sequenz.
+ *
+ * Vorher wurden alle Frames in einer Schleife gleichzeitig angefordert — auf
+ * dem Desktop rund 10 MB in einem Schwung, konkurrierend mit Bundle und CSS.
+ * Jetzt läuft eine Warteschlange mit begrenzter Parallelität: Frame 1 kommt
+ * zuerst (LCP), der Rest fließt der Reihe nach nach. Beim Unmount werden
+ * laufende Downloads abgebrochen und der Puffer geleert, damit die dekodierten
+ * Bitmaps nicht im Speicher hängen bleiben.
+ *
+ * @param folder    Unterordner in public/ (z. B. 'frames')
+ * @param count     Anzahl zu ladender Frames
+ * @param step      Nutzt nur jedes n-te Bild aus dem Ordner. Mobile hat 140
+ *                  Dateien; mit step=2 entsteht dieselbe Bewegung aus 70
+ *                  Bildern — halber Traffic, halber Speicher.
+ */
 export function useFrames(
   folder: string = 'frames',
-  count: number = 140
+  count: number = 70,
+  step: number = 1,
+  concurrency: number = 6
 ): {
   framesRef: React.MutableRefObject<FrameBuffer>;
   state: LoadState;
   count: number;
-  loadedCount: number;
 } {
   const framesRef = useRef<FrameBuffer>([]);
   const [state, setState] = useState<LoadState>('loading');
-  const [loadedCount, setLoadedCount] = useState(0);
 
   useEffect(() => {
     framesRef.current = new Array(count);
-    setLoadedCount(0);
     setState('loading');
-    let cancelled = false;
-    let loaded = 0;
 
-    for (let i = 0; i < count; i++) {
+    let cancelled = false;
+    let nextIndex = 0;
+    let settled = 0;
+    let succeeded = 0;
+    const inFlight = new Set<HTMLImageElement>();
+
+    const startNext = () => {
+      if (cancelled || nextIndex >= count) return;
+      const i = nextIndex++;
       const img = new Image();
+      inFlight.add(img);
       img.decoding = 'async';
       if (i === 0) {
         (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority =
           'high';
       }
-      const onSettle = (ok: boolean) => {
+
+      const settle = (ok: boolean) => {
+        inFlight.delete(img);
         if (cancelled) return;
-        if (ok) framesRef.current[i] = img;
-        loaded += 1;
-        setLoadedCount(loaded);
-        // Sobald Frame 1 da ist, Canvas freigeben — danach kann auch
-        // mit Teil-Buffer gerendert werden (Fallback aufs nächstgelegene
-        // geladene Frame).
-        if (i === 0 && ok) setState('ready');
-        if (loaded === count && state !== 'ready') {
-          setState('ready');
+        if (ok) {
+          framesRef.current[i] = img;
+          succeeded += 1;
         }
+        settled += 1;
+
+        // Sobald Frame 1 da ist, kann gezeichnet werden — der rAF-Loop
+        // greift nachrückende Frames automatisch auf.
+        if (i === 0 && ok) setState('ready');
+        if (settled === count) {
+          setState((prev) =>
+            prev === 'ready' ? prev : succeeded > 0 ? 'ready' : 'error'
+          );
+        }
+        startNext();
       };
-      img.onload = () => onSettle(true);
-      img.onerror = () => onSettle(false);
-      img.src = framePath(folder, i + 1);
-    }
+
+      img.onload = () => settle(true);
+      img.onerror = () => settle(false);
+      img.src = framePath(folder, i * step + 1);
+    };
+
+    for (let k = 0; k < Math.min(concurrency, count); k++) startNext();
 
     return () => {
       cancelled = true;
+      // Laufende Requests abbrechen: ohne das lädt beim Wechsel zwischen
+      // Mobile- und Desktop-Sequenz beides parallel weiter.
+      inFlight.forEach((img) => {
+        img.onload = null;
+        img.onerror = null;
+        img.src = '';
+      });
+      inFlight.clear();
+      framesRef.current = [];
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [folder, count]);
+  }, [folder, count, step, concurrency]);
 
-  return { framesRef, state, count, loadedCount };
+  return { framesRef, state, count };
 }
 
 type Props = {
   framesRef: React.MutableRefObject<FrameBuffer>;
   count: number;
-  loadedCount: number;
-  progress: number;
+  /**
+   * Scroll-Fortschritt 0…1 als Ref — bewusst kein State: der Wert ändert sich
+   * bei jedem Scroll-Tick, und ein setState pro Frame würde den kompletten
+   * React-Baum 60-mal pro Sekunde neu rendern. Der rAF-Loop liest den Ref
+   * direkt.
+   */
+  progressRef: React.MutableRefObject<number>;
   maxDpr?: number;
   easing?: number;
   bgPositionY?: number;
   /**
    * Cross-Fade zwischen aufeinanderfolgenden Frames aktivieren.
-   * Bei hoher Frame-Density (z. B. 140 Frames) ist das visuell überflüssig
-   * und doppelt nur die GPU-Last — empfehlenswert auf Mobile auszuschalten.
+   * Bei hoher Frame-Density ist das visuell überflüssig und doppelt nur die
+   * GPU-Last — empfehlenswert auf Mobile auszuschalten.
    */
   interpolate?: boolean;
 };
@@ -81,8 +130,7 @@ type Props = {
 export function ScrollSequenceCanvas({
   framesRef,
   count,
-  loadedCount,
-  progress,
+  progressRef,
   maxDpr = 2,
   easing = 0.18,
   bgPositionY = 0.5,
@@ -90,17 +138,8 @@ export function ScrollSequenceCanvas({
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
-  const targetFrame = useRef(0);
   const currentFrame = useRef(0);
   const lastDrawn = useRef(-1);
-
-  useEffect(() => {
-    if (count <= 0) return;
-    targetFrame.current = Math.min(
-      count - 1,
-      Math.max(0, Math.round(progress * (count - 1)))
-    );
-  }, [progress, count]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -186,19 +225,23 @@ export function ScrollSequenceCanvas({
     };
 
     const tick = () => {
-      const diff = targetFrame.current - currentFrame.current;
+      const target = Math.min(
+        count - 1,
+        Math.max(0, progressRef.current * (count - 1))
+      );
+      const diff = target - currentFrame.current;
       const absDiff = Math.abs(diff);
+
       if (absDiff > 0.005) {
         // Velocity-aware easing: bei großen Frame-Sprüngen (schnelles
         // Scrollen / harte Cuts im Quellvideo) wird das Easing degressiv
         // reduziert. So gleitet die Animation auch durch abrupte Stellen
         // sanft hinüber, statt mit einem sichtbaren Bild-Ruck zu reagieren.
-        // Bei kleinen Diffs bleibt das Easing nahezu unverändert.
         const damping = 1 / (1 + absDiff * 0.12);
         currentFrame.current += diff * easing * damping;
         draw(currentFrame.current);
-      } else if (currentFrame.current !== targetFrame.current) {
-        currentFrame.current = targetFrame.current;
+      } else if (currentFrame.current !== target) {
+        currentFrame.current = target;
         draw(currentFrame.current);
       } else if (
         // Re-draw, sobald der ursprünglich gewünschte Ziel-Frame
@@ -219,11 +262,7 @@ export function ScrollSequenceCanvas({
       window.removeEventListener('resize', resize);
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [count, maxDpr, easing, bgPositionY, framesRef, interpolate]);
-
-  // loadedCount Änderungen reichern die useRef-Daten an; der oben
-  // laufende rAF-Loop pickt sie automatisch beim nächsten Tick auf.
-  void loadedCount;
+  }, [count, maxDpr, easing, bgPositionY, framesRef, progressRef, interpolate]);
 
   return (
     <canvas

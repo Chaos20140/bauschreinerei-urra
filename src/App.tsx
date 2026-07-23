@@ -1,6 +1,7 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { MotionConfig } from 'motion/react';
 
-const ROUTER_BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '');
 import { ScrollToTop } from './components/ScrollToTop';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -8,38 +9,85 @@ import { CookieBanner } from './components/CookieBanner';
 import { GlobalBackground } from './components/GlobalBackground';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { HomePage } from './pages/HomePage';
-import { LeistungenPage } from './pages/LeistungenPage';
-import { ProjektePage } from './pages/ProjektePage';
-import { ProjectDetailPage } from './pages/ProjectDetailPage';
-import { PartnerPage } from './pages/PartnerPage';
-import { UeberUnsPage } from './pages/UeberUnsPage';
-import { KontaktPage } from './pages/KontaktPage';
-import { ImpressumPage } from './pages/ImpressumPage';
-import { DatenschutzPage } from './pages/DatenschutzPage';
+
+const ROUTER_BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Die Startseite bleibt im Haupt-Bundle — sie ist der Einstieg für praktisch
+// allen Traffic und soll nicht auf einen zweiten Netzwerk-Roundtrip warten.
+// Alle übrigen Seiten werden erst beim Aufruf nachgeladen.
+const LeistungenPage = lazy(() =>
+  import('./pages/LeistungenPage').then((m) => ({ default: m.LeistungenPage }))
+);
+const ProjektePage = lazy(() =>
+  import('./pages/ProjektePage').then((m) => ({ default: m.ProjektePage }))
+);
+const ProjectDetailPage = lazy(() =>
+  import('./pages/ProjectDetailPage').then((m) => ({
+    default: m.ProjectDetailPage,
+  }))
+);
+const PartnerPage = lazy(() =>
+  import('./pages/PartnerPage').then((m) => ({ default: m.PartnerPage }))
+);
+const UeberUnsPage = lazy(() =>
+  import('./pages/UeberUnsPage').then((m) => ({ default: m.UeberUnsPage }))
+);
+const KontaktPage = lazy(() =>
+  import('./pages/KontaktPage').then((m) => ({ default: m.KontaktPage }))
+);
+const ImpressumPage = lazy(() =>
+  import('./pages/ImpressumPage').then((m) => ({ default: m.ImpressumPage }))
+);
+const DatenschutzPage = lazy(() =>
+  import('./pages/DatenschutzPage').then((m) => ({ default: m.DatenschutzPage }))
+);
+const NotFoundPage = lazy(() =>
+  import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
+);
+
+function RouteFallback() {
+  return <div className="min-h-screen" aria-hidden="true" />;
+}
 
 export default function App() {
   return (
     <BrowserRouter basename={ROUTER_BASENAME}>
-      <ScrollToTop />
-      <GlobalBackground />
-      <Navbar />
-      <div className="relative z-10 text-white">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/leistungen" element={<LeistungenPage />} />
-          <Route path="/projekte" element={<ProjektePage />} />
-          <Route path="/projekte/:slug" element={<ProjectDetailPage />} />
-          <Route path="/partner" element={<PartnerPage />} />
-          <Route path="/ueber-uns" element={<UeberUnsPage />} />
-          <Route path="/kontakt" element={<KontaktPage />} />
-          <Route path="/impressum" element={<ImpressumPage />} />
-          <Route path="/datenschutz" element={<DatenschutzPage />} />
-          <Route path="*" element={<HomePage />} />
-        </Routes>
-        <Footer />
-      </div>
-      <WhatsAppButton />
-      <CookieBanner />
+      {/* reducedMotion="user" schaltet alle motion-Animationen ab, sobald das
+          Betriebssystem Bewegungsreduzierung meldet. */}
+      <MotionConfig reducedMotion="user">
+        <a href="#main" className="skip-link bg-white text-black rounded-full px-5 py-3 text-sm font-medium">
+          Zum Inhalt springen
+        </a>
+
+        <ScrollToTop />
+        <GlobalBackground />
+        <Navbar />
+
+        {/* Meldet Screenreadern den Seitenwechsel — ohne das bleibt eine
+            SPA-Navigation für sie unbemerkt. Gefüllt von useDocumentMeta. */}
+        <p id="route-announcer" aria-live="polite" role="status" className="sr-only" />
+
+        <div className="relative z-10 text-white">
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/leistungen" element={<LeistungenPage />} />
+              <Route path="/projekte" element={<ProjektePage />} />
+              <Route path="/projekte/:slug" element={<ProjectDetailPage />} />
+              <Route path="/partner" element={<PartnerPage />} />
+              <Route path="/ueber-uns" element={<UeberUnsPage />} />
+              <Route path="/kontakt" element={<KontaktPage />} />
+              <Route path="/impressum" element={<ImpressumPage />} />
+              <Route path="/datenschutz" element={<DatenschutzPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+          <Footer />
+        </div>
+
+        <WhatsAppButton />
+        <CookieBanner />
+      </MotionConfig>
     </BrowserRouter>
   );
 }

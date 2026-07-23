@@ -3,6 +3,7 @@ import { BlurIn } from '../components/BlurIn';
 import { MapEmbed } from '../components/MapEmbed';
 import { ContactForm } from '../components/ContactForm';
 import { contact, regions } from '../data/content';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const HOURS = [
   { day: 'Montag — Freitag', value: '08:00 — 17:00' },
@@ -15,8 +16,14 @@ export function KontaktPage() {
     `${contact.address.street}, ${contact.address.zip} ${contact.address.city}`
   )}`;
 
+  useDocumentMeta({
+    title: 'Kontakt · Angebot anfragen | Bauschreinerei Urra Olsberg',
+    description:
+      'Bauschreinerei Urra, Am Ochsenberg 13 in 59939 Olsberg. Telefon, E-Mail, WhatsApp oder Anfrageformular — wir melden uns werktags binnen 24 Stunden.',
+  });
+
   return (
-    <main data-theme="beige" className="relative min-h-screen text-white pb-12">
+    <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
         eyebrow="Kontakt"
         title="Lassen Sie uns über Ihr Projekt sprechen."
