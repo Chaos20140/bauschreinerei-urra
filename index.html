@@ -3,16 +3,129 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Bauschreinerei Urra – Fenster, Türen und Garagentore aus Olsberg. Qualität, Handwerkskunst und Präzision seit 2003." />
+
+    <!--
+      Content-Security-Policy als Meta-Tag, weil GitHub Pages keine eigenen
+      Response-Header erlaubt. Grenzen dieser Zustellform: `frame-ancestors`
+      und HSTS wirken per Meta NICHT — für echten Clickjacking-Schutz wäre ein
+      Hoster mit Header-Konfiguration nötig (z. B. Cloudflare Pages `_headers`).
+
+      ACHTUNG: `script-src` enthält den sha256-Hash des Inline-Boot-Scripts
+      weiter unten (markiert mit data-csp-hashed). Jede noch so kleine Änderung
+      an diesem Script — auch Whitespace — macht den Hash ungültig und die
+      Seite bootet nicht mehr. Neuen Hash erzeugen mit:
+        npm run csp:hash
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'sha256-6x8VeMOJS/MF610GpXWEn4SxGlAOk2el6eFeyYgS1Wc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co; frame-src https://maps.google.com https://www.google.com; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="theme-color" content="#000000" />
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <meta name="robots" content="index, follow" />
+
     <title>Bauschreinerei Urra · Fenster und Türen aus Olsberg</title>
-    <script>
+    <meta
+      name="description"
+      content="Bauschreinerei Urra – Fenster, Türen und Garagentore aus Olsberg. Qualität, Handwerkskunst und Präzision seit 2003."
+    />
+    <link rel="canonical" href="https://chaos20140.github.io/bauschreinerei-urra/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bauschreinerei Urra" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:title" content="Bauschreinerei Urra · Fenster und Türen aus Olsberg" />
+    <meta
+      property="og:description"
+      content="Fenster, Türen und Garagentore aus dem Sauerland. Inhabergeführtes Handwerk seit 2003 — Beratung, Aufmaß und Fachmontage nach EnEV."
+    />
+    <meta property="og:url" content="https://chaos20140.github.io/bauschreinerei-urra/" />
+    <meta
+      property="og:image"
+      content="https://chaos20140.github.io/bauschreinerei-urra/og-image.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Fenstermontage der Bauschreinerei Urra" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bauschreinerei Urra · Fenster und Türen aus Olsberg" />
+    <meta
+      name="twitter:description"
+      content="Fenster, Türen und Garagentore aus dem Sauerland. Inhabergeführtes Handwerk seit 2003."
+    />
+    <meta
+      name="twitter:image"
+      content="https://chaos20140.github.io/bauschreinerei-urra/og-image.jpg"
+    />
+
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+
+    <!--
+      Erstes Frame der Scroll-Sequenz vorladen: es ist das LCP-Element der
+      Startseite und würde sonst erst nach Bundle-Download und React-Mount
+      angefordert. Desktop und Mobile laden unterschiedliche Sequenzen.
+    -->
+    <link
+      rel="preload"
+      as="image"
+      href="%BASE_URL%frames/frame-001.jpg"
+      fetchpriority="high"
+      media="(min-width: 768px)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="%BASE_URL%frames-mobile/frame-001.jpg"
+      fetchpriority="high"
+      media="(max-width: 767px)"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HomeAndConstructionBusiness",
+        "@id": "https://chaos20140.github.io/bauschreinerei-urra/#business",
+        "name": "Bauschreinerei Heribert Urra",
+        "alternateName": "Bauschreinerei Urra",
+        "description": "Fenster, Türen und Garagentore aus Olsberg. Beratung, digitales Aufmaß, Demontage und RAL-zertifizierte Fachmontage nach EnEV.",
+        "url": "https://chaos20140.github.io/bauschreinerei-urra/",
+        "telephone": "+4916099116995",
+        "email": "h.urra@bauschreinerei-urra.de",
+        "foundingDate": "2003",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Am Ochsenberg 13",
+          "postalCode": "59939",
+          "addressLocality": "Olsberg",
+          "addressRegion": "Nordrhein-Westfalen",
+          "addressCountry": "DE"
+        },
+        "areaServed": [
+          { "@type": "Place", "name": "Sauerland" },
+          { "@type": "Place", "name": "Ostwestfalen-Lippe" },
+          { "@type": "Place", "name": "Ruhrgebiet" }
+        ],
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "08:00",
+            "closes": "17:00"
+          }
+        ],
+        "knowsAbout": [
+          "Fenstermontage",
+          "Haustüren",
+          "Innentüren",
+          "Schiebetüren",
+          "Garagentore",
+          "RAL-Montage",
+          "EnEV"
+        ]
+      }
+    </script>
+
+    <script data-csp-hashed>
       // SPA-Router restore for GitHub Pages — decodes the path that 404.html
       // stashed into the query string and replaces history before React boots.
       (function () {
@@ -41,6 +154,18 @@
     </script>
   </head>
   <body>
+    <noscript>
+      <div style="padding: 24px; font-family: system-ui, sans-serif; color: #fff">
+        <h1>Bauschreinerei Urra · Fenster und Türen aus Olsberg</h1>
+        <p>
+          Diese Seite benötigt JavaScript. Sie erreichen uns auch direkt:
+          <a href="tel:+4916099116995" style="color: #fff">+49 160 99116995</a> ·
+          <a href="mailto:h.urra@bauschreinerei-urra.de" style="color: #fff"
+            >h.urra@bauschreinerei-urra.de</a
+          >
+        </p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

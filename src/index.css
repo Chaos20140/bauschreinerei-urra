@@ -1,3 +1,12 @@
+/* Readex Pro lokal gehostet (Variable Font, nur latin-Subset).
+ * Bewusst KEIN Google-Fonts-CDN: die Einbindung über fonts.googleapis.com
+ * überträgt die IP jedes Besuchers ungefragt an Google — das LG München I
+ * (3 O 17493/20) hat das als DSGVO-Verstoß gewertet. Das Paket liefert die
+ * woff2-Dateien mit, Vite bündelt sie unter assets/. Die vier Subsets sind
+ * per unicode-range getrennt — für deutsche Inhalte lädt der Browser nur
+ * das latin-Subset (ca. 31 KB). */
+@import '@fontsource-variable/readex-pro';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +19,8 @@
   }
 
   body {
-    font-family: 'Readex Pro', system-ui, -apple-system, sans-serif;
+    font-family: 'Readex Pro Variable', 'Readex Pro', system-ui, -apple-system,
+      sans-serif;
     background: #000;
     color: #fff;
     -webkit-font-smoothing: antialiased;
@@ -63,36 +73,41 @@
     text-shadow: none;
   }
 
-  /* Text-Klassen ------------------------------------------------------ */
+  /* Text-Klassen ------------------------------------------------------
+   * Die Opazitätsstufen sind bewusst auf mindestens 0.68 angehoben:
+   * rgba(28,25,23,0.55) auf dem Beige-Verlauf ergibt nur 3,6:1 und reißt
+   * damit WCAG 2.2 AA (4,5:1 für Fließtext). Ab 0.68 liegen alle Stufen
+   * über 4,7:1 — auch auf dem dunkelsten Punkt des Verlaufs (#e0d5b9 mit
+   * Vignette). Die Abstufung bleibt monoton, die Hierarchie erhalten. */
   main[data-theme='beige'] .text-white {
     color: #1c1917 !important;
   }
   main[data-theme='beige'] .text-white\/30 {
-    color: rgba(28, 25, 23, 0.5) !important;
+    color: rgba(28, 25, 23, 0.68) !important;
   }
   main[data-theme='beige'] .text-white\/40 {
-    color: rgba(28, 25, 23, 0.55) !important;
+    color: rgba(28, 25, 23, 0.7) !important;
   }
   main[data-theme='beige'] .text-white\/45 {
-    color: rgba(28, 25, 23, 0.55) !important;
+    color: rgba(28, 25, 23, 0.71) !important;
   }
   main[data-theme='beige'] .text-white\/50 {
-    color: rgba(28, 25, 23, 0.6) !important;
+    color: rgba(28, 25, 23, 0.72) !important;
   }
   main[data-theme='beige'] .text-white\/55 {
-    color: rgba(28, 25, 23, 0.62) !important;
+    color: rgba(28, 25, 23, 0.73) !important;
   }
   main[data-theme='beige'] .text-white\/60 {
-    color: rgba(28, 25, 23, 0.65) !important;
+    color: rgba(28, 25, 23, 0.74) !important;
   }
   main[data-theme='beige'] .text-white\/65 {
-    color: rgba(28, 25, 23, 0.7) !important;
+    color: rgba(28, 25, 23, 0.75) !important;
   }
   main[data-theme='beige'] .text-white\/70 {
-    color: rgba(28, 25, 23, 0.7) !important;
+    color: rgba(28, 25, 23, 0.76) !important;
   }
   main[data-theme='beige'] .text-white\/75 {
-    color: rgba(28, 25, 23, 0.75) !important;
+    color: rgba(28, 25, 23, 0.78) !important;
   }
   main[data-theme='beige'] .text-white\/80 {
     color: rgba(28, 25, 23, 0.8) !important;
@@ -112,10 +127,10 @@
     color: #1c1917 !important;
   }
   main[data-theme='beige'] .hover\:text-white\/75:hover {
-    color: rgba(28, 25, 23, 0.75) !important;
+    color: rgba(28, 25, 23, 0.78) !important;
   }
   main[data-theme='beige'] .hover\:text-white\/70:hover {
-    color: rgba(28, 25, 23, 0.7) !important;
+    color: rgba(28, 25, 23, 0.76) !important;
   }
 
   /* Border-Klassen --------------------------------------------------- */
@@ -208,7 +223,50 @@
     background-color: rgba(255, 250, 235, 0.9) !important;
   }
   main[data-theme='beige'] .placeholder\:text-white\/35::placeholder {
-    color: rgba(28, 25, 23, 0.4) !important;
+    color: rgba(28, 25, 23, 0.68) !important;
+  }
+}
+
+@layer utilities {
+  /* Sichtbarer Fokus-Ring, der in beiden Themes funktioniert.
+   * Ersetzt das ersatzlose `focus:outline-none` in den Formularfeldern. */
+  .focus-ring:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow:
+      0 0 0 2px #000,
+      0 0 0 4px #fff;
+  }
+  main[data-theme='beige'] .focus-ring:focus-visible {
+    box-shadow:
+      0 0 0 2px #fffaeb,
+      0 0 0 4px #1c1917;
+  }
+
+  /* Skip-Link: unsichtbar bis er den Fokus bekommt. */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+  }
+  .skip-link:focus {
+    left: 1rem;
+    top: 1rem;
+  }
+}
+
+/* Bewegungsreduzierung: Dauer-Animationen anhalten. Inhalte bleiben
+ * dabei immer sichtbar — die Einblend-Effekte werden in BlurIn.tsx über
+ * useReducedMotion() deaktiviert, nicht hier per opacity. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-urra-beige-a,
+  .animate-urra-beige-b,
+  .animate-urra-wa-pulse {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto !important;
   }
 }
 

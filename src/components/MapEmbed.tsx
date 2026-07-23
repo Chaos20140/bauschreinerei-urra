@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { MapPin, ExternalLink } from 'lucide-react';
 import { contact } from '../data/content';
@@ -23,16 +24,17 @@ export function MapEmbed() {
     <div className="relative w-full aspect-[4/3] md:aspect-[16/10] rounded-2xl overflow-hidden border border-white/15 bg-neutral-900">
       <AnimatePresence mode="wait">
         {!activated ? (
-          <motion.button
+          // Bewusst ein <div> und kein <button>: der Erklärtext enthält einen
+          // Link zur Datenschutzerklärung, und ein <a> innerhalb eines
+          // <button> ist ungültiges HTML und mit Tastatur/Screenreader nicht
+          // zuverlässig bedienbar. Der Trigger ist der eigene Button unten.
+          <motion.div
             key="placeholder"
-            type="button"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onClick={() => setActivated(true)}
-            aria-label="Karte aktivieren und Google Maps laden"
-            className="absolute inset-0 w-full h-full no-shadow flex flex-col items-center justify-center text-center px-6 py-10 group"
+            className="absolute inset-0 w-full h-full no-shadow flex flex-col items-center justify-center text-center px-6 py-10"
             style={{
               backgroundImage:
                 'linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))',
@@ -47,7 +49,7 @@ export function MapEmbed() {
               }}
             />
             <div className="relative">
-              <span className="inline-flex h-14 w-14 md:h-16 md:w-16 grid place-items-center rounded-full bg-white/10 border border-white/15 mb-5 group-hover:bg-white/15 transition-colors">
+              <span className="inline-grid h-14 w-14 md:h-16 md:w-16 place-items-center rounded-full bg-white/10 border border-white/15 mb-5">
                 <MapPin className="h-6 w-6 md:h-7 md:w-7 text-white" strokeWidth={1.75} />
               </span>
               <p className="text-white/55 text-[10px] md:text-xs tracking-[0.3em] uppercase mb-2">
@@ -60,20 +62,23 @@ export function MapEmbed() {
                 Beim Aktivieren wird eine Verbindung zu Google Maps hergestellt.
                 Dabei werden Daten (u. a. Ihre IP-Adresse) an Google übertragen.
                 Details in unserer{' '}
-                <a
-                  href="/datenschutz"
+                <Link
+                  to="/datenschutz"
                   className="underline underline-offset-2 hover:text-white transition-colors"
-                  onClick={(e) => e.stopPropagation()}
                 >
                   Datenschutzerklärung
-                </a>
+                </Link>
                 .
               </p>
-              <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-sm font-medium group-hover:bg-neutral-200 transition-colors">
+              <button
+                type="button"
+                onClick={() => setActivated(true)}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-sm font-medium hover:bg-neutral-200 transition-colors focus-ring"
+              >
                 Karte aktivieren
-              </span>
+              </button>
             </div>
-          </motion.button>
+          </motion.div>
         ) : (
           <motion.div
             key="iframe-wrap"
@@ -95,7 +100,7 @@ export function MapEmbed() {
               href={DIRECTIONS_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="absolute top-3 right-3 inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/80 text-white text-xs hover:bg-black transition-colors no-shadow"
+              className="absolute top-3 right-3 inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/80 text-white text-xs hover:bg-black transition-colors no-shadow focus-ring"
             >
               <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} />
               Route planen
