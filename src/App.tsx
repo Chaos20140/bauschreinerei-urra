@@ -45,8 +45,60 @@ const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage }))
 );
 
+// Der Verwaltungsbereich ist ein eigenes Bundle: normale Besucher laden keinen
+// einzigen Byte davon. Erst der Aufruf von /admin zieht ihn nach.
+const AdminArea = lazy(() =>
+  import('./pages/admin/AdminArea').then((m) => ({ default: m.AdminArea }))
+);
+
 function RouteFallback() {
   return <div className="min-h-screen" aria-hidden="true" />;
+}
+
+/**
+ * Die öffentliche Website mit Navbar, Footer, Scroll-Hintergrund usw. Bewusst
+ * von /admin getrennt: der Admin soll nichts davon erben.
+ */
+function PublicSite() {
+  return (
+    <>
+      <a
+        href="#main"
+        className="skip-link bg-white text-black rounded-full px-5 py-3 text-sm font-medium"
+      >
+        Zum Inhalt springen
+      </a>
+
+      <ScrollToTop />
+      <GlobalBackground />
+      <Navbar />
+
+      {/* Meldet Screenreadern den Seitenwechsel — ohne das bleibt eine
+          SPA-Navigation für sie unbemerkt. Gefüllt von useDocumentMeta. */}
+      <p id="route-announcer" aria-live="polite" role="status" className="sr-only" />
+
+      <div className="relative z-10 text-white">
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/leistungen" element={<LeistungenPage />} />
+            <Route path="/projekte" element={<ProjektePage />} />
+            <Route path="/projekte/:slug" element={<ProjectDetailPage />} />
+            <Route path="/partner" element={<PartnerPage />} />
+            <Route path="/ueber-uns" element={<UeberUnsPage />} />
+            <Route path="/kontakt" element={<KontaktPage />} />
+            <Route path="/impressum" element={<ImpressumPage />} />
+            <Route path="/datenschutz" element={<DatenschutzPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
+        <Footer />
+      </div>
+
+      <WhatsAppButton />
+      <CookieBanner />
+    </>
+  );
 }
 
 export default function App() {
@@ -55,38 +107,17 @@ export default function App() {
       {/* reducedMotion="user" schaltet alle motion-Animationen ab, sobald das
           Betriebssystem Bewegungsreduzierung meldet. */}
       <MotionConfig reducedMotion="user">
-        <a href="#main" className="skip-link bg-white text-black rounded-full px-5 py-3 text-sm font-medium">
-          Zum Inhalt springen
-        </a>
-
-        <ScrollToTop />
-        <GlobalBackground />
-        <Navbar />
-
-        {/* Meldet Screenreadern den Seitenwechsel — ohne das bleibt eine
-            SPA-Navigation für sie unbemerkt. Gefüllt von useDocumentMeta. */}
-        <p id="route-announcer" aria-live="polite" role="status" className="sr-only" />
-
-        <div className="relative z-10 text-white">
-          <Suspense fallback={<RouteFallback />}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/leistungen" element={<LeistungenPage />} />
-              <Route path="/projekte" element={<ProjektePage />} />
-              <Route path="/projekte/:slug" element={<ProjectDetailPage />} />
-              <Route path="/partner" element={<PartnerPage />} />
-              <Route path="/ueber-uns" element={<UeberUnsPage />} />
-              <Route path="/kontakt" element={<KontaktPage />} />
-              <Route path="/impressum" element={<ImpressumPage />} />
-              <Route path="/datenschutz" element={<DatenschutzPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Suspense>
-          <Footer />
-        </div>
-
-        <WhatsAppButton />
-        <CookieBanner />
+        <Routes>
+          <Route
+            path="/admin/*"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <AdminArea />
+              </Suspense>
+            }
+          />
+          <Route path="/*" element={<PublicSite />} />
+        </Routes>
       </MotionConfig>
     </BrowserRouter>
   );

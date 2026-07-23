@@ -32,3 +32,7 @@ debug-*.png
 /public/projekte/*-800.webp
 /public/projekte/*-1200.webp
 /public/projekte/*-1600.webp
+
+# Supabase CLI: lokaler Projekt-Cache, gehört nicht ins Repo
+supabase/.temp/
+supabase/.branches/

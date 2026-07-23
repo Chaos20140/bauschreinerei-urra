@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /bauschreinerei-urra/admin
 
 Sitemap: https://chaos20140.github.io/bauschreinerei-urra/sitemap.xml
