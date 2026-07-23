@@ -97,7 +97,8 @@ for (const [, slug, title] of projects) {
 let written = 0;
 
 for (const route of ROUTES) {
-  const url = `${ORIGIN}${BASE}${route.path}`;
+  // Mit Schrägstrich — siehe Kommentar in tools/generate-sitemap.mjs.
+  const url = `${ORIGIN}${BASE}${route.path}/`;
   const title = escapeHtml(route.title);
   const description = escapeHtml(route.description);
 

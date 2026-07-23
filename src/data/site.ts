@@ -10,10 +10,17 @@ export const ORIGIN = 'https://chaos20140.github.io';
 /** Basis-Pfad der App ('/bauschreinerei-urra/' auf GitHub Pages, '/' lokal). */
 export const BASE = import.meta.env.BASE_URL;
 
-/** Vollständige, absolute URL für einen Router-Pfad wie '/kontakt'. */
+/**
+ * Vollständige, absolute URL für einen Router-Pfad wie '/kontakt'.
+ *
+ * Mit abschließendem Schrägstrich: GitHub Pages liefert die vorgerenderten
+ * Routen als Verzeichnisse aus und leitet '/kontakt' per 301 auf '/kontakt/'
+ * um. Ein canonical ohne Schrägstrich zeigte damit auf eine URL, die selbst
+ * weiterleitet — Suchmaschinen sollen direkt die 200er-Adresse bekommen.
+ */
 export function absoluteUrl(path: string): string {
-  const clean = path.replace(/^\//, '');
-  return `${ORIGIN}${BASE}${clean}`;
+  const clean = path.replace(/^\//, '').replace(/\/$/, '');
+  return clean ? `${ORIGIN}${BASE}${clean}/` : `${ORIGIN}${BASE}`;
 }
 
 export const OG_IMAGE = `${ORIGIN}${BASE}og-image.jpg`;

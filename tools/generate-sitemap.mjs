@@ -48,8 +48,11 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
   .map(
+    // Abschließender Schrägstrich: GitHub Pages liefert die vorgerenderten
+    // Routen als Verzeichnisse aus; ohne Schrägstrich antwortet jede URL
+    // zuerst mit einem 301. Die Sitemap soll direkt auf die 200er zeigen.
     (u) => `  <url>
-    <loc>${ORIGIN}${BASE}${u.path}</loc>
+    <loc>${ORIGIN}${BASE}${u.path ? `${u.path}/` : ''}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
