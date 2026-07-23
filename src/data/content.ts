@@ -457,72 +457,22 @@ export const partners = {
 } as const;
 
 // ----------------------------------------------------------------------------
-// HINWEIS für späteren Austausch durch ECHTE Google-Bewertungen:
-//   Die hier gepflegten Reviews sind Platzhalter im neutralen Marketing-Ton.
-//   Sobald die echten Google-Reviews verfügbar sind (z. B. via Place-ID +
-//   Maps JavaScript API mit domain-restricted API-Key oder als nightly
-//   Cache via GitHub Action), kann dieser Array durch die Live-Daten
-//   ersetzt werden. UI-Komponente erwartet exakt diese Struktur.
+// Bewertungen: NUR Überschriften und der Google-Link stehen hier.
+//
+// Die Bewertungen selbst kommen ausschließlich aus der Tabelle `reviews` in
+// der Datenbank (echte Google-Bewertungen). Hier standen früher erfundene
+// Platzhalter-Stimmen, die bis zum Nachladen sichtbar waren — unter der
+// Angabe "Quelle: Google Bewertungen" ist das wettbewerbswidrig. Ebenso
+// entfallen sind die festen Werte für Note und Anzahl; beides wird jetzt aus
+// den echten Bewertungen berechnet.
 // ----------------------------------------------------------------------------
 export const reviews = {
   eyebrow: 'Stimmen',
   title: 'Was Kunden sagen.',
   subtitle:
     'Direkt aus dem Sauerland und ganz Nordrhein-Westfalen — echte Eindrücke von Bauherren, die wir begleitet haben.',
-  rating: 5.0,
-  count: 8,
   source: 'Google',
   link: 'https://www.google.com/maps/search/?api=1&query=Bauschreinerei+Heribert+Urra+Olsberg',
-  items: [
-    {
-      name: 'Familie B.',
-      role: 'Olsberg · Sanierung Einfamilienhaus',
-      rating: 5,
-      date: 'März 2026',
-      body:
-        'Pünktlich, sauber, exakt nach Plan. Vom ersten Aufmaß bis zur Abnahme hat alles gestimmt — wir sind rundum zufrieden.',
-    },
-    {
-      name: 'Herr S.',
-      role: 'Brilon · Neubau',
-      rating: 5,
-      date: 'Januar 2026',
-      body:
-        'Sehr kompetente Beratung, faires Angebot und eine Montage, die jeden Tag fertig wurde wie versprochen. Klare Empfehlung.',
-    },
-    {
-      name: 'Frau M.',
-      role: 'Meschede · Fenstertausch',
-      rating: 5,
-      date: 'November 2025',
-      body:
-        'Saubere Baustelle, freundliche Monteure, schöne Endabnahme. Die Wärme bleibt jetzt drin, der Lärm bleibt draußen.',
-    },
-    {
-      name: 'Familie K.',
-      role: 'Winterberg · Garagentor & Haustür',
-      rating: 5,
-      date: 'September 2025',
-      body:
-        'Wir hatten konkrete Vorstellungen — Herr Urra hat sie nicht nur umgesetzt, sondern an entscheidenden Stellen klug verbessert. Top.',
-    },
-    {
-      name: 'Herr R.',
-      role: 'Arnsberg · Modernisierung',
-      rating: 5,
-      date: 'Juni 2025',
-      body:
-        'Beratung auf Augenhöhe, transparenter Preis, ordentliche Ausführung. So wünscht man sich Handwerk.',
-    },
-    {
-      name: 'Frau L.',
-      role: 'Schmallenberg · Schiebetüren',
-      rating: 5,
-      date: 'April 2025',
-      body:
-        'Termin eingehalten, keine bösen Überraschungen, die neuen Schiebetüren laufen wie auf Schienen. Danke für die saubere Arbeit.',
-    },
-  ],
 } as const;
 
 export const faq = {

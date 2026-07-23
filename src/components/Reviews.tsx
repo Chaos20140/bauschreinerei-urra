@@ -25,15 +25,6 @@ function formatGermanMonth(iso: string): string {
   return `${MONTHS_DE[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-const FALLBACK_ITEMS: ReviewItem[] = reviews.items.map((r, idx) => ({
-  key: `static-${idx}`,
-  name: r.name,
-  role: r.role,
-  rating: r.rating,
-  body: r.body,
-  date: r.date,
-}));
-
 function rowToItem(row: ReviewRow): ReviewItem {
   return {
     key: row.id,
@@ -67,8 +58,20 @@ function Stars({ count }: { count: number }) {
   );
 }
 
+/**
+ * Es werden ausschließlich die echten, in der Datenbank gepflegten
+ * Google-Bewertungen angezeigt.
+ *
+ * Früher stand hier eine Liste erfundener Stimmen („Familie B.", „Herr S." …)
+ * als Startzustand — sichtbar bei jedem Seitenaufruf, bis die echten geladen
+ * waren, und dauerhaft, wenn das Laden scheiterte. Unter der Überschrift
+ * „Quelle: Google Bewertungen" sind erfundene Stimmen wettbewerbswidrig.
+ * Solange nichts geladen ist, bleibt der Abschnitt deshalb leer; kommt nichts,
+ * verschwindet er ganz.
+ */
 export function Reviews() {
-  const [items, setItems] = useState<ReviewItem[]>(FALLBACK_ITEMS);
+  // null = noch nicht geladen, [] = nichts vorhanden → Abschnitt entfällt.
+  const [items, setItems] = useState<ReviewItem[] | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -77,7 +80,11 @@ export function Reviews() {
       // nachgeladen, damit er nicht im kritischen Startpfad der Seite liegt —
       // die Bewertungen stehen bis dahin schon aus der statischen Liste.
       const { supabase, isSupabaseConfigured } = await import('../lib/supabase');
-      if (cancelled || !isSupabaseConfigured || !supabase) return;
+      if (cancelled) return;
+      if (!isSupabaseConfigured || !supabase) {
+        setItems([]);
+        return;
+      }
 
       const { data, error } = await supabase
         .from('reviews')
@@ -89,13 +96,22 @@ export function Reviews() {
         .order('review_date', { ascending: false })
         .limit(12);
       if (cancelled) return;
-      if (error || !data || data.length === 0) return;
+      if (error || !data) {
+        setItems([]);
+        return;
+      }
       setItems((data as ReviewRow[]).map(rowToItem));
     })();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  // Nichts geladen (noch nicht da oder keine vorhanden) → kein Abschnitt.
+  // Lieber gar keine Bewertungen zeigen als erfundene.
+  if (!items || items.length === 0) return null;
+
+  const durchschnitt = items.reduce((sum, r) => sum + r.rating, 0) / items.length;
 
   return (
     <section className="relative text-white py-24 md:py-40 px-6 md:px-12">
@@ -114,12 +130,17 @@ export function Reviews() {
               <Editable id="home.reviews.subtitle">{reviews.subtitle}</Editable>
             </p>
             <div className="flex items-center gap-4">
-              <Stars count={Math.round(reviews.rating)} />
+              {/* Schnitt und Anzahl aus den echten Bewertungen berechnet —
+                  vorher standen hier feste Zahlen im Code (5,0 aus 8). */}
+              <Stars count={Math.round(durchschnitt)} />
               <span className="text-white text-lg md:text-xl font-medium">
-                {reviews.rating.toLocaleString('de-DE', { minimumFractionDigits: 1 })}
+                {durchschnitt.toLocaleString('de-DE', {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                })}
               </span>
               <span className="text-white/55 text-sm">
-                aus {reviews.count} Bewertungen
+                aus {items.length} {items.length === 1 ? 'Bewertung' : 'Bewertungen'}
               </span>
             </div>
           </BlurIn>

@@ -116,10 +116,10 @@ export function LeistungenPage() {
             {services.items.map((item, idx) => (
               <BlurIn as="li" className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9" key={item.id} delay={idx * 0.1}>
                 <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-4">
-                  <Editable id={`leistungen.services.${item.id}.title`}>{item.title}</Editable>
+                  <Editable id={`services.${item.id}.title`}>{item.title}</Editable>
                 </h3>
                 <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                  <Editable id={`leistungen.services.${item.id}.body`}>{item.body}</Editable>
+                  <Editable id={`services.${item.id}.body`}>{item.body}</Editable>
                 </p>
               </BlurIn>
             ))}
@@ -239,12 +239,12 @@ export function LeistungenPage() {
             {products.categories.map((cat, idx) => (
               <BlurIn as="li" className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9" key={cat.title} delay={idx * 0.08}>
                 <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-6">
-                  <Editable id={`leistungen.produkte.cat${idx}.title`}>{cat.title}</Editable>
+                  <Editable id={`produkte.cat${idx}.title`}>{cat.title}</Editable>
                 </h3>
                 <ul className="space-y-2 text-white/85 text-sm md:text-base">
                   {cat.items.map((it, j) => (
                     <li key={it} className="border-t border-white/10 pt-2">
-                      <Editable id={`leistungen.produkte.cat${idx}.item${j}`}>{it}</Editable>
+                      <Editable id={`produkte.cat${idx}.item${j}`}>{it}</Editable>
                     </li>
                   ))}
                 </ul>

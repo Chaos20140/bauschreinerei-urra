@@ -28,10 +28,10 @@ export function Services() {
               <BlurIn delay={idx * 0.08}>
                 <div className="grid md:grid-cols-12 gap-6 md:gap-10 py-10 md:py-14">
                   <h3 className="md:col-span-5 hero-title text-white text-3xl md:text-5xl font-medium">
-                    <Editable id={`home.services.item.${item.id}.title`}>{item.title}</Editable>
+                    <Editable id={`services.${item.id}.title`}>{item.title}</Editable>
                   </h3>
                   <p className="md:col-span-6 md:col-start-7 text-white/80 text-base md:text-lg leading-relaxed">
-                    <Editable id={`home.services.item.${item.id}.body`}>{item.body}</Editable>
+                    <Editable id={`services.${item.id}.body`}>{item.body}</Editable>
                   </p>
                 </div>
               </BlurIn>

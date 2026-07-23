@@ -1,0 +1,7 @@
+-- Platzhalter für die Erst-Einrichtung (Kontaktformular, Bewertungen).
+--
+-- Diese Migration ist in der Datenbank seit 2026-06-02 angewendet, lag aber
+-- nie als Datei im Repo. Ohne die Datei verweigert `supabase db push` jede
+-- weitere Migration („Remote migration versions not found in local migrations
+-- directory"). Absichtlich leer: der Stand ist bereits in der Datenbank,
+-- hier wird nur die Historie vervollständigt.

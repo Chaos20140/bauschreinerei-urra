@@ -45,7 +45,7 @@ export function Products() {
                   </span>
                 </div>
                 <h3 className="hero-title text-white text-3xl md:text-4xl font-medium mb-5">
-                  <Editable id={`home.products.cat${idx}.title`}>{cat.title}</Editable>
+                  <Editable id={`produkte.cat${idx}.title`}>{cat.title}</Editable>
                 </h3>
                 <ul className="space-y-2.5">
                   {cat.items.map((item, i) => (
@@ -54,7 +54,7 @@ export function Products() {
                       className="text-white/90 text-sm md:text-base border-t border-white/10 pt-2.5 flex items-center gap-3"
                     >
                       <span className="h-1 w-1 rounded-full bg-white/45" aria-hidden="true" />
-                      <span><Editable id={`home.products.cat${idx}.item${i}`}>{item}</Editable></span>
+                      <span><Editable id={`produkte.cat${idx}.item${i}`}>{item}</Editable></span>
                     </li>
                   ))}
                 </ul>

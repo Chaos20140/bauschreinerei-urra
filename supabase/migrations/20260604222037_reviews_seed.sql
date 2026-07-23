@@ -1,0 +1,4 @@
+-- Platzhalter für die zweite Erst-Einrichtung (Bewertungen/Feinschliff).
+--
+-- Wie 20260602000421: in der Datenbank seit 2026-06-04 angewendet, lag nie als
+-- Datei vor. Absichtlich leer — nur zur Vervollständigung der Historie.
