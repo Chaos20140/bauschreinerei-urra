@@ -1,6 +1,7 @@
 import { ShieldCheck, Leaf, Ruler, Users, MapPin } from 'lucide-react';
 import { features } from '../data/content';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 
 const ICONS: Record<string, typeof ShieldCheck> = {
   ral: ShieldCheck,
@@ -17,10 +18,10 @@ export function Features() {
         <div className="grid md:grid-cols-12 gap-8 md:gap-16 mb-12 md:mb-20">
           <BlurIn className="md:col-span-6">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              {features.eyebrow}
+              <Editable id="home.features.eyebrow">{features.eyebrow}</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[6vw] leading-[0.92]">
-              {features.title}.
+              <Editable id="home.features.title">{features.title}</Editable>.
             </h2>
           </BlurIn>
           <BlurIn
@@ -28,7 +29,7 @@ export function Features() {
             delay={0.15}
           >
             <p className="text-white/85 text-base md:text-lg leading-relaxed">
-              {features.subtitle}
+              <Editable id="home.features.subtitle">{features.subtitle}</Editable>
             </p>
           </BlurIn>
         </div>
@@ -51,10 +52,10 @@ export function Features() {
                   strokeWidth={1.5}
                 />
                 <h3 className="hero-title text-white text-lg md:text-xl font-medium mb-3 leading-tight">
-                  {f.title}
+                  <Editable id={`home.features.item.${f.key}.title`}>{f.title}</Editable>
                 </h3>
                 <p className="text-white/75 text-sm md:text-[15px] leading-relaxed">
-                  {f.body}
+                  <Editable id={`home.features.item.${f.key}.body`}>{f.body}</Editable>
                 </p>
               </BlurIn>
             );

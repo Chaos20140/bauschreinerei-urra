@@ -1,5 +1,6 @@
 import { PageHero } from '../components/PageHero';
 import { CtaBlock } from '../components/CtaBlock';
+import { Editable } from '../components/editor/Editable';
 import { BlurIn } from '../components/BlurIn';
 import { services, products } from '../data/content';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
@@ -87,6 +88,7 @@ export function LeistungenPage() {
   return (
     <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
+        idPrefix="leistungen"
         eyebrow="Leistungen"
         title="Rundum-Service vom Aufmaß bis zur fachgerechten Montage."
         intro="Wir sind Ihr alleiniger Ansprechpartner — von der ersten Beratung bis zur Einbau-Abnahme. Kein Subunternehmer, keine Schnittstellen, keine Ausreden."
@@ -97,15 +99,15 @@ export function LeistungenPage() {
           <BlurIn className="grid md:grid-cols-12 gap-8 mb-12 md:mb-16">
             <div className="md:col-span-6">
               <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-                Kernleistungen
+                <Editable id="leistungen.kern.eyebrow">Kernleistungen</Editable>
               </p>
               <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-                Das machen wir.
+                <Editable id="leistungen.kern.title">Das machen wir.</Editable>
               </h2>
             </div>
             <p className="md:col-span-5 md:col-start-8 self-end text-white/85 text-base md:text-lg leading-relaxed">
-              Drei Kompetenz-Säulen, die ineinandergreifen — sauber dokumentiert,
-              nach RAL ausgeführt, EnEV-konform.
+              <Editable id="leistungen.kern.intro">Drei Kompetenz-Säulen, die ineinandergreifen — sauber dokumentiert,
+              nach RAL ausgeführt, EnEV-konform.</Editable>
             </p>
           </BlurIn>
 
@@ -113,10 +115,10 @@ export function LeistungenPage() {
             {services.items.map((item, idx) => (
               <BlurIn as="li" className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9" key={item.id} delay={idx * 0.1}>
                 <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-4">
-                  {item.title}
+                  <Editable id={`leistungen.services.${item.id}.title`}>{item.title}</Editable>
                 </h3>
                 <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                  {item.body}
+                  <Editable id={`leistungen.services.${item.id}.body`}>{item.body}</Editable>
                 </p>
               </BlurIn>
             ))}
@@ -128,14 +130,14 @@ export function LeistungenPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Ablauf
+              <Editable id="leistungen.ablauf.eyebrow">Ablauf</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Wie wir arbeiten.
+              <Editable id="leistungen.ablauf.title">Wie wir arbeiten.</Editable>
             </h2>
             <p className="mt-6 text-white/85 text-base md:text-lg leading-relaxed">
-              Vom ersten Anruf bis zur Abnahme — sechs Schritte, keine
-              Überraschungen.
+              <Editable id="leistungen.ablauf.intro">Vom ersten Anruf bis zur Abnahme — sechs Schritte, keine
+              Überraschungen.</Editable>
             </p>
           </BlurIn>
 
@@ -143,10 +145,10 @@ export function LeistungenPage() {
             {PROCESS.map((p, idx) => (
               <BlurIn as="li" className="border-t border-white/15 pt-6" key={p.title} delay={idx * 0.06}>
                 <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
-                  {p.title}
+                  <Editable id={`leistungen.process${idx}.title`}>{p.title}</Editable>
                 </h3>
                 <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                  {p.body}
+                  <Editable id={`leistungen.process${idx}.body`}>{p.body}</Editable>
                 </p>
               </BlurIn>
             ))}
@@ -158,10 +160,10 @@ export function LeistungenPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-10 md:mb-14 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Im Einsatz
+              <Editable id="leistungen.einsatz.eyebrow">Im Einsatz</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              So sieht das aus.
+              <Editable id="leistungen.einsatz.title">So sieht das aus.</Editable>
             </h2>
           </BlurIn>
           <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
@@ -178,13 +180,13 @@ export function LeistungenPage() {
                 </div>
                 <div className="p-6 md:p-7 flex-1 flex flex-col">
                   <p className="text-white/55 text-[10px] tracking-[0.3em] uppercase mb-2">
-                    {t.eyebrow}
+                    <Editable id={`leistungen.tools${idx}.eyebrow`}>{t.eyebrow}</Editable>
                   </p>
                   <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
-                    {t.title}
+                    <Editable id={`leistungen.tools${idx}.title`}>{t.title}</Editable>
                   </h3>
                   <p className="text-white/80 text-sm leading-relaxed">
-                    {t.body}
+                    <Editable id={`leistungen.tools${idx}.body`}>{t.body}</Editable>
                   </p>
                 </div>
               </BlurIn>
@@ -197,14 +199,14 @@ export function LeistungenPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Materialien
+              <Editable id="leistungen.materialien.eyebrow">Materialien</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Kunststoff. Aluminium. Holz.
+              <Editable id="leistungen.materialien.title">Kunststoff. Aluminium. Holz.</Editable>
             </h2>
             <p className="mt-6 text-white/85 text-base md:text-lg leading-relaxed">
-              Wir beraten ergebnisoffen — welches Material das richtige ist, hängt
-              vom Objekt, der Nutzung und Ihrem Budget ab.
+              <Editable id="leistungen.materialien.intro">Wir beraten ergebnisoffen — welches Material das richtige ist, hängt
+              vom Objekt, der Nutzung und Ihrem Budget ab.</Editable>
             </p>
           </BlurIn>
 
@@ -212,10 +214,10 @@ export function LeistungenPage() {
             {MATERIALS.map((m, idx) => (
               <BlurIn as="li" className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9" key={m.name} delay={idx * 0.1}>
                 <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-4">
-                  {m.name}
+                  <Editable id={`leistungen.materials${idx}.name`}>{m.name}</Editable>
                 </h3>
                 <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                  {m.body}
+                  <Editable id={`leistungen.materials${idx}.body`}>{m.body}</Editable>
                 </p>
               </BlurIn>
             ))}
@@ -227,22 +229,22 @@ export function LeistungenPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Produkte
+              <Editable id="leistungen.produkte.eyebrow">Produkte</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Fenster, Türen, Tore.
+              <Editable id="leistungen.produkte.title">Fenster, Türen, Tore.</Editable>
             </h2>
           </BlurIn>
           <ul className="grid md:grid-cols-3 gap-5 md:gap-7">
             {products.categories.map((cat, idx) => (
               <BlurIn as="li" className="rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9" key={cat.title} delay={idx * 0.08}>
                 <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-6">
-                  {cat.title}
+                  <Editable id={`leistungen.produkte.cat${idx}.title`}>{cat.title}</Editable>
                 </h3>
                 <ul className="space-y-2 text-white/85 text-sm md:text-base">
-                  {cat.items.map((it) => (
+                  {cat.items.map((it, j) => (
                     <li key={it} className="border-t border-white/10 pt-2">
-                      {it}
+                      <Editable id={`leistungen.produkte.cat${idx}.item${j}`}>{it}</Editable>
                     </li>
                   ))}
                 </ul>
@@ -253,6 +255,7 @@ export function LeistungenPage() {
       </section>
 
       <CtaBlock
+        idPrefix="leistungen"
         title="Bereit für Ihr Projekt?"
         body="Erzählen Sie uns, was Sie vorhaben — wir kommen vorbei, messen auf und beraten ergebnisoffen."
       />

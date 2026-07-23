@@ -1,5 +1,6 @@
 import { hero, brand } from '../data/content';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 
 const SHADOW_SOFT = { textShadow: '0 1px 18px rgba(0,0,0,0.55)' } as const;
 const SHADOW_HEAVY = { textShadow: '0 4px 48px rgba(0,0,0,0.45)' } as const;
@@ -30,7 +31,9 @@ export function Hero() {
             className="text-white text-[10px] md:text-xs tracking-[0.4em] uppercase"
             style={SHADOW_SOFT}
           >
-            {brand.longName} · Olsberg · Seit 2003
+            <Editable id="home.hero.eyebrow">
+              {brand.longName} · Olsberg · Seit 2003
+            </Editable>
           </p>
         </BlurIn>
 
@@ -40,9 +43,11 @@ export function Hero() {
               className="hero-title text-white font-medium text-[15vw] md:text-[10vw] leading-[0.88]"
               style={SHADOW_HEAVY}
             >
-              Fenster.
-              <br />
-              Und Türen.
+              <Editable id="home.hero.title" rich>
+                Fenster.
+                <br />
+                Und Türen.
+              </Editable>
             </h1>
           </BlurIn>
           <BlurIn delay={0.55} className="mt-6 md:mt-8">
@@ -50,7 +55,7 @@ export function Hero() {
               className="text-white text-sm md:text-lg lg:text-xl leading-relaxed max-w-xl"
               style={SHADOW_SOFT}
             >
-              {hero.description}
+              <Editable id="home.hero.desc">{hero.description}</Editable>
             </p>
           </BlurIn>
         </div>
@@ -58,13 +63,13 @@ export function Hero() {
         <div className="flex items-end justify-between gap-6">
           <BlurIn delay={0.7}>
             <ul className="flex flex-wrap gap-x-8 gap-y-4 md:gap-x-12">
-              {hero.stats.map((s) => (
+              {hero.stats.map((s, i) => (
                 <li key={s.value} className="flex flex-col" style={SHADOW_SOFT}>
                   <span className="text-white text-xl md:text-2xl lg:text-3xl font-medium tracking-tight">
-                    {s.value}
+                    <Editable id={`home.hero.stat${i}.value`}>{s.value}</Editable>
                   </span>
                   <span className="text-white/75 text-[9px] md:text-[10px] mt-1 tracking-[0.25em] uppercase">
-                    {s.label}
+                    <Editable id={`home.hero.stat${i}.label`}>{s.label}</Editable>
                   </span>
                 </li>
               ))}

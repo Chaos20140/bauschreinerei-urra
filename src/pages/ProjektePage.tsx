@@ -6,6 +6,7 @@ import { BlurIn } from '../components/BlurIn';
 import { ProjectImage } from '../components/ProjectImage';
 import { projectList, regions } from '../data/content';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import { Editable } from '../components/editor/Editable';
 
 const CATEGORIES = [
   {
@@ -42,6 +43,7 @@ export function ProjektePage() {
   return (
     <main id="main" data-theme="beige" className="relative min-h-screen text-white pb-12">
       <PageHero
+        idPrefix="projekte"
         eyebrow="Projekte"
         title="Referenzen aus dem Sauerland und ganz Nordrhein-Westfalen."
         intro="Jedes Objekt hat seine eigene Geschichte — von der kleinen Sanierung bis zum Gewerbeobjekt. Seit 2003 begleiten wir Bauherren in drei Regionen mit Fachhandwerk auf hohem Niveau."
@@ -51,10 +53,10 @@ export function ProjektePage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Objektarten
+              <Editable id="projekte.objektarten.eyebrow">Objektarten</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Was wir umsetzen.
+              <Editable id="projekte.objektarten.title">Was wir umsetzen.</Editable>
             </h2>
           </BlurIn>
 
@@ -67,18 +69,18 @@ export function ProjektePage() {
                 className="h-full rounded-2xl border border-white/15 bg-white/[0.03] p-7 md:p-9 flex flex-col"
               >
                 <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-5">
-                  {c.title}
+                  <Editable id={`projekte.category${idx}.title`}>{c.title}</Editable>
                 </h3>
                 <p className="text-white/80 text-sm md:text-base leading-relaxed mb-6 flex-1">
-                  {c.body}
+                  <Editable id={`projekte.category${idx}.body`}>{c.body}</Editable>
                 </p>
                 <ul className="flex flex-wrap gap-2 pt-4 border-t border-white/10">
-                  {c.tags.map((t) => (
+                  {c.tags.map((t, tidx) => (
                     <li
                       key={t}
                       className="text-white/65 text-xs tracking-wider px-3 py-1 rounded-full border border-white/15"
                     >
-                      {t}
+                      <Editable id={`projekte.category${idx}.tag${tidx}`}>{t}</Editable>
                     </li>
                   ))}
                 </ul>
@@ -92,14 +94,16 @@ export function ProjektePage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-20 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Referenzen
+              <Editable id="projekte.referenzen.eyebrow">Referenzen</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Aus unserer Werkstatt.
+              <Editable id="projekte.referenzen.title">Aus unserer Werkstatt.</Editable>
             </h2>
             <p className="mt-5 text-white/80 text-base md:text-lg leading-relaxed">
-              Eine Auswahl realisierter Objekte — klicken Sie auf ein Projekt
-              für die ausführliche Vorstellung mit Eckdaten und Bildern.
+              <Editable id="projekte.referenzen.intro">
+                Eine Auswahl realisierter Objekte — klicken Sie auf ein Projekt
+                für die ausführliche Vorstellung mit Eckdaten und Bildern.
+              </Editable>
             </p>
           </BlurIn>
 
@@ -141,14 +145,14 @@ export function ProjektePage() {
                           {p.category} · {p.location} · {p.year}
                         </p>
                         <h3 className="hero-title text-white font-medium text-[9vw] md:text-[3.4vw] lg:text-[2.8vw] leading-[1] mb-5">
-                          {p.title}
+                          <Editable id={`projekte.item.${p.slug}.title`}>{p.title}</Editable>
                         </h3>
                         <p className="text-white/80 text-base md:text-lg leading-relaxed mb-7">
-                          {p.summary}
+                          <Editable id={`projekte.item.${p.slug}.summary`}>{p.summary}</Editable>
                         </p>
                         <span className="inline-flex items-center gap-3 text-sm md:text-base text-white/75 group-hover:text-white transition-colors">
                           <span className="border-b border-white/30 group-hover:border-white pb-0.5 transition-colors">
-                            Projekt ansehen
+                            <Editable id={`projekte.item.${p.slug}.cta`}>Projekt ansehen</Editable>
                           </span>
                           <ArrowUpRight
                             className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5"
@@ -169,10 +173,10 @@ export function ProjektePage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Eckdaten
+              <Editable id="projekte.eckdaten.eyebrow">Eckdaten</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Das spricht für uns.
+              <Editable id="projekte.eckdaten.title">Das spricht für uns.</Editable>
             </h2>
           </BlurIn>
           <ul className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
@@ -180,10 +184,10 @@ export function ProjektePage() {
               <BlurIn as="li" className="border-t border-white/15 pt-6" key={h.label} delay={idx * 0.07}>
                 <div className="border-t border-white/15 pt-6">
                   <p className="hero-title text-white text-4xl md:text-5xl lg:text-6xl font-medium mb-2">
-                    {h.value}
+                    <Editable id={`projekte.highlight${idx}.value`}>{h.value}</Editable>
                   </p>
                   <p className="text-white/70 text-xs md:text-sm tracking-[0.2em] uppercase">
-                    {h.label}
+                    <Editable id={`projekte.highlight${idx}.label`}>{h.label}</Editable>
                   </p>
                 </div>
               </BlurIn>
@@ -196,10 +200,10 @@ export function ProjektePage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-10 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Servicegebiet
+              <Editable id="projekte.servicegebiet.eyebrow">Servicegebiet</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Wo wir bauen.
+              <Editable id="projekte.servicegebiet.title">Wo wir bauen.</Editable>
             </h2>
           </BlurIn>
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
@@ -207,7 +211,7 @@ export function ProjektePage() {
               <BlurIn key={area.key} delay={idx * 0.08}>
                 <div>
                   <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-5 border-b border-white/15 pb-3">
-                    {area.key}
+                    <Editable id={`projekte.region${idx}.title`}>{area.key}</Editable>
                   </h3>
                   <ul className="flex flex-wrap gap-x-3 gap-y-2 text-white/75 text-sm md:text-base">
                     {area.cities.map((city, cidx) => (
@@ -227,6 +231,7 @@ export function ProjektePage() {
       </section>
 
       <CtaBlock
+        idPrefix="projekte"
         title="Ihr nächstes Projekt."
         body="Schicken Sie uns die Eckdaten — Adresse, gewünschte Elemente, Zeithorizont. Wir melden uns binnen 24 Stunden."
       />

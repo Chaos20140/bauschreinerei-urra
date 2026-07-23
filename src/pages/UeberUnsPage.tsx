@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { CtaBlock } from '../components/CtaBlock';
 import { BlurIn } from '../components/BlurIn';
+import { Editable } from '../components/editor/Editable';
 import { about, brand, hero, contact } from '../data/content';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
@@ -90,22 +91,26 @@ export function UeberUnsPage() {
                 <span className="sr-only">
                   Über die Bauschreinerei Urra aus Olsberg —{' '}
                 </span>
-                „Qualität ist kein Zufall — sie ist das Ergebnis harter Arbeit,
-                kluger Planung und ehrlicher Leidenschaft."
+                <Editable id="ueberuns.hero.quote" rich>
+                  „Qualität ist kein Zufall — sie ist das Ergebnis harter Arbeit,
+                  kluger Planung und ehrlicher Leidenschaft."
+                </Editable>
               </h1>
             </BlurIn>
 
             <BlurIn delay={0.4} className="md:col-span-3 md:pb-2">
               <p className="text-white/55 text-[10px] md:text-xs tracking-[0.3em] uppercase mb-3">
-                Inhaber
+                <Editable id="ueberuns.hero.ownerlabel">Inhaber</Editable>
               </p>
               <p className="text-white text-lg md:text-xl font-medium">
-                Heribert Urra
+                <Editable id="ueberuns.hero.ownername">Heribert Urra</Editable>
               </p>
               <p className="text-white/65 text-sm mt-1">
-                {brand.shortName}
-                <br />
-                Olsberg, Sauerland
+                <Editable id="ueberuns.hero.ownerplace" rich>
+                  {brand.shortName}
+                  <br />
+                  Olsberg, Sauerland
+                </Editable>
               </p>
             </BlurIn>
           </div>
@@ -120,11 +125,11 @@ export function UeberUnsPage() {
                 key={i}
                 className="text-white/90 text-base md:text-xl leading-relaxed"
               >
-                {p}
+                <Editable id={`ueberuns.intro.para${i}`}>{p}</Editable>
               </p>
             ))}
             <p className="text-white/85 text-base md:text-lg leading-relaxed pt-4">
-              {hero.description}
+              <Editable id="ueberuns.intro.herodesc">{hero.description}</Editable>
             </p>
           </BlurIn>
 
@@ -133,27 +138,27 @@ export function UeberUnsPage() {
             delay={0.2}
           >
             <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-4">
-              Auf einen Blick
+              <Editable id="ueberuns.facts.label">Auf einen Blick</Editable>
             </p>
             <dl className="space-y-4 text-sm md:text-base">
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">Gegründet</dt>
-                <dd className="text-white">{brand.founded}</dd>
+                <dt className="text-white/65"><Editable id="ueberuns.facts.foundedlabel">Gegründet</Editable></dt>
+                <dd className="text-white"><Editable id="ueberuns.facts.foundedvalue">{brand.founded}</Editable></dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">Sitz</dt>
-                <dd className="text-white">Olsberg, Sauerland</dd>
+                <dt className="text-white/65"><Editable id="ueberuns.facts.sitzlabel">Sitz</Editable></dt>
+                <dd className="text-white"><Editable id="ueberuns.facts.sitzvalue">Olsberg, Sauerland</Editable></dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">Form</dt>
-                <dd className="text-white">Inhabergeführt</dd>
+                <dt className="text-white/65"><Editable id="ueberuns.facts.formlabel">Form</Editable></dt>
+                <dd className="text-white"><Editable id="ueberuns.facts.formvalue">Inhabergeführt</Editable></dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">Standard</dt>
-                <dd className="text-white">RAL / EnEV</dd>
+                <dt className="text-white/65"><Editable id="ueberuns.facts.standardlabel">Standard</Editable></dt>
+                <dd className="text-white"><Editable id="ueberuns.facts.standardvalue">RAL / EnEV</Editable></dd>
               </div>
               <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
-                <dt className="text-white/65">Kontakt</dt>
+                <dt className="text-white/65"><Editable id="ueberuns.facts.kontaktlabel">Kontakt</Editable></dt>
                 <dd className="text-white text-right break-all">
                   {contact.phone.display}
                 </dd>
@@ -167,10 +172,10 @@ export function UeberUnsPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Geschichte
+              <Editable id="ueberuns.history.eyebrow">Geschichte</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Wie wir hierher kamen.
+              <Editable id="ueberuns.history.title">Wie wir hierher kamen.</Editable>
             </h2>
           </BlurIn>
 
@@ -178,14 +183,14 @@ export function UeberUnsPage() {
             {MILESTONES.map((m, idx) => (
               <BlurIn as="li" className="grid grid-cols-[auto_1fr] gap-5 md:gap-7 border-t border-white/15 pt-6" key={m.year} delay={idx * 0.08}>
                 <span className="text-white/60 text-sm md:text-base tracking-[0.2em] uppercase">
-                  {m.year}
+                  <Editable id={`ueberuns.milestones${idx}.year`}>{m.year}</Editable>
                 </span>
                 <div>
                   <h3 className="hero-title text-white text-xl md:text-2xl font-medium mb-2">
-                    {m.title}
+                    <Editable id={`ueberuns.milestones${idx}.title`}>{m.title}</Editable>
                   </h3>
                   <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                    {m.body}
+                    <Editable id={`ueberuns.milestones${idx}.body`}>{m.body}</Editable>
                   </p>
                 </div>
               </BlurIn>
@@ -198,10 +203,10 @@ export function UeberUnsPage() {
         <div className="max-w-7xl mx-auto">
           <BlurIn className="mb-12 md:mb-16 max-w-3xl">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              Werte
+              <Editable id="ueberuns.values.eyebrow">Werte</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Woran wir uns messen lassen.
+              <Editable id="ueberuns.values.title">Woran wir uns messen lassen.</Editable>
             </h2>
           </BlurIn>
 
@@ -209,10 +214,10 @@ export function UeberUnsPage() {
             {PRINCIPLES.map((p, idx) => (
               <BlurIn as="li" className="border-t border-white/15 pt-6" key={p.key} delay={idx * 0.07}>
                 <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-3">
-                  {p.key}
+                  <Editable id={`ueberuns.principles${idx}.title`}>{p.key}</Editable>
                 </h3>
                 <p className="text-white/80 text-sm md:text-base leading-relaxed">
-                  {p.body}
+                  <Editable id={`ueberuns.principles${idx}.body`}>{p.body}</Editable>
                 </p>
               </BlurIn>
             ))}
@@ -221,6 +226,7 @@ export function UeberUnsPage() {
       </section>
 
       <CtaBlock
+        idPrefix="ueberuns"
         title="Lernen Sie uns kennen."
         body="Ein Gespräch sagt mehr als zehn Webseiten — gerne bei Ihnen vor Ort oder telefonisch."
       />

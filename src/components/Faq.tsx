@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Plus } from 'lucide-react';
 import { faq } from '../data/content';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 
 export function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -13,15 +14,15 @@ export function Faq() {
         <div className="grid md:grid-cols-12 gap-8 md:gap-16 mb-12 md:mb-20">
           <BlurIn className="md:col-span-5">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              {faq.eyebrow}
+              <Editable id="home.faq.eyebrow">{faq.eyebrow}</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[6vw] leading-[0.92]">
-              {faq.title}
+              <Editable id="home.faq.title">{faq.title}</Editable>
             </h2>
           </BlurIn>
           <BlurIn className="md:col-span-6 md:col-start-7 self-end" delay={0.15}>
             <p className="text-white/85 text-base md:text-lg leading-relaxed">
-              {faq.subtitle}
+              <Editable id="home.faq.subtitle">{faq.subtitle}</Editable>
             </p>
           </BlurIn>
         </div>
@@ -43,7 +44,7 @@ export function Faq() {
                     className="w-full flex items-start justify-between gap-6 py-6 md:py-8 text-left group no-shadow focus-ring rounded-lg"
                   >
                     <span className="hero-title text-white text-lg md:text-2xl lg:text-3xl font-medium tracking-tight pr-4">
-                      {item.q}
+                      <Editable id={`home.faq.items${idx}.q`}>{item.q}</Editable>
                     </span>
                     <span
                       className={`shrink-0 h-10 w-10 md:h-12 md:w-12 grid place-items-center rounded-full border border-white/25 transition-all duration-300 ${
@@ -69,7 +70,7 @@ export function Faq() {
                         className="overflow-hidden"
                       >
                         <p className="text-white/80 text-base md:text-lg leading-relaxed pb-6 md:pb-8 pr-16 md:pr-20 max-w-3xl">
-                          {item.a}
+                          <Editable id={`home.faq.items${idx}.a`}>{item.a}</Editable>
                         </p>
                       </motion.div>
                     )}

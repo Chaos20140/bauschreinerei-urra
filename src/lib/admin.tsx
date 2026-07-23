@@ -81,6 +81,8 @@ type AdminCtx = {
   authed: boolean;
   login: (pw: string) => Promise<LoginResult>;
   logout: () => void;
+  /** Aktuelles Passwort (im Speicher) — für den Start des Bearbeiten-Modus. */
+  pw: () => string;
   listContacts: (includeArchived?: boolean) => Promise<ContactRow[]>;
   updateContact: (id: string, patch: Patch) => Promise<ContactRow>;
   deleteContact: (id: string) => Promise<void>;
@@ -128,6 +130,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     pwRef.current = '';
     setAuthed(false);
   }, []);
+
+  const pw = useCallback(() => pwRef.current, []);
 
   const listContacts = useCallback(async (includeArchived = false) => {
     const res = await post({
@@ -205,7 +209,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider
       value={{
-        authed, login, logout,
+        authed, login, logout, pw,
         listContacts, updateContact, deleteContact, exportContacts,
         listJobs, updateJob, deleteJob, cvUrl, exportJobs,
       }}

@@ -2,6 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { products } from '../data/content';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 
 export function Products() {
   return (
@@ -10,15 +11,15 @@ export function Products() {
         <div className="grid md:grid-cols-12 gap-8 mb-12 md:mb-20">
           <BlurIn className="md:col-span-7">
             <p className="text-xs md:text-sm text-white/60 tracking-[0.3em] uppercase mb-4">
-              {products.eyebrow}
+              <Editable id="home.products.eyebrow">{products.eyebrow}</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[7vw] leading-[0.92]">
-              {products.title}.
+              <Editable id="home.products.title">{products.title}</Editable>.
             </h2>
           </BlurIn>
           <BlurIn className="md:col-span-4 md:col-start-9 self-end" delay={0.15}>
             <p className="text-white/85 text-base md:text-lg leading-relaxed">
-              {products.subtitle}
+              <Editable id="home.products.subtitle">{products.subtitle}</Editable>
             </p>
           </BlurIn>
         </div>
@@ -44,16 +45,16 @@ export function Products() {
                   </span>
                 </div>
                 <h3 className="hero-title text-white text-3xl md:text-4xl font-medium mb-5">
-                  {cat.title}
+                  <Editable id={`home.products.cat${idx}.title`}>{cat.title}</Editable>
                 </h3>
                 <ul className="space-y-2.5">
-                  {cat.items.map((item) => (
+                  {cat.items.map((item, i) => (
                     <li
                       key={item}
                       className="text-white/90 text-sm md:text-base border-t border-white/10 pt-2.5 flex items-center gap-3"
                     >
                       <span className="h-1 w-1 rounded-full bg-white/45" aria-hidden="true" />
-                      <span>{item}</span>
+                      <span><Editable id={`home.products.cat${idx}.item${i}`}>{item}</Editable></span>
                     </li>
                   ))}
                 </ul>

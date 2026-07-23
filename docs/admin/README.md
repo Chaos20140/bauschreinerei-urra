@@ -106,9 +106,36 @@ Lebenslauf-Upload, plus Bewerbungs-Verwaltung im Admin.
 > Komponenten (`AdminInbox`/`AdminJobs`). Kommt „Termine" als dritter Typ dazu,
 > lohnt sich eine Generalisierung (eine Liste + ein Detail-Panel, per Typ-Config).
 
+## Seite bearbeiten — Inline-Editor (Etappe 3)
+
+Der Betreiber ändert Texte direkt auf der Website. Muster von Cura Doma.
+
+- **Mechanik:** `<Editable id="home.hero.desc">…</Editable>` umschließt einen
+  Text. Normal zeigt er den Code-Text (content.ts) oder — falls vorhanden —
+  den gespeicherten Override. Im Bearbeiten-Modus wird er `contentEditable`.
+- **Bearbeiten-Modus** startet aus der Admin-Kachel „Seite bearbeiten"
+  (`enterEditMode(pw)` + Navigation auf `/`). Das Passwort liegt dabei nur im
+  Speicher des `ContentProvider`. Eine schwebende `EditToolbar` zeigt Zähler,
+  Speichern und Verlassen.
+- **Speichern** läuft über urra-admin `save-content` (passwortgeschützt): jeder
+  Wert wird per Escape-First-Allowlist sanitisiert (nur fett/kursiv/Umbruch/
+  sichere Links überleben) → kein Stored XSS. `reset-content` löscht einen
+  Override, dann greift wieder der Code-Text.
+- **Lesen:** Der öffentliche Client lädt die Overrides per leichtem REST-Abruf
+  (`site_content`, öffentliche SELECT-Policy) — kein supabase-js im Startpfad.
+- **Datenmodell:** `site_content` (key/value), RLS an, öffentlich lesbar, kein
+  anon-Write (Schreiben nur Service-Role in der Function).
+- **Reichweite Runde 1:** editierbare Texte auf allen Hauptseiten (Start,
+  Leistungen, Projekte, Über uns, Karriere, Kontakt) — 136 Felder. Bilder,
+  Blöcke und Rechtsseiten sind bewusst außen vor (spätere Runden).
+
+> `dangerouslySetInnerHTML` wird ausschließlich in `Editable.tsx` genutzt und
+> nur mit serverseitig sanitisierten Werten — das ist der bewusste, sichere Fall.
+
 ## Änderungsprotokoll
 
 | Datum | Was | Warum |
 |---|---|---|
 | 2026-07-23 | Etappe 1: Login + Dashboard + Anfragen-Verwaltung (Function, Migration, Frontend) | Betreiber-Backoffice; Anfragen waren nur per Formular-Eingang sichtbar |
 | 2026-07-23 | Etappe 2: Bewerbungen — Karriere-Seite + Formular (urra-apply, privater CV-Bucket) und Admin-Ansicht mit CV-Download | „Bewerbungen einsehen" aus der ursprünglichen Anfrage; Eingang gab es bei Urra noch nicht |
+| 2026-07-23 | Etappe 3: Inline-Editor „Seite bearbeiten" — site_content + save-content, ContentProvider/Editable/EditToolbar, 136 editierbare Texte auf allen Hauptseiten | Zweites Kernanliegen der ursprünglichen Anfrage („Seite vollständig bearbeiten") |

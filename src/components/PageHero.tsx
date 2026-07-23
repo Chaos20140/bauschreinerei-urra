@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 import type { ReactNode } from 'react';
 
 type Props = {
@@ -15,6 +16,12 @@ type Props = {
   layout?: 'split' | 'stacked';
   /** Kompakte Titelgröße — gut für legal Pages. */
   titleSize?: 'default' | 'compact';
+  /**
+   * Präfix für die Editable-IDs (z. B. "leistungen"). Ist es gesetzt, sind
+   * Eyebrow, Titel und Intro im Bearbeiten-Modus editierbar. Ohne Präfix
+   * bleiben sie fest (z. B. auf den Rechtsseiten).
+   */
+  idPrefix?: string;
 };
 
 export function PageHero({
@@ -24,7 +31,26 @@ export function PageHero({
   children,
   layout = 'split',
   titleSize = 'default',
+  idPrefix,
 }: Props) {
+  const titleNode = idPrefix ? (
+    <Editable id={`${idPrefix}.title`} rich>
+      {title}
+    </Editable>
+  ) : (
+    title
+  );
+  const introNode =
+    intro != null
+      ? idPrefix
+        ? <Editable id={`${idPrefix}.intro`}>{intro}</Editable>
+        : intro
+      : null;
+  const eyebrowNode = idPrefix ? (
+    <Editable id={`${idPrefix}.eyebrow`}>{eyebrow}</Editable>
+  ) : (
+    eyebrow
+  );
   const titleClass =
     titleSize === 'compact'
       ? 'hero-title text-white font-medium text-[7vw] md:text-[5vw] lg:text-[4vw] leading-[1] break-words'
@@ -54,7 +80,7 @@ export function PageHero({
               Start
             </Link>
             <span className="text-white/30">/</span>
-            <span className="text-white/85">{eyebrow}</span>
+            <span className="text-white/85">{eyebrowNode}</span>
           </nav>
         </BlurIn>
 
@@ -62,16 +88,16 @@ export function PageHero({
           <>
             <BlurIn delay={0.2}>
               <h1 className={titleClass} style={titleStyle} lang="de">
-                {title}
+                {titleNode}
               </h1>
             </BlurIn>
-            {intro && (
+            {introNode && (
               <BlurIn delay={0.35} className="mt-6 md:mt-8 max-w-3xl">
                 <p
                   className="text-white/90 text-base md:text-lg lg:text-xl leading-relaxed"
                   style={{ textWrap: 'pretty' }}
                 >
-                  {intro}
+                  {introNode}
                 </p>
               </BlurIn>
             )}
@@ -80,16 +106,16 @@ export function PageHero({
           <div className="grid md:grid-cols-12 gap-x-8 gap-y-8 md:gap-y-12 items-end">
             <BlurIn delay={0.2} className="md:col-span-8">
               <h1 className={titleClass} style={titleStyle} lang="de">
-                {title}
+                {titleNode}
               </h1>
             </BlurIn>
-            {intro && (
+            {introNode && (
               <BlurIn delay={0.4} className="md:col-span-4 md:pb-3">
                 <p
                   className="text-white/90 text-base md:text-lg lg:text-xl leading-relaxed"
                   style={{ textWrap: 'pretty' }}
                 >
-                  {intro}
+                  {introNode}
                 </p>
               </BlurIn>
             )}

@@ -26,6 +26,39 @@ import {
 const CV_BUCKET = "bewerbungen";
 const CV_SIGNED_URL_TTL_S = 600; // 10 Minuten
 
+// Inline-Editor: erlaubte Editable-IDs, Deckel, Sanitizer.
+const CONTENT_ID_RE = /^[a-z0-9][a-z0-9.\-]{0,80}$/;
+const MAX_CONTENT_IDS = 400;
+const MAX_CONTENT_LEN = 8000;
+
+function safeHref(h: string): boolean {
+  const s = (h || "").trim();
+  // Nur same-origin-relative Pfade (kein zweiter Slash → blockt //fremdhost),
+  // http(s), mailto, tel, #anker.
+  return /^https?:\/\//i.test(s) || /^mailto:/i.test(s) || /^tel:/i.test(s) ||
+    /^\/(?!\/)[\w./-]*$/.test(s) || /^#[\w-]+$/.test(s);
+}
+
+// Escape-First-Allowlist: erst ALLES neutralisieren, dann nur wenige sichere
+// Inline-Tags (fett/kursiv/Umbruch/Link) zurückholen. So kann ein Redakteur
+// keinen aktiven HTML/JS-Code speichern. Plain-Text überlebt als escapetes
+// HTML — der Client rendert Overrides konsequent als HTML (kein Doppel-Escape).
+function sanitizeRich(html: string): string {
+  let s = html
+    .replace(/&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/g, "&amp;")
+    .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  s = s.replace(/&lt;(\/?)(strong|b|em|i)&gt;/gi, "<$1$2>");
+  s = s.replace(/&lt;br\s*\/?&gt;/gi, "<br>");
+  s = s.replace(/&lt;a\b[\s\S]*?&gt;/gi, (m) => {
+    const hm = m.match(/href=(?:&quot;|&#39;)([\s\S]*?)(?:&quot;|&#39;)/i);
+    const href = hm ? hm[1] : "";
+    return safeHref(href) ? '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' : "";
+  });
+  s = s.replace(/&lt;\/a&gt;/gi, "</a>");
+  s = s.replace(/&lt;\/?[a-z][\s\S]*?&gt;/gi, ""); // alle übrigen Tags raus, Text bleibt
+  return s;
+}
+
 const EDIT_PW = Deno.env.get("EDIT_PASSWORD") || "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -220,6 +253,42 @@ async function handle(req: Request): Promise<Response> {
 
   // Login-Prüfung: das Gate ist schon bestanden.
   if (action === "check") {
+    return json({ ok: true }, 200, origin);
+  }
+
+  // ── Inline-Editor: Text-Overrides speichern / zurücksetzen ─────────────────
+  if (action === "save-content") {
+    const overrides = (body.overrides ?? {}) as Record<string, unknown>;
+    const ids = Object.keys(overrides);
+    if (ids.length === 0) return json({ error: "empty" }, 400, origin);
+    if (ids.length > MAX_CONTENT_IDS) return json({ error: "too_many" }, 400, origin);
+    for (const id of ids) {
+      if (!CONTENT_ID_RE.test(id)) return json({ error: "bad_id", id }, 400, origin);
+      const v = overrides[id];
+      if (typeof v !== "string") return json({ error: "bad_value", id }, 400, origin);
+      if (v.length > MAX_CONTENT_LEN) return json({ error: "too_long", id }, 400, origin);
+    }
+    const now = new Date().toISOString();
+    // JEDEN Wert sanitisieren (nicht nur die als rich gemeldeten): sonst könnte
+    // ein authentifizierter Client rohes HTML unter einer im Frontend als HTML
+    // gerenderten ID ablegen → Stored XSS.
+    const rows = ids.map((id) => ({
+      key: id,
+      value: sanitizeRich(overrides[id] as string),
+      updated_at: now,
+    }));
+    const { error } = await sb.from("site_content").upsert(rows);
+    if (error) return json({ error: "db_error" }, 500, origin);
+    return json({ ok: true, count: ids.length }, 200, origin);
+  }
+
+  if (action === "reset-content") {
+    // Einen oder mehrere Overrides löschen → der Code-Text (content.ts) greift wieder.
+    const keys = Array.isArray(body.keys) ? body.keys.filter((k) => typeof k === "string") : [];
+    if (keys.length === 0) return json({ error: "empty" }, 400, origin);
+    if (keys.length > MAX_CONTENT_IDS) return json({ error: "too_many" }, 400, origin);
+    const { error } = await sb.from("site_content").delete().in("key", keys as string[]);
+    if (error) return json({ error: "db_error" }, 500, origin);
     return json({ ok: true }, 200, origin);
   }
 

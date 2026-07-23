@@ -3,6 +3,7 @@ import { Star, ExternalLink } from 'lucide-react';
 import { reviews } from '../data/content';
 import type { ReviewRow } from '../lib/supabase';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 
 type ReviewItem = {
   key: string;
@@ -102,15 +103,15 @@ export function Reviews() {
         <div className="grid md:grid-cols-12 gap-8 md:gap-16 mb-12 md:mb-20">
           <BlurIn className="md:col-span-7">
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
-              {reviews.eyebrow}
+              <Editable id="home.reviews.eyebrow">{reviews.eyebrow}</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[6vw] leading-[0.92]">
-              {reviews.title}
+              <Editable id="home.reviews.title">{reviews.title}</Editable>
             </h2>
           </BlurIn>
           <BlurIn className="md:col-span-4 md:col-start-9 self-end" delay={0.15}>
             <p className="text-white/85 text-base md:text-lg leading-relaxed mb-6">
-              {reviews.subtitle}
+              <Editable id="home.reviews.subtitle">{reviews.subtitle}</Editable>
             </p>
             <div className="flex items-center gap-4">
               <Stars count={Math.round(reviews.rating)} />
@@ -160,7 +161,7 @@ export function Reviews() {
 
         <BlurIn delay={0.4} className="mt-10 md:mt-14 flex items-center justify-between flex-wrap gap-4">
           <p className="text-white/55 text-xs md:text-sm">
-            Quelle: Google Bewertungen
+            <Editable id="home.reviews.source">Quelle: Google Bewertungen</Editable>
           </p>
           <a
             href={reviews.link}
@@ -168,7 +169,7 @@ export function Reviews() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-white/25 text-white/85 hover:bg-white/10 text-sm transition-colors no-shadow"
           >
-            Alle Bewertungen auf Google
+            <Editable id="home.reviews.cta">Alle Bewertungen auf Google</Editable>
             <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} />
           </a>
         </BlurIn>

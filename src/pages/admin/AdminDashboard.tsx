@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Inbox,
   FileText,
@@ -11,12 +11,15 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useAdmin } from '../../lib/admin';
+import { useContent } from '../../lib/content';
 import { brand } from '../../data/content';
 
 type CountKey = 'anfragen' | 'bewerbungen';
+type Action = 'edit';
 type Tile = {
   key: string;
   to?: string;
+  action?: Action;
   label: string;
   Icon: LucideIcon;
   hint: string;
@@ -24,7 +27,7 @@ type Tile = {
   countKey?: CountKey;
 };
 
-// Etappe 2: „Anfragen" und „Bewerbungen" sind aktiv (je mit Live-Zähler). Die
+// Etappe 3: „Anfragen", „Bewerbungen" und „Seite bearbeiten" sind aktiv. Die
 // übrigen Kacheln zeigen den Ausbaupfad, sind aber noch nicht verlinkt.
 const TILES: Tile[] = [
   { key: 'anfragen', to: '/admin/anfragen', label: 'Anfragen', Icon: Inbox, hint: '', active: true, countKey: 'anfragen' },
@@ -32,11 +35,20 @@ const TILES: Tile[] = [
   { key: 'termine', label: 'Termine', Icon: CalendarDays, hint: 'In Vorbereitung', active: false },
   { key: 'mediathek', label: 'Mediathek', Icon: Images, hint: 'In Vorbereitung', active: false },
   { key: 'seiten', label: 'Seiten & Menü', Icon: Files, hint: 'In Vorbereitung', active: false },
-  { key: 'bearbeiten', label: 'Seite bearbeiten', Icon: Pencil, hint: 'In Vorbereitung', active: false },
+  {
+    key: 'bearbeiten',
+    action: 'edit',
+    label: 'Seite bearbeiten',
+    Icon: Pencil,
+    hint: 'Texte direkt auf der Website ändern',
+    active: true,
+  },
 ];
 
 export function AdminDashboard() {
-  const { logout, listContacts, listJobs } = useAdmin();
+  const { logout, listContacts, listJobs, pw } = useAdmin();
+  const { enterEditMode } = useContent();
+  const navigate = useNavigate();
   const [counts, setCounts] = useState<Record<CountKey, number | null>>({
     anfragen: null,
     bewerbungen: null,
@@ -79,7 +91,7 @@ export function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {TILES.map(({ key, to, label, Icon, hint, active, countKey }) => {
+        {TILES.map(({ key, to, action, label, Icon, hint, active, countKey }) => {
           const count = countKey ? counts[countKey] : null;
           const inner = (
             <>
@@ -90,7 +102,7 @@ export function AdminDashboard() {
                 <span className="text-lg font-medium text-white">{label}</span>
               </div>
               <div className="text-sm text-white/55">
-                {active ? (
+                {countKey ? (
                   count === null ? (
                     'lädt …'
                   ) : count < 0 ? (
@@ -107,17 +119,28 @@ export function AdminDashboard() {
             </>
           );
 
-          const base =
-            'rounded-2xl border p-6 transition-colors block text-left';
+          const base = 'rounded-2xl border p-6 transition-colors block text-left';
+          const activeCls = `${base} bg-white/[0.04] border-white/15 hover:border-white/35 focus-ring`;
+
           if (active && to) {
             return (
-              <Link
-                key={key}
-                to={to}
-                className={`${base} bg-white/[0.04] border-white/15 hover:border-white/35 focus-ring`}
-              >
+              <Link key={key} to={to} className={activeCls}>
                 {inner}
               </Link>
+            );
+          }
+          if (active && action === 'edit') {
+            return (
+              <button
+                key={key}
+                onClick={() => {
+                  enterEditMode(pw());
+                  navigate('/');
+                }}
+                className={activeCls}
+              >
+                {inner}
+              </button>
             );
           }
           return (

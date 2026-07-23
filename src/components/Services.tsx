@@ -1,5 +1,6 @@
 import { services } from '../data/content';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 
 export function Services() {
   return (
@@ -8,15 +9,15 @@ export function Services() {
         <div className="grid md:grid-cols-12 gap-8 md:gap-16 items-end mb-16 md:mb-24">
           <BlurIn className="md:col-span-6">
             <p className="text-xs md:text-sm text-white/60 tracking-[0.3em] uppercase mb-4">
-              {services.eyebrow}
+              <Editable id="home.services.eyebrow">{services.eyebrow}</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[12vw] md:text-[7vw]">
-              {services.title}
+              <Editable id="home.services.title">{services.title}</Editable>
             </h2>
           </BlurIn>
           <BlurIn className="md:col-span-5 md:col-start-8" delay={0.15}>
             <p className="text-white/80 text-base md:text-lg leading-relaxed">
-              {services.subtitle}
+              <Editable id="home.services.subtitle">{services.subtitle}</Editable>
             </p>
           </BlurIn>
         </div>
@@ -27,10 +28,10 @@ export function Services() {
               <BlurIn delay={idx * 0.08}>
                 <div className="grid md:grid-cols-12 gap-6 md:gap-10 py-10 md:py-14">
                   <h3 className="md:col-span-5 hero-title text-white text-3xl md:text-5xl font-medium">
-                    {item.title}
+                    <Editable id={`home.services.item.${item.id}.title`}>{item.title}</Editable>
                   </h3>
                   <p className="md:col-span-6 md:col-start-7 text-white/80 text-base md:text-lg leading-relaxed">
-                    {item.body}
+                    <Editable id={`home.services.item.${item.id}.body`}>{item.body}</Editable>
                   </p>
                 </div>
               </BlurIn>

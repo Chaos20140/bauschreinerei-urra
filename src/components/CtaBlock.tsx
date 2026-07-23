@@ -1,27 +1,31 @@
 import { Link } from 'react-router-dom';
 import { contact } from '../data/content';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 
 type Props = {
   title?: string;
   body?: string;
+  /** Präfix für die Editable-IDs; gesetzt → Titel und Text sind editierbar. */
+  idPrefix?: string;
 };
 
 export function CtaBlock({
   title = 'Lassen Sie uns sprechen.',
   body = 'Unverbindlich, kostenlos und werktags innerhalb von 24 Stunden zurück.',
+  idPrefix,
 }: Props) {
   return (
     <section className="relative px-6 md:px-12 py-24 md:py-32">
       <div className="max-w-5xl mx-auto text-center">
         <BlurIn>
           <h2 className="hero-title text-white font-medium text-[12vw] md:text-[6vw] leading-[0.92] mb-6 md:mb-8">
-            {title}
+            {idPrefix ? <Editable id={`${idPrefix}.cta.title`} rich>{title}</Editable> : title}
           </h2>
         </BlurIn>
         <BlurIn delay={0.15} className="max-w-2xl mx-auto">
           <p className="text-white/85 text-base md:text-lg leading-relaxed mb-10">
-            {body}
+            {idPrefix ? <Editable id={`${idPrefix}.cta.body`}>{body}</Editable> : body}
           </p>
         </BlurIn>
         <BlurIn delay={0.3}>

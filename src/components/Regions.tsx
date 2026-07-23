@@ -1,5 +1,6 @@
 import { regions } from '../data/content';
 import { BlurIn } from './BlurIn';
+import { Editable } from './editor/Editable';
 
 export function Regions() {
   return (
@@ -8,14 +9,14 @@ export function Regions() {
         <div className="grid md:grid-cols-12 gap-8 mb-16">
           <BlurIn className="md:col-span-7">
             <p className="text-xs md:text-sm text-white/60 tracking-widest uppercase mb-4">
-              {regions.eyebrow}
+              <Editable id="home.regions.eyebrow">{regions.eyebrow}</Editable>
             </p>
             <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
-              Nordrhein-Westfalen.
+              <Editable id="home.regions.title">Nordrhein-Westfalen.</Editable>
             </h2>
           </BlurIn>
           <BlurIn className="md:col-span-4 md:col-start-9 self-end" delay={0.15}>
-            <p className="text-white/80 text-base md:text-lg">{regions.subtitle}</p>
+            <p className="text-white/80 text-base md:text-lg"><Editable id="home.regions.subtitle">{regions.subtitle}</Editable></p>
           </BlurIn>
         </div>
 
@@ -23,12 +24,12 @@ export function Regions() {
           {regions.areas.map((area, idx) => (
             <BlurIn key={area.key} delay={idx * 0.1}>
               <h3 className="hero-title text-white text-2xl md:text-3xl font-medium mb-6 border-b border-white/15 pb-4">
-                {area.key}
+                <Editable id={`home.regions.areas${idx}.title`}>{area.key}</Editable>
               </h3>
               <ul className="flex flex-wrap gap-x-3 gap-y-2 text-white/80 text-base">
                 {area.cities.map((city, cidx) => (
                   <li key={city} className="flex items-center gap-3">
-                    <span>{city}</span>
+                    <span><Editable id={`home.regions.areas${idx}.city${cidx}`}>{city}</Editable></span>
                     {cidx < area.cities.length - 1 && (
                       <span className="text-white/30">·</span>
                     )}
