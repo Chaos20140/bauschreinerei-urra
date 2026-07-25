@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft,
   Check,
@@ -39,11 +40,63 @@ export function EditToolbar() {
     canRedo,
   } = useContent();
 
-  const [open, setOpen] = useState(true);
+  // Zu, bis der Mauszeiger auf den Reiter kommt. „Angeheftet" hält das Feld
+  // offen, sobald es wirklich benutzt wird (Klick, Unterseite) — sonst klappte
+  // es beim Weiterbewegen der Maus mitten in der Bedienung zu.
+  //
+  // Der Angeheftet-Zustand liegt zusätzlich in einem Ref: Die Maus verlässt den
+  // Bereich oft im selben Wimpernschlag wie der Klick, und der Timer-Rückruf
+  // liest dann noch den alten Wert aus seiner Closure. Der Ref ist sofort
+  // aktuell, der State dient nur der Anzeige.
+  const [open, setOpen] = useState(false);
+  const [pinned, setPinnedState] = useState(false);
+  const pinnedRef = useRef(false);
   const [view, setView] = useState<View>('menu');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
+  const closeTimer = useRef<number | null>(null);
+
+  const setPinned = (v: boolean) => {
+    pinnedRef.current = v;
+    setPinnedState(v);
+  };
+
+  const stopTimer = () => {
+    if (closeTimer.current) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+
+  const zeigen = () => {
+    stopTimer();
+    setOpen(true);
+  };
+
+  const verbergen = () => {
+    if (pinnedRef.current) return;
+    stopTimer();
+    // Kurze Verzögerung: der Weg vom Reiter zum Feld führt über eine winzige
+    // Lücke — ohne sie klappt es dabei zu. Der Zustand wird beim Auslösen
+    // erneut geprüft, falls zwischenzeitlich angeheftet wurde.
+    closeTimer.current = window.setTimeout(() => {
+      if (!pinnedRef.current) setOpen(false);
+    }, 180);
+  };
+
+  const schliessen = () => {
+    stopTimer();
+    setPinned(false);
+    setOpen(false);
+    setView('menu');
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    };
+  }, []);
 
   // Tastatur: Strg+Z / Strg+Umschalt+Z wie in jedem Editor.
   useEffect(() => {
@@ -93,14 +146,40 @@ export function EditToolbar() {
   }
 
   return (
-    <>
-      {/* Reiter am Rand — bleibt sichtbar, auch wenn das Feld zu ist. */}
+    // Reiter und Feld liegen in einem Bereich: Der Zeiger darf zwischen beiden
+    // wandern, ohne dass das Feld zwischendurch verschwindet.
+    <div
+      className="fixed left-0 top-1/2 -translate-y-1/2 z-[75] flex items-center"
+      onMouseEnter={zeigen}
+      onMouseLeave={verbergen}
+      // Jede Bedienung IM FELD heftet es an: Wer auf „Speichern" klickt und die
+      // Maus dabei wegbewegt, soll die Rückmeldung noch sehen. Der Reiter selbst
+      // ist ausgenommen — dort schaltet der Klick bewusst um.
+      onClickCapture={(e) => {
+        if (!(e.target as HTMLElement).closest('[aria-controls="edit-panel"]')) {
+          setPinned(true);
+        }
+      }}
+      onFocusCapture={zeigen}
+    >
+      {/* Reiter am Rand — immer sichtbar, das Feld erscheint beim Überfahren. */}
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          // Klick schaltet „angeheftet" um: einmal klicken = bleibt offen,
+          // nochmal klicken = wieder Hover-Verhalten und zu.
+          if (pinnedRef.current) schliessen();
+          else {
+            setPinned(true);
+            zeigen();
+          }
+        }}
+        onFocus={zeigen}
         aria-expanded={open}
         aria-controls="edit-panel"
-        className="fixed left-0 top-1/2 -translate-y-1/2 z-[75] flex flex-col items-center gap-2 rounded-r-2xl bg-neutral-900 text-white pl-2 pr-2.5 py-4 border border-l-0 border-white/20 shadow-2xl hover:bg-neutral-800 transition-colors focus-ring"
+        aria-pressed={pinned}
+        title={pinned ? 'Bearbeiten-Menü lösen' : 'Bearbeiten-Menü anheften'}
+        className="flex flex-col items-center gap-2 rounded-r-2xl bg-neutral-900 text-white pl-2 pr-2.5 py-4 border border-l-0 border-white/20 shadow-2xl hover:bg-neutral-800 transition-colors focus-ring"
       >
         <span
           className={`h-2.5 w-2.5 rounded-full ${
@@ -117,37 +196,51 @@ export function EditToolbar() {
         </span>
       </button>
 
-      {open && (
-        <div
-          id="edit-panel"
-          role="region"
-          aria-label="Bearbeiten-Leiste"
-          // Deckender Hintergrund: als halbtransparente Fläche war der Text
-          // vor hellen Bildern nicht lesbar.
-          className="fixed left-14 top-1/2 -translate-y-1/2 z-[74] w-[19rem] max-w-[calc(100vw-4.5rem)] max-h-[85vh] overflow-y-auto rounded-2xl bg-neutral-950 border border-white/20 shadow-2xl p-4 text-white"
-        >
-          {view === 'menu' && (
-            <MenuView
-              dirtyCount={dirtyCount}
-              busy={busy}
-              msg={msg}
-              err={err}
-              canUndo={canUndo}
-              canRedo={canRedo}
-              onUndo={undo}
-              onRedo={redo}
-              onSave={onSave}
-              onDiscard={onDiscard}
-              onLeave={onLeave}
-              onClose={() => setOpen(false)}
-              onView={setView}
-            />
-          )}
-          {view === 'seo' && <SeoView onBack={() => setView('menu')} />}
-          {view === 'hilfe' && <HelpView onBack={() => setView('menu')} />}
-        </div>
-      )}
-    </>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="edit-panel"
+            role="region"
+            aria-label="Bearbeiten-Leiste"
+            // Klappt aus dem Reiter heraus auf. reducedMotion="user" in App.tsx
+            // schaltet die Bewegung ab, wenn das System das verlangt.
+            initial={{ opacity: 0, x: -12, scale: 0.97 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: -12, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformOrigin: 'left center' }}
+            // Deckender Hintergrund: als halbtransparente Fläche war der Text
+            // vor hellen Bildern nicht lesbar.
+            className="ml-2 w-[19rem] max-w-[calc(100vw-4.5rem)] max-h-[85vh] overflow-y-auto rounded-2xl bg-neutral-950 border border-white/20 shadow-2xl p-4 text-white"
+          >
+            {view === 'menu' && (
+              <MenuView
+                dirtyCount={dirtyCount}
+                busy={busy}
+                msg={msg}
+                err={err}
+                canUndo={canUndo}
+                canRedo={canRedo}
+                onUndo={undo}
+                onRedo={redo}
+                onSave={onSave}
+                onDiscard={onDiscard}
+                onLeave={onLeave}
+                onClose={schliessen}
+                onView={(v) => {
+                  // Eine Unterseite zu öffnen ist eine bewusste Bedienung —
+                  // ab hier bleibt das Feld offen, bis es geschlossen wird.
+                  setPinned(true);
+                  setView(v);
+                }}
+              />
+            )}
+            {view === 'seo' && <SeoView onBack={() => setView('menu')} />}
+            {view === 'hilfe' && <HelpView onBack={() => setView('menu')} />}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
