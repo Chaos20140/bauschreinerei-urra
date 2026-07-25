@@ -7,11 +7,13 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  Monitor,
   RotateCcw,
   Save,
   Check,
 } from 'lucide-react';
 import { useAdmin } from '../../lib/admin';
+import { useIsNarrow } from '../../hooks/useIsNarrow';
 import { useContent } from '../../lib/content';
 import {
   isDefaultOrder,
@@ -27,6 +29,7 @@ const MAX_LABEL = 40;
 export function AdminPages() {
   const { pw } = useAdmin();
   const { saveValues, resetValues } = useContent();
+  const narrow = useIsNarrow();
   const stored = useNavItems(true);
 
   const [items, setItems] = useState<NavItem[]>(stored);
@@ -126,23 +129,54 @@ export function AdminPages() {
     );
   }
 
+  const kopf = (
+    <div className="flex items-center gap-4 mb-8 min-w-0">
+      <Link
+        to="/admin"
+        aria-label="Zurück zur Übersicht"
+        className="shrink-0 h-10 w-10 grid place-items-center rounded-full border border-white/20 text-white hover:bg-white/10 transition-colors focus-ring"
+      >
+        <ArrowLeft size={18} />
+      </Link>
+      <div className="min-w-0">
+        <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-1">Verwaltung</p>
+        <h1 className="hero-title text-white text-2xl md:text-3xl font-medium">
+          Seiten &amp; Menü
+        </h1>
+      </div>
+    </div>
+  );
+
+  // Auch bei direktem Aufruf der Adresse gesperrt — die Kachel auszublenden
+  // allein würde die Seite nicht schützen.
+  if (narrow) {
+    return (
+      <section className="max-w-3xl mx-auto px-6 py-10">
+        {kopf}
+        <div className="rounded-2xl border border-white/12 bg-white/[0.03] p-6">
+          <p className="inline-flex items-start gap-2.5 text-white/85 text-sm leading-relaxed">
+            <Monitor size={18} className="mt-0.5 shrink-0 text-white/55" />
+            <span>
+              <span className="font-medium">Nur am Computer.</span> Beschriftung
+              und Reihenfolge des Menüs gelten für Handy und Computer
+              gemeinsam — am kleinen Display sieht man die Auswirkung nur zur
+              Hälfte, und das Umsortieren ist kaum treffsicher.
+            </span>
+          </p>
+          <Link
+            to="/admin"
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2.5 text-sm text-white/85 hover:bg-white/10 transition-colors focus-ring"
+          >
+            <ArrowLeft size={15} /> Zurück zur Übersicht
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="max-w-3xl mx-auto px-6 py-10">
-      <div className="flex items-center gap-4 mb-8 min-w-0">
-        <Link
-          to="/admin"
-          aria-label="Zurück zur Übersicht"
-          className="shrink-0 h-10 w-10 grid place-items-center rounded-full border border-white/20 text-white hover:bg-white/10 transition-colors focus-ring"
-        >
-          <ArrowLeft size={18} />
-        </Link>
-        <div className="min-w-0">
-          <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-1">Verwaltung</p>
-          <h1 className="hero-title text-white text-2xl md:text-3xl font-medium">
-            Seiten &amp; Menü
-          </h1>
-        </div>
-      </div>
+      {kopf}
 
       <p className="text-white/55 text-sm mb-6 leading-relaxed">
         Beschriftung, Reihenfolge und Sichtbarkeit der Menüpunkte. Ausgeblendete

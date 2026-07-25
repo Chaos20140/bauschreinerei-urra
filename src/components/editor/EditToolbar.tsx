@@ -195,55 +195,15 @@ export function EditToolbar() {
       }}
       onFocusCapture={zeigen}
     >
-      {/* Reiter am Rand — immer sichtbar, das Feld erscheint beim Überfahren. */}
-      <button
-        type="button"
-        onClick={() => {
-          // Klick schaltet „angeheftet" um: einmal klicken = bleibt offen,
-          // nochmal klicken = wieder Hover-Verhalten und zu.
-          if (pinnedRef.current) schliessen();
-          else {
-            setPinned(true);
-            zeigen();
-          }
-        }}
-        onFocus={zeigen}
-        aria-expanded={open}
-        aria-controls="edit-panel"
-        aria-pressed={pinned}
-        title={pinned ? 'Bearbeiten-Menü lösen' : 'Bearbeiten-Menü anheften'}
-        // Ist das Feld offen, verliert der Reiter rechts seine Rundung und
-        // seinen Rand: beide wirken dann wie ein zusammenhängendes Element,
-        // aus dem das Feld herauswächst.
-        className={`relative z-10 flex flex-col items-center gap-2 bg-neutral-900 text-white pl-2 pr-2.5 py-4 border border-l-0 border-white/20 shadow-2xl hover:bg-neutral-800 transition-all focus-ring ${
-          open ? 'rounded-l-none rounded-r-none border-r-0' : 'rounded-r-2xl'
-        }`}
-      >
-        <span
-          className={`h-2.5 w-2.5 rounded-full ${
-            dirtyCount > 0 ? 'bg-amber-400' : 'bg-emerald-400'
-          }`}
-          aria-hidden="true"
-        />
-        <Pencil size={16} strokeWidth={1.75} />
-        <span
-          className="text-[11px] tracking-widest uppercase"
-          style={{ writingMode: 'vertical-rl' }}
-        >
-          Bearbeiten
-        </span>
-      </button>
-
+      {/* Das Feld steht VOR dem Reiter: Beim Öffnen schiebt es sich vom
+          Bildschirmrand herein und drückt den Reiter nach rechts — der bleibt
+          dabei ein eigenes, abgerundetes Element, das am Feld hängt. */}
       <AnimatePresence>
         {open && (
           <motion.div
             id="edit-panel"
             role="region"
             aria-label="Bearbeiten-Leiste"
-            // Klappt seitlich aus dem Reiter heraus: Breite und Inhalt wachsen
-            // vom linken Rand her auf, statt daneben eingeblendet zu werden.
-            // reducedMotion="user" in App.tsx schaltet die Bewegung ab, wenn
-            // das System das verlangt.
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 'var(--panel-w)', opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
@@ -253,9 +213,8 @@ export function EditToolbar() {
             }}
             style={{ ['--panel-w' as string]: 'min(19rem, calc(100vw - 4.5rem))' }}
             // Deckender Hintergrund: als halbtransparente Fläche war der Text
-            // vor hellen Bildern nicht lesbar. Links eckig, damit es bündig am
-            // Reiter sitzt.
-            className="overflow-hidden max-h-[85vh] rounded-r-2xl bg-neutral-950 border border-l-0 border-white/20 shadow-2xl text-white"
+            // vor hellen Bildern nicht lesbar.
+            className="overflow-hidden max-h-[85vh] rounded-2xl bg-neutral-950 border border-white/20 shadow-2xl text-white"
           >
             {/* Feste Breite: Während der Breiten-Animation des Rahmens darf der
                 Inhalt nicht mitschrumpfen, sonst bricht der Text um und das
@@ -295,6 +254,44 @@ export function EditToolbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Reiter — immer sichtbar, behält seine Form. Der leichte Versatz nach
+          links lässt ihn am Feld „hängen" statt daneben zu schweben. */}
+      <button
+        type="button"
+        onClick={() => {
+          // Klick schaltet „angeheftet" um: einmal klicken = bleibt offen,
+          // nochmal klicken = wieder Hover-Verhalten und zu.
+          if (pinnedRef.current) schliessen();
+          else {
+            setPinned(true);
+            zeigen();
+          }
+        }}
+        onFocus={zeigen}
+        aria-expanded={open}
+        aria-controls="edit-panel"
+        aria-pressed={pinned}
+        title={pinned ? 'Bearbeiten-Menü lösen' : 'Bearbeiten-Menü anheften'}
+        className={`relative z-10 flex flex-col items-center gap-2 rounded-r-2xl bg-neutral-900 text-white pl-2 pr-2.5 py-4 border border-l-0 border-white/20 shadow-2xl hover:bg-neutral-800 transition-colors focus-ring ${
+          open ? '-ml-3' : ''
+        }`}
+      >
+        <span
+          className={`h-2.5 w-2.5 rounded-full ${
+            dirtyCount > 0 ? 'bg-amber-400' : 'bg-emerald-400'
+          }`}
+          aria-hidden="true"
+        />
+        <Pencil size={16} strokeWidth={1.75} />
+        <span
+          className="text-[11px] tracking-widest uppercase"
+          style={{ writingMode: 'vertical-rl' }}
+        >
+          Bearbeiten
+        </span>
+      </button>
+
     </div>
   );
 }

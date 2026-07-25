@@ -24,6 +24,14 @@ type Tile = {
   Icon: LucideIcon;
   hint: string;
   countKey?: CountKey;
+  /**
+   * Nur am Computer bedienbar. Gilt für alles, was das AUSSEHEN der Website
+   * verändert: Die Inhalte gibt es nur einmal — was hier geändert wird, gilt
+   * für Handy und Computer gleichermaßen. Auf einem schmalen Display sieht man
+   * die Auswirkung aber nur zur Hälfte, und das Antippen einzelner Textstellen
+   * bzw. das Umsortieren des Menüs ist kaum treffsicher.
+   */
+  desktopOnly?: boolean;
 };
 
 // Alle Kacheln sind aktiv. „Termine" (Online-Terminbuchung) ist bewusst nicht
@@ -38,12 +46,14 @@ const TILES: Tile[] = [
     label: 'Seiten & Menü',
     Icon: Files,
     hint: 'Menü beschriften, sortieren, ein- und ausblenden',
+    desktopOnly: true,
   },
   {
     key: 'bearbeiten',
     label: 'Seite bearbeiten',
     Icon: Pencil,
     hint: 'Texte und Bilder direkt auf der Website ändern',
+    desktopOnly: true,
   },
 ];
 
@@ -94,7 +104,7 @@ export function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {TILES.map(({ key, to, label, Icon, hint, countKey }) => {
+        {TILES.map(({ key, to, label, Icon, hint, countKey, desktopOnly }) => {
           const count = countKey ? counts[countKey] : null;
           const inner = (
             <>
@@ -125,19 +135,9 @@ export function AdminDashboard() {
           const cls =
             'rounded-2xl border p-6 transition-colors block text-left bg-white/[0.04] border-white/15 hover:border-white/35 focus-ring';
 
-          if (to) {
-            return (
-              <Link key={key} to={to} className={cls}>
-                {inner}
-              </Link>
-            );
-          }
-
-          // „Seite bearbeiten" nur am Computer: Die Texte gibt es nur einmal
-          // (Handy und Computer zeigen dieselben Inhalte), und auf einem
-          // schmalen Display ist das Antippen einzelner Textstellen kaum
-          // treffsicher.
-          if (narrow) {
+          // Erst die Sperre prüfen, dann erst verlinken — sonst wäre die
+          // Kachel „Seiten & Menü" trotz `desktopOnly` anklickbar geblieben.
+          if (narrow && desktopOnly) {
             return (
               <div
                 key={key}
@@ -153,12 +153,20 @@ export function AdminDashboard() {
                 <div className="inline-flex items-start gap-2 text-sm text-white/50">
                   <Monitor size={15} className="mt-0.5 shrink-0" />
                   <span>
-                    Nur am Computer. Die Texte gelten für Handy und Computer
-                    gemeinsam — auf dem kleinen Display lässt sich das nicht
-                    zuverlässig bearbeiten.
+                    Nur am Computer. Änderungen hier gelten für Handy und
+                    Computer gemeinsam — am kleinen Display sieht man die
+                    Auswirkung nur zur Hälfte.
                   </span>
                 </div>
               </div>
+            );
+          }
+
+          if (to) {
+            return (
+              <Link key={key} to={to} className={cls}>
+                {inner}
+              </Link>
             );
           }
 
