@@ -128,7 +128,7 @@ export function AdminJobDetail({ row, onClose, onChanged, onDeleted }: Props) {
         aria-label={`Bewerbung von ${row.name}`}
         className="relative h-dvh w-full max-w-md bg-neutral-950 border-l border-white/15 overflow-y-auto"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 px-6 py-4 bg-neutral-950/95 backdrop-blur border-b border-white/10">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 px-7 py-5 bg-neutral-950/95 backdrop-blur border-b border-white/10">
           <div className="min-w-0">
             <p className="text-white/50 text-[10px] tracking-[0.25em] uppercase">
               {formatDate(row.created_at)}
@@ -145,7 +145,7 @@ export function AdminJobDetail({ row, onClose, onChanged, onDeleted }: Props) {
           </button>
         </div>
 
-        <div className="px-6 py-5 space-y-6">
+        <div className="px-7 py-6 space-y-6">
           {/* Status */}
           <div>
             <p className="text-white/55 text-xs tracking-[0.2em] uppercase mb-2">Status</p>
@@ -283,9 +283,12 @@ export function AdminJobDetail({ row, onClose, onChanged, onDeleted }: Props) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 border-t border-white/10 pt-3">
+    // Auf schmalen Displays untereinander: Nebeneinander wurden lange Werte
+    // (Telefonnummern, E-Mail-Adressen) bis an den Rand gedrückt und wirkten
+    // eingequetscht. Ab sm bleibt die kompakte Zeile.
+    <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4 border-t border-white/10 pt-3">
       <dt className="text-white/55 shrink-0">{label}</dt>
-      <dd className="text-white text-right break-all">{value}</dd>
+      <dd className="text-white break-words sm:text-right">{value}</dd>
     </div>
   );
 }

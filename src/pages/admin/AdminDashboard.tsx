@@ -6,12 +6,14 @@ import {
   Images,
   Files,
   Pencil,
+  Monitor,
   LogOut,
   type LucideIcon,
 } from 'lucide-react';
 import { useAdmin } from '../../lib/admin';
 import { useContent } from '../../lib/content';
 import { brand } from '../../data/content';
+import { useIsNarrow } from '../../hooks/useIsNarrow';
 
 type CountKey = 'anfragen' | 'bewerbungen';
 /** Ohne `to` ist die Kachel keine Route, sondern startet den Bearbeiten-Modus. */
@@ -48,6 +50,7 @@ const TILES: Tile[] = [
 export function AdminDashboard() {
   const { logout, listContacts, listJobs, pw } = useAdmin();
   const { enterEditMode } = useContent();
+  const narrow = useIsNarrow();
   const navigate = useNavigate();
   const [counts, setCounts] = useState<Record<CountKey, number | null>>({
     anfragen: null,
@@ -129,6 +132,36 @@ export function AdminDashboard() {
               </Link>
             );
           }
+
+          // „Seite bearbeiten" nur am Computer: Die Texte gibt es nur einmal
+          // (Handy und Computer zeigen dieselben Inhalte), und auf einem
+          // schmalen Display ist das Antippen einzelner Textstellen kaum
+          // treffsicher.
+          if (narrow) {
+            return (
+              <div
+                key={key}
+                aria-disabled="true"
+                className="rounded-2xl border p-6 block text-left bg-white/[0.02] border-white/10 opacity-70 cursor-not-allowed"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="inline-flex items-center justify-center h-10 w-10 rounded-xl bg-white/10 border border-white/15 text-white/70">
+                    <Icon size={20} strokeWidth={1.5} />
+                  </span>
+                  <span className="text-lg font-medium text-white/70">{label}</span>
+                </div>
+                <div className="inline-flex items-start gap-2 text-sm text-white/50">
+                  <Monitor size={15} className="mt-0.5 shrink-0" />
+                  <span>
+                    Nur am Computer. Die Texte gelten für Handy und Computer
+                    gemeinsam — auf dem kleinen Display lässt sich das nicht
+                    zuverlässig bearbeiten.
+                  </span>
+                </div>
+              </div>
+            );
+          }
+
           return (
             <button
               key={key}

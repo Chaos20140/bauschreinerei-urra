@@ -6,6 +6,7 @@ import {
   Check,
   HelpCircle,
   Loader2,
+  Monitor,
   Pencil,
   Redo2,
   RotateCcw,
@@ -17,6 +18,7 @@ import {
 import { useContent } from '../../lib/content';
 import { seoIds } from '../../lib/seo';
 import { plainText } from '../../lib/plainText';
+import { useIsNarrow } from '../../hooks/useIsNarrow';
 
 type View = 'menu' | 'seo' | 'hilfe';
 
@@ -49,6 +51,7 @@ export function EditToolbar() {
   // liest dann noch den alten Wert aus seiner Closure. Der Ref ist sofort
   // aktuell, der State dient nur der Anzeige.
   const { pathname } = useLocation();
+  const narrow = useIsNarrow();
   const [open, setOpen] = useState(false);
   const [pinned, setPinnedState] = useState(false);
   const pinnedRef = useRef(false);
@@ -113,6 +116,35 @@ export function EditToolbar() {
   }, [editMode, undo, redo]);
 
   if (!editMode) return null;
+
+  // Zweiter Riegel neben der gesperrten Kachel: Wer den Modus am Computer
+  // startet und danach das Fenster verkleinert (oder die Seite auf dem Handy
+  // erneut öffnet), bekommt statt der unbedienbaren Leiste einen Hinweis.
+  if (narrow) {
+    return (
+      <div
+        role="region"
+        aria-label="Bearbeiten-Hinweis"
+        className="fixed bottom-4 left-4 right-4 z-[75] rounded-2xl bg-neutral-950 border border-white/20 shadow-2xl p-4 text-white"
+      >
+        <p className="inline-flex items-start gap-2 text-sm">
+          <Monitor size={16} className="mt-0.5 shrink-0 text-white/60" />
+          <span>
+            <span className="font-medium">Bearbeiten nur am Computer.</span>{' '}
+            <span className="text-white/60">
+              Die Texte gelten für Handy und Computer gemeinsam.
+            </span>
+          </span>
+        </p>
+        <button
+          onClick={leaveEditMode}
+          className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-2.5 text-sm text-white/85 hover:bg-white/10 transition-colors focus-ring"
+        >
+          <ArrowLeft size={15} /> Bearbeiten verlassen
+        </button>
+      </div>
+    );
+  }
 
   async function onSave() {
     if (busy || dirtyCount === 0) return;
@@ -180,7 +212,12 @@ export function EditToolbar() {
         aria-controls="edit-panel"
         aria-pressed={pinned}
         title={pinned ? 'Bearbeiten-Menü lösen' : 'Bearbeiten-Menü anheften'}
-        className="flex flex-col items-center gap-2 rounded-r-2xl bg-neutral-900 text-white pl-2 pr-2.5 py-4 border border-l-0 border-white/20 shadow-2xl hover:bg-neutral-800 transition-colors focus-ring"
+        // Ist das Feld offen, verliert der Reiter rechts seine Rundung und
+        // seinen Rand: beide wirken dann wie ein zusammenhängendes Element,
+        // aus dem das Feld herauswächst.
+        className={`relative z-10 flex flex-col items-center gap-2 bg-neutral-900 text-white pl-2 pr-2.5 py-4 border border-l-0 border-white/20 shadow-2xl hover:bg-neutral-800 transition-all focus-ring ${
+          open ? 'rounded-l-none rounded-r-none border-r-0' : 'rounded-r-2xl'
+        }`}
       >
         <span
           className={`h-2.5 w-2.5 rounded-full ${
@@ -203,44 +240,58 @@ export function EditToolbar() {
             id="edit-panel"
             role="region"
             aria-label="Bearbeiten-Leiste"
-            // Klappt aus dem Reiter heraus auf. reducedMotion="user" in App.tsx
-            // schaltet die Bewegung ab, wenn das System das verlangt.
-            initial={{ opacity: 0, x: -12, scale: 0.97 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: -12, scale: 0.97 }}
-            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            style={{ transformOrigin: 'left center' }}
+            // Klappt seitlich aus dem Reiter heraus: Breite und Inhalt wachsen
+            // vom linken Rand her auf, statt daneben eingeblendet zu werden.
+            // reducedMotion="user" in App.tsx schaltet die Bewegung ab, wenn
+            // das System das verlangt.
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 'var(--panel-w)', opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{
+              width: { duration: 0.26, ease: [0.22, 1, 0.36, 1] },
+              opacity: { duration: 0.16 },
+            }}
+            style={{ ['--panel-w' as string]: 'min(19rem, calc(100vw - 4.5rem))' }}
             // Deckender Hintergrund: als halbtransparente Fläche war der Text
-            // vor hellen Bildern nicht lesbar.
-            className="ml-2 w-[19rem] max-w-[calc(100vw-4.5rem)] max-h-[85vh] overflow-y-auto rounded-2xl bg-neutral-950 border border-white/20 shadow-2xl p-4 text-white"
+            // vor hellen Bildern nicht lesbar. Links eckig, damit es bündig am
+            // Reiter sitzt.
+            className="overflow-hidden max-h-[85vh] rounded-r-2xl bg-neutral-950 border border-l-0 border-white/20 shadow-2xl text-white"
           >
-            {view === 'menu' && (
-              <MenuView
-                dirtyCount={dirtyCount}
-                busy={busy}
-                msg={msg}
-                err={err}
-                canUndo={canUndo}
-                canRedo={canRedo}
-                onUndo={undo}
-                onRedo={redo}
-                onSave={onSave}
-                onDiscard={onDiscard}
-                onLeave={onLeave}
-                onClose={schliessen}
-                onView={(v) => {
-                  // Eine Unterseite zu öffnen ist eine bewusste Bedienung —
-                  // ab hier bleibt das Feld offen, bis es geschlossen wird.
-                  setPinned(true);
-                  setView(v);
-                }}
-              />
-            )}
-            {/* key={pathname}: Die Eingabefelder werden pro Seite neu
-                aufgebaut. Ohne das behielt der Bereich beim Seitenwechsel die
-                alten Werte und hätte sie auf die neue Seite geschrieben. */}
-            {view === 'seo' && <SeoView key={pathname} onBack={() => setView('menu')} />}
-            {view === 'hilfe' && <HelpView onBack={() => setView('menu')} />}
+            {/* Feste Breite: Während der Breiten-Animation des Rahmens darf der
+                Inhalt nicht mitschrumpfen, sonst bricht der Text um und das
+                Aufklappen wirkt unruhig. */}
+            <div
+              className="w-[var(--panel-w)] max-h-[85vh] overflow-y-auto p-4"
+              style={{ ['--panel-w' as string]: 'min(19rem, calc(100vw - 4.5rem))' }}
+            >
+              {view === 'menu' && (
+                <MenuView
+                  dirtyCount={dirtyCount}
+                  busy={busy}
+                  msg={msg}
+                  err={err}
+                  canUndo={canUndo}
+                  canRedo={canRedo}
+                  onUndo={undo}
+                  onRedo={redo}
+                  onSave={onSave}
+                  onDiscard={onDiscard}
+                  onLeave={onLeave}
+                  onClose={schliessen}
+                  onView={(v) => {
+                    // Eine Unterseite zu öffnen ist eine bewusste Bedienung —
+                    // ab hier bleibt das Feld offen, bis es geschlossen wird.
+                    setPinned(true);
+                    setView(v);
+                  }}
+                />
+              )}
+              {/* key={pathname}: Die Eingabefelder werden pro Seite neu
+                  aufgebaut. Ohne das behielt der Bereich beim Seitenwechsel die
+                  alten Werte und hätte sie auf die neue Seite geschrieben. */}
+              {view === 'seo' && <SeoView key={pathname} onBack={() => setView('menu')} />}
+              {view === 'hilfe' && <HelpView onBack={() => setView('menu')} />}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -421,8 +472,21 @@ function SeoView({ onBack }: { onBack: () => void }) {
 
   const storedTitle = get(ids.title);
   const storedDesc = get(ids.desc);
-  const [title, setTitle] = useState(storedTitle ? plainText(storedTitle) : '');
-  const [desc, setDesc] = useState(storedDesc ? plainText(storedDesc) : '');
+
+  // Was gerade tatsächlich im Seitenkopf steht — also genau das, was Google
+  // sieht. Die Felder standen vorher leer, wenn noch nichts überschrieben war;
+  // dann war nicht erkennbar, was überhaupt angezeigt wird. Jetzt steht der
+  // Ist-Zustand drin und kann direkt überschrieben werden.
+  const [vorgabe] = useState(() => ({
+    title: document.title,
+    desc:
+      document.querySelector<HTMLMetaElement>('meta[name="description"]')?.content ?? '',
+  }));
+
+  const [title, setTitle] = useState(
+    storedTitle ? plainText(storedTitle) : vorgabe.title
+  );
+  const [desc, setDesc] = useState(storedDesc ? plainText(storedDesc) : vorgabe.desc);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
 
@@ -431,9 +495,14 @@ function SeoView({ onBack }: { onBack: () => void }) {
     setMsg('');
     const values: Record<string, string> = {};
     const resets: string[] = [];
-    if (title.trim()) values[ids.title] = title.trim();
+    // Entspricht der Text wieder der Vorgabe aus der Website (oder ist er
+    // leer), wird der gespeicherte Wert gelöscht statt überschrieben — sonst
+    // würde eine spätere Änderung im Code nicht mehr durchgreifen.
+    const t = title.trim();
+    const d = desc.trim();
+    if (t && t !== vorgabe.title) values[ids.title] = t;
     else resets.push(ids.title);
-    if (desc.trim()) values[ids.desc] = desc.trim();
+    if (d && d !== vorgabe.desc) values[ids.desc] = d;
     else resets.push(ids.desc);
 
     const a = await saveValues(values);
@@ -448,7 +517,8 @@ function SeoView({ onBack }: { onBack: () => void }) {
       <PanelHeader title="SEO & Titel" onBack={onBack} />
       <p className="text-white/50 text-xs leading-relaxed mb-4">
         Was Google für <span className="text-white/75">{pathname}</span> anzeigt.
-        Leer lassen = Vorgabe aus der Website.
+        Unten steht der aktuelle Stand — einfach überschreiben. Leerst du ein
+        Feld, gilt wieder die Vorgabe aus der Website.
       </p>
 
       <label className="block text-white/60 text-xs mb-1" htmlFor="seo-title">
