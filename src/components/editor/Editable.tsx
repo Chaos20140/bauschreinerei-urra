@@ -1,5 +1,6 @@
 import { createElement, useRef, type ReactNode, type CSSProperties } from 'react';
 import { useContent } from '../../lib/content';
+import { sanitizeDraft } from '../../lib/sanitizeDraft';
 
 type Tag = keyof JSX.IntrinsicElements;
 
@@ -43,7 +44,16 @@ export function Editable({ id, children, as = 'span', rich = false, className, s
       if (draft != null) {
         // Ungespeicherter Stand: bei Rich-Text als HTML, sonst als reiner Text
         // (der Entwurf kommt dort aus innerText und ist kein Markup).
-        seed.current = rich ? <span dangerouslySetInnerHTML={{ __html: draft }} /> : draft;
+        //
+        // Der Entwurf hat den Server noch nie gesehen — anders als ein
+        // gespeicherter Override. Deshalb hier dieselbe Allowlist clientseitig,
+        // sonst käme aus einer Zwischenablage eingefügtes Fremd-Markup beim
+        // Rückgängigmachen ungefiltert zurück ins DOM.
+        seed.current = rich ? (
+          <span dangerouslySetInnerHTML={{ __html: sanitizeDraft(draft) }} />
+        ) : (
+          draft
+        );
       } else if (override != null) {
         seed.current = <span dangerouslySetInnerHTML={{ __html: override }} />;
       } else {
@@ -78,6 +88,29 @@ export function Editable({ id, children, as = 'span', rich = false, className, s
   // Im Edit-Modus Klicks nicht navigieren lassen (viele Texte liegen in Links).
   const onClick = (e: React.MouseEvent<HTMLElement>) => e.preventDefault();
 
+  /**
+   * Einfügen immer als REINER TEXT.
+   *
+   * Zwei Gründe: Aus einer Webseite kopierter Inhalt schleppt sonst fremde
+   * Schriften, Farben und Größen mit — und im Ernstfall aktives Markup, das
+   * beim Rückgängigmachen wieder ins DOM käme. Für die Bedienung ist das
+   * ohnehin das erwartete Verhalten eines schlichten Text-Editors.
+   */
+  const onPaste = (e: React.ClipboardEvent<HTMLElement>) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData('text/plain');
+    if (!text) return;
+    // insertText respektiert die Auswahl und den Rückgängig-Stapel des Browsers.
+    document.execCommand('insertText', false, text);
+  };
+
+  /** Fallenlassen von Inhalt umgeht das Einfügen — deshalb hier ebenfalls sperren. */
+  const onDrop = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    const text = e.dataTransfer.getData('text/plain');
+    if (text) document.execCommand('insertText', false, text);
+  };
+
   return createElement(
     as,
     {
@@ -96,6 +129,8 @@ export function Editable({ id, children, as = 'span', rich = false, className, s
       title: 'Zum Bearbeiten klicken',
       onInput,
       onClick,
+      onPaste,
+      onDrop,
     },
     seed.current
   );

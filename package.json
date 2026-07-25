@@ -12,6 +12,7 @@
     "build": "tsc -b && vite build && node tools/prerender-routes.mjs",
     "preview": "vite preview",
     "lint": "tsc -b --noEmit && eslint src tools",
+    "test": "node --test src/lib/*.test.ts supabase/functions/urra-admin/*.test.ts",
     "images": "node tools/optimize-images.mjs",
     "sitemap": "node tools/generate-sitemap.mjs",
     "csp:hash": "node tools/csp-hash.mjs"
