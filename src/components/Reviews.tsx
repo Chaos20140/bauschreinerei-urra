@@ -1,7 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Star, ExternalLink } from 'lucide-react';
 import { reviews } from '../data/content';
-import type { ReviewRow } from '../lib/supabase';
+import { FN_KEY } from '../lib/admin-config';
+
+/** Genau die Felder, die der Abruf unten anfordert. */
+type ReviewRow = {
+  id: string;
+  author_name: string;
+  author_role: string | null;
+  rating: number;
+  body: string;
+  review_date: string;
+};
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const REST_REVIEWS = SUPABASE_URL
+  ? `${SUPABASE_URL.replace(/\/$/, '')}/rest/v1/reviews`
+  : '';
 import { BlurIn } from './BlurIn';
 import { Editable } from './editor/Editable';
 
@@ -75,33 +90,34 @@ export function Reviews() {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      // Der Supabase-Client wiegt rund 54 KB gzip. Er wird erst hier
-      // nachgeladen, damit er nicht im kritischen Startpfad der Seite liegt —
-      // die Bewertungen stehen bis dahin schon aus der statischen Liste.
-      const { supabase, isSupabaseConfigured } = await import('../lib/supabase');
-      if (cancelled) return;
-      if (!isSupabaseConfigured || !supabase) {
-        setItems([]);
-        return;
-      }
 
-      const { data, error } = await supabase
-        .from('reviews')
-        .select(
-          'id, author_name, author_role, rating, body, review_date, source, published, sort_order'
-        )
-        .eq('published', true)
-        .order('sort_order', { ascending: true })
-        .order('review_date', { ascending: false })
-        .limit(12);
-      if (cancelled) return;
-      if (error || !data) {
-        setItems([]);
-        return;
-      }
-      setItems((data as ReviewRow[]).map(rowToItem));
-    })();
+    // Bewusst ein schlichter REST-Aufruf statt supabase-js: Der Client wiegt
+    // rund 55 kB gzip und wurde allein für diese Liste auf der Startseite
+    // nachgeladen. Die Tabelle ist öffentlich lesbar (nur freigegebene
+    // Einträge), der Publishable Key genügt — derselbe Weg wie im
+    // ContentProvider.
+    if (!REST_REVIEWS || !FN_KEY) {
+      setItems([]);
+      return;
+    }
+
+    const query =
+      '?select=id,author_name,author_role,rating,body,review_date' +
+      '&published=eq.true&order=sort_order.asc,review_date.desc&limit=12';
+
+    fetch(REST_REVIEWS + query, {
+      headers: { apikey: FN_KEY, Authorization: `Bearer ${FN_KEY}` },
+    })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows: ReviewRow[]) => {
+        if (cancelled) return;
+        setItems(Array.isArray(rows) ? rows.map(rowToItem) : []);
+      })
+      .catch(() => {
+        // Ohne Bewertungen entfällt der Abschnitt — lieber keine als erfundene.
+        if (!cancelled) setItems([]);
+      });
+
     return () => {
       cancelled = true;
     };

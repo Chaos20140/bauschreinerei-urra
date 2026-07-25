@@ -129,7 +129,9 @@ export function UeberUnsPage() {
               </p>
             ))}
             <p className="text-white/85 text-base md:text-lg leading-relaxed pt-4">
-              <Editable id="ueberuns.intro.herodesc">{hero.description}</Editable>
+              {/* Gleiche ID wie auf der Startseite — derselbe Satz soll nicht
+                  an zwei Stellen getrennt gepflegt werden müssen. */}
+              <Editable id="home.hero.desc">{hero.description}</Editable>
             </p>
           </BlurIn>
 

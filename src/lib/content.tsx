@@ -92,9 +92,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const posRef = useRef(0);
   const [seedVersion, setSeedVersion] = useState(0);
   const [historyTick, setHistoryTick] = useState(0);
-  // Jede ID, die im Bearbeiten-Modus gerendert wurde — Grundlage für
-  // „Seite zurücksetzen".
-  const seenIdsRef = useRef<Set<string>>(new Set());
 
   // Overrides einmal laden (leichter REST-Aufruf, kein supabase-js im Startpfad).
   // Öffentliche SELECT-Policy auf site_content → der Publishable Key genügt.
@@ -119,30 +116,46 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const get = useCallback(
-    (id: string) => {
-      if (editMode) seenIdsRef.current.add(id);
-      return overrides[id];
-    },
-    [overrides, editMode]
-  );
+  const get = useCallback((id: string) => overrides[id], [overrides]);
   const isDirty = useCallback((id: string) => id in pending, [pending]);
   const pendingValue = useCallback((id: string) => pending[id], [pending]);
-  const knownIds = useCallback(() => [...seenIdsRef.current], []);
+
+  /**
+   * Die bearbeitbaren Stellen der GERADE SICHTBAREN Seite.
+   *
+   * Wird aus dem DOM gelesen und bewusst auf `main` begrenzt: Navigation und
+   * Fußbereich stehen auf jeder Seite und enthalten global gültige Angaben
+   * (Menü-Beschriftungen, Kontaktdaten) — die dürfen ein „Seite zurücksetzen"
+   * nicht mitreißen.
+   *
+   * Vorher wurden die IDs beim Rendern in einem Ref gesammelt und nur beim
+   * Betreten/Verlassen des Bearbeiten-Modus geleert. Dadurch häuften sich die
+   * IDs aller besuchten Seiten an, und „Seite zurücksetzen" löschte am Ende
+   * auch Menü und Kontaktdaten.
+   */
+  const knownIds = useCallback(
+    () =>
+      [...document.querySelectorAll<HTMLElement>('main [data-ed-id]')]
+        .map((el) => el.dataset.edId)
+        .filter((id): id is string => !!id),
+    []
+  );
 
   /** Neuen Stand in den Verlauf schreiben (verwirft eine offene „Wiederherstellen"-Kette). */
   const pushHistory = useCallback((next: Record<string, string>, id: string | null) => {
     const h = historyRef.current;
     const pos = posRef.current;
     const current = h[pos];
-    // Gleiches Feld direkt hintereinander → denselben Eintrag ersetzen.
-    if (current && current.lastId === id && id !== null) {
-      h[pos] = { pending: next, lastId: id };
-      setHistoryTick((t) => t + 1);
-      return;
-    }
+    // Alles hinter der aktuellen Position fällt weg — wer nach dem
+    // Rückgängigmachen weitertippt, darf nicht später einen veralteten Stand
+    // „wiederherstellen" können. Gilt auch beim Ersetzen (gleiches Feld
+    // direkt hintereinander), sonst bliebe die alte Kette hängen.
     const trimmed = h.slice(0, pos + 1);
-    trimmed.push({ pending: next, lastId: id });
+    if (current && current.lastId === id && id !== null) {
+      trimmed[pos] = { pending: next, lastId: id };
+    } else {
+      trimmed.push({ pending: next, lastId: id });
+    }
     // Deckel: der Verlauf soll nicht unbegrenzt wachsen.
     while (trimmed.length > 60) trimmed.shift();
     historyRef.current = trimmed;
@@ -198,7 +211,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     pwRef.current = pw;
     historyRef.current = [{ pending: {}, lastId: null }];
     posRef.current = 0;
-    seenIdsRef.current = new Set();
     setHistoryTick((t) => t + 1);
     setEditMode(true);
   }, []);
@@ -211,7 +223,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     pwRef.current = '';
     historyRef.current = [{ pending: {}, lastId: null }];
     posRef.current = 0;
-    seenIdsRef.current = new Set();
     setHistoryTick((t) => t + 1);
   }, []);
 
@@ -279,10 +290,21 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const save = useCallback(async (): Promise<{ ok: boolean; error?: string }> => {
     if (Object.keys(pending).length === 0) return { ok: true };
-    const r = await saveValues(pending);
-    // Erst nach erfolgreichem Speichern gilt nichts mehr als „ungespeichert".
+    // Genau die Schlüssel merken, die übertragen werden — während des
+    // Netzwerkaufrufs kann weitergetippt werden.
+    const gesendet = { ...pending };
+    const r = await saveValues(gesendet);
     if (r.ok) {
-      setPendingState({});
+      // Nur das Gesendete gilt als gespeichert. Alles, was währenddessen
+      // dazukam, bleibt „ungespeichert" stehen — vorher wurde es kommentarlos
+      // verworfen.
+      setPendingState((p) => {
+        const next: Record<string, string> = {};
+        for (const [id, wert] of Object.entries(p)) {
+          if (!(id in gesendet) || gesendet[id] !== wert) next[id] = wert;
+        }
+        return next;
+      });
       historyRef.current = [{ pending: {}, lastId: null }];
       posRef.current = 0;
       setHistoryTick((t) => t + 1);

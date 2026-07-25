@@ -95,18 +95,22 @@ export const datenschutz = {
     },
     {
       heading: '8. Supabase (Datenbank-Backend)',
-      body: 'Für die Anzeige unserer Kunden-Bewertungen sowie für den Empfang von Anfragen über unser Kontaktformular verwenden wir den Dienst Supabase (Supabase Inc., 970 Toa Payoh North #07-04, Singapore 318992). Die zugehörigen Daten sind auf Servern in der EU-Region (Frankfurt, Deutschland) gehostet. Mit Supabase besteht ein Vertrag über die Auftragsverarbeitung nach Art. 28 DSGVO; für etwaige Zugriffe aus Drittländern sind die EU-Standardvertragsklauseln vereinbart. Beim Aufruf einer entsprechenden Seite wird eine Verbindung zu Supabase aufgebaut, um Inhalte zu laden bzw. Ihre Anfrage zu speichern — dabei können technische Verbindungsdaten (insbesondere Ihre IP-Adresse) verarbeitet werden. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Anbahnung oder Erfüllung eines Vertrags) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer ansprechenden Darstellung). Weitere Informationen: https://supabase.com/privacy.',
+      body: 'Für die redaktionellen Inhalte unserer Website, die Anzeige unserer Kunden-Bewertungen sowie für den Empfang von Anfragen und Bewerbungen verwenden wir den Dienst Supabase (Supabase Inc., 970 Toa Payoh North #07-04, Singapore 318992). Die zugehörigen Daten sind auf Servern in der EU-Region (Frankfurt, Deutschland) gehostet. Mit Supabase besteht ein Vertrag über die Auftragsverarbeitung nach Art. 28 DSGVO; für etwaige Zugriffe aus Drittländern sind die EU-Standardvertragsklauseln vereinbart. Bereits beim Aufruf jeder Seite unserer Website wird eine Verbindung zu Supabase aufgebaut, um die aktuellen Seiteninhalte zu laden; auf der Startseite kommen die Kunden-Bewertungen hinzu. Dabei werden technische Verbindungsdaten (insbesondere Ihre IP-Adresse) verarbeitet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Betrieb und an der Pflege der Website) sowie, soweit Sie uns kontaktieren oder sich bewerben, Art. 6 Abs. 1 lit. b DSGVO (Anbahnung oder Erfüllung eines Vertrags). Weitere Informationen: https://supabase.com/privacy.',
     },
     {
       heading: '9. Kontaktformular',
-      body: 'Wenn Sie das Kontaktformular auf unserer Kontakt-Seite ausfüllen, werden die von Ihnen eingegebenen Daten (Name, E-Mail-Adresse, optional Telefonnummer und Objekt-Adresse, Projekttyp sowie Ihre Nachricht) zusammen mit Datum und Browser-Information in unserer Supabase-Datenbank gespeichert. Wir verwenden diese Angaben ausschließlich zur Bearbeitung Ihrer Anfrage. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Anbahnung oder Erfüllung eines Vertrags) sowie Ihre ausdrückliche Einwilligung in die Datenverarbeitung (Art. 6 Abs. 1 lit. a DSGVO), die Sie über die Checkbox am Ende des Formulars erteilen. Zum Schutz vor automatisierten Anfragen setzen wir ein verstecktes Formularfeld (Honeypot) sowie eine Begrenzung der Anfragen pro Zeitfenster ein; für Letztere wird Ihre IP-Adresse ausschließlich in gehashter, nicht rückrechenbarer Form als Zählschlüssel verwendet und nicht im Klartext gespeichert. Ihre Daten werden gelöscht, sobald Ihre Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen. Sie haben das Recht, Ihre Einwilligung jederzeit zu widerrufen — eine kurze E-Mail an die im Impressum genannte Adresse genügt.',
+      body: 'Wenn Sie das Kontaktformular auf unserer Kontakt-Seite ausfüllen, werden die von Ihnen eingegebenen Daten (Name, E-Mail-Adresse, optional Telefonnummer und Objekt-Adresse, Projekttyp sowie Ihre Nachricht) zusammen mit Datum und Browser-Information in unserer Supabase-Datenbank gespeichert. Wir verwenden diese Angaben ausschließlich zur Bearbeitung Ihrer Anfrage. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Anbahnung oder Erfüllung eines Vertrags) sowie Ihre ausdrückliche Einwilligung in die Datenverarbeitung (Art. 6 Abs. 1 lit. a DSGVO), die Sie über die Checkbox am Ende des Formulars erteilen. Zum Schutz vor automatisierten Anfragen setzen wir ein verstecktes Formularfeld (Honeypot) sowie eine Begrenzung der Anfragen pro Zeitfenster ein; für Letztere wird Ihre IP-Adresse ausschließlich in pseudonymisierter Form (gesalzener Hash) als Zählschlüssel verwendet und nicht im Klartext gespeichert; diese Zählwerte werden nach Ablauf des Zeitfensters gelöscht. Ihre Daten werden gelöscht, sobald Ihre Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen. Sie haben das Recht, Ihre Einwilligung jederzeit zu widerrufen — eine kurze E-Mail an die im Impressum genannte Adresse genügt.',
     },
     {
-      heading: '10. WhatsApp-Kontakt',
+      heading: '10. Bewerbungen (Karriere-Formular)',
+      body: 'Wenn Sie sich über das Formular auf unserer Karriere-Seite bewerben, verarbeiten wir die von Ihnen gemachten Angaben (Name, E-Mail-Adresse, optional Telefonnummer, gewünschte Position und Ihre Nachricht) sowie — falls Sie einen anhängen — Ihren Lebenslauf. Die Angaben werden in unserer Supabase-Datenbank gespeichert, der Lebenslauf in einem nicht öffentlich zugänglichen Speicherbereich; er ist ausschließlich uns und nur über einen kurzlebigen, persönlich erzeugten Abruf-Link zugänglich. Rechtsgrundlage ist § 26 Abs. 1 BDSG in Verbindung mit Art. 88 DSGVO (Begründung eines Beschäftigungsverhältnisses) sowie Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die Sie über die Checkbox am Ende des Formulars erteilen; diese wird zusammen mit dem Zeitpunkt gespeichert, um sie nachweisen zu können. Auch hier schützen wir uns durch ein verstecktes Formularfeld und eine Begrenzung pro Zeitfenster, wobei Ihre IP-Adresse nur pseudonymisiert als Zählschlüssel dient. Kommt kein Beschäftigungsverhältnis zustande, löschen wir Ihre Bewerbungsunterlagen einschließlich Lebenslauf spätestens sechs Monate nach Abschluss des Verfahrens — es sei denn, Sie haben einer längeren Aufbewahrung ausdrücklich zugestimmt. Sie können Ihre Einwilligung jederzeit formlos widerrufen und die Löschung verlangen; eine kurze E-Mail an die im Impressum genannte Adresse genügt.',
+    },
+    {
+      heading: '11. WhatsApp-Kontakt',
       body: 'Auf unserer Website finden Sie einen Button, über den Sie uns direkt per WhatsApp schreiben können. Solange Sie diesen Button nicht anklicken, wird keine Verbindung zu WhatsApp aufgebaut und es werden keine Daten übertragen. Klicken Sie ihn an, werden Sie zu WhatsApp weitergeleitet; ab diesem Zeitpunkt gelten die Datenschutzbestimmungen der WhatsApp Ireland Limited, Merrion Road, Dublin 4, D04 X2K5, Irland. Dabei können Daten an Meta übertragen und außerhalb der EU verarbeitet werden. Schreiben Sie uns über WhatsApp, verarbeiten wir die dort eingehenden Angaben zur Bearbeitung Ihrer Anfrage (Art. 6 Abs. 1 lit. b und f DSGVO). Wenn Sie das vermeiden möchten, nutzen Sie bitte Telefon, E-Mail oder unser Kontaktformular. Weitere Informationen: https://www.whatsapp.com/legal/privacy-policy-eea.',
     },
     {
-      heading: '11. Ihre Rechte',
+      heading: '12. Ihre Rechte',
       list: [
         'Auskunft über die zu Ihrer Person gespeicherten Daten (Art. 15 DSGVO)',
         'Berichtigung unrichtiger Daten (Art. 16 DSGVO)',
@@ -118,11 +122,11 @@ export const datenschutz = {
       ],
     },
     {
-      heading: '12. SSL/TLS-Verschlüsselung',
+      heading: '13. SSL/TLS-Verschlüsselung',
       body: 'Diese Website nutzt eine SSL- bzw. TLS-Verschlüsselung zum Schutz übertragener Inhalte. Eine verschlüsselte Verbindung erkennen Sie an „https://" und am Schloss-Symbol in Ihrer Browser-Zeile.',
     },
     {
-      heading: '13. Aktualität und Änderung',
+      heading: '14. Aktualität und Änderung',
       body: 'Diese Datenschutzerklärung ist aktuell gültig und hat den Stand Juli 2026. Durch die Weiterentwicklung unserer Website oder geänderte gesetzliche bzw. behördliche Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern. Die jeweils aktuelle Datenschutzerklärung kann jederzeit auf dieser Seite abgerufen werden.',
     },
   ],

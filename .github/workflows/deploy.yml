@@ -32,6 +32,11 @@ jobs:
       - name: Lint & typecheck
         run: npm run lint
 
+      # Prüft u. a. die Filter für Editor-Eingaben und die CSV-Exporte. Lief
+      # bisher nur von Hand und hätte einen Fehler dort nicht aufgehalten.
+      - name: Tests
+        run: npm test
+
       - name: Build
         env:
           GITHUB_PAGES: 'true'

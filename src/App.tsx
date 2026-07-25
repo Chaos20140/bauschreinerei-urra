@@ -8,8 +8,8 @@ import { Footer } from './components/Footer';
 import { CookieBanner } from './components/CookieBanner';
 import { GlobalBackground } from './components/GlobalBackground';
 import { WhatsAppButton } from './components/WhatsAppButton';
-import { EditToolbar } from './components/editor/EditToolbar';
 import { StructuredDataSync } from './components/StructuredDataSync';
+import { useContent } from './lib/content';
 import { HomePage } from './pages/HomePage';
 
 const ROUTER_BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -55,6 +55,23 @@ const NotFoundPage = lazy(() =>
 const AdminArea = lazy(() =>
   import('./pages/admin/AdminArea').then((m) => ({ default: m.AdminArea }))
 );
+
+// Die Bearbeiten-Leiste wird erst geladen, wenn der Modus wirklich läuft —
+// vorher lag ihr Code (rund 7 kB gzip) im Bundle jedes normalen Besuchers,
+// obwohl die Komponente sofort `null` zurückgibt.
+const EditToolbar = lazy(() =>
+  import('./components/editor/EditToolbar').then((m) => ({ default: m.EditToolbar }))
+);
+
+function EditToolbarWennAktiv() {
+  const { editMode } = useContent();
+  if (!editMode) return null;
+  return (
+    <Suspense fallback={null}>
+      <EditToolbar />
+    </Suspense>
+  );
+}
 
 function RouteFallback() {
   return <div className="min-h-screen" aria-hidden="true" />;
@@ -106,7 +123,7 @@ function PublicSite() {
 
       <WhatsAppButton />
       <CookieBanner />
-      <EditToolbar />
+      <EditToolbarWennAktiv />
     </>
   );
 }

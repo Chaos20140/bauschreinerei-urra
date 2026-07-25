@@ -207,11 +207,12 @@ abgeleitet, nie separat gepflegt.**
   (`regions.area<i>.title`, `regions.area<i>.city<j>`) für Start-, Projekte- und
   Kontaktseite.
 
-> Offen bleibt: die **Öffnungszeiten** im schema.org-Block. Der Anzeigetext ist
-> editierbar, `openingHoursSpecification` in `index.html` nicht — freien Text
-> („nach Vereinbarung") verlässlich in Zeitangaben zurückzuübersetzen ist
-> unzuverlässig. Bei einer dauerhaften Änderung der Öffnungszeiten also auch
-> `index.html` anfassen.
+> **Öffnungszeiten:** `StructuredDataSync` übernimmt die bearbeitete
+> Mo–Fr-Zeit (`kontakt.hours.value0`) auch in den schema.org-Block, sofern sie
+> dem Muster „08:00 — 17:00" folgt. Freitext wie „nach Vereinbarung" wird
+> bewusst NICHT übersetzt — dort bleibt der Wert aus `index.html` stehen, weil
+> eine erfundene Zeitangabe eine falsche Zusage an Google wäre. Samstag und
+> Sonntag stehen weiterhin nur im Anzeigetext.
 
 ## Bearbeiten-Leiste und Mediathek (Etappe 6)
 
@@ -248,6 +249,8 @@ abgeleitet, nie separat gepflegt.**
 | 2026-07-23 | Etappe 1: Login + Dashboard + Anfragen-Verwaltung (Function, Migration, Frontend) | Betreiber-Backoffice; Anfragen waren nur per Formular-Eingang sichtbar |
 | 2026-07-23 | Etappe 2: Bewerbungen — Karriere-Seite + Formular (urra-apply, privater CV-Bucket) und Admin-Ansicht mit CV-Download | „Bewerbungen einsehen" aus der ursprünglichen Anfrage; Eingang gab es bei Urra noch nicht |
 | 2026-07-23 | Etappe 3: Inline-Editor „Seite bearbeiten" — site_content + save-content, ContentProvider/Editable/EditToolbar, 136 editierbare Texte auf allen Hauptseiten | Zweites Kernanliegen der ursprünglichen Anfrage („Seite vollständig bearbeiten") |
+| 2026-07-25 | Audit-Nachlauf: „Seite zurücksetzen" auf `main` begrenzt (löschte zuvor Menü + Kontaktdaten + alle besuchten Seiten), Speichern verwirft keine parallelen Eingaben mehr, Redo-Kette wird gekappt, „SEO & Titel" folgt der Route. Sicherheit: `x-real-ip` nicht mehr vertraut, globales Sperr-Limit von 60 auf 400 (Aussperrung des Betreibers war auslösbar), JSON `null`/Array → 400 statt 500, Storage-Fehlertext nicht mehr nach außen. DSGVO: Einwilligung bei Bewerbungen wird gespeichert (Migration + Pflichtprüfung), Datenschutzerklärung um Bewerbungen ergänzt und zwei unzutreffende Aussagen korrigiert. Performance: supabase-js und EditToolbar aus dem Startpfad, bei „Bewegung reduzieren" keine Bildsequenz (8,1 MB). | Ergebnis der Sicherheits- und Code-Durchsicht |
+| 2026-07-25 | Bearbeiten-Leiste erscheint animiert beim Überfahren des Reiters statt dauerhaft offen; Einfügen im Editor nur noch als reiner Text (+ clientseitige Filterung des Entwurfs, 9 Tests) | Wunsch des Betreibers; Self-XSS-Pfad über die Zwischenablage geschlossen |
 | 2026-07-24 | Etappe 6: Kontaktdaten/Öffnungszeiten/Städte/Menü-Beschriftungen editierbar (Links + schema.org werden abgeleitet, gemeinsame IDs), Bearbeiten-Leiste als Seitenreiter mit Rückgängig/Verwerfen/Zurücksetzen/SEO/Hilfe, Mediathek mit Upload und Bildauswahl (`use-image`, `standalone`-Upload) | Vom Betreiber gemeldet: mehrere sichtbare Stellen ließen sich nicht bearbeiten; Wunsch nach Bedienung wie bei Cura Doma und Bild-Vorrat in der Mediathek |
 | 2026-07-24 | Etappe 5: „Seiten & Menü" (Beschriftung/Reihenfolge/Sichtbarkeit über site_content, kein neuer Endpunkt), Editor Runde 2 (Projekt-Detail, Partner, 404, Footer, Impressum, Datenschutz), Termine-Kachel entfernt, alle Kacheln aktiv | Restliche Module aus dem ursprünglichen Auftrag; Termine auf Wunsch gestrichen |
 | 2026-07-24 | Markierung im Bearbeiten-Modus theme-sicher (eigene CSS-Regeln statt outline-white/40) + Legende in der EditToolbar | Auf den hellen Beige-Unterseiten war nicht erkennbar, welcher Text bearbeitbar ist (Meldung des Betreibers) |

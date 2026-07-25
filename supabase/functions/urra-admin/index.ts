@@ -101,7 +101,11 @@ const IP_SALT = "urra-admin-rate-limit-v1";
 
 const RL_WINDOW_MS = 15 * 60 * 1000;
 const RL_PER_IP = 10;
-const RL_GLOBAL = 60;
+// Das globale Limit ist die Notbremse gegen verteilte Versuche — es sperrt aber
+// zwangsläufig auch den Betreiber aus. Deshalb bewusst hoch angesetzt: Wer es
+// auslösen will, braucht über 30 verschiedene IPs (pro IP ist bei 10 Schluss).
+// Vorher stand hier 60; das reichte, um den Betreiber gezielt auszusperren.
+const RL_GLOBAL = 400;
 
 // CORS-Allowlist: die Live-Domain plus die lokalen Dev-/Preview-Origins.
 const ALLOWED_ORIGINS = new Set([
@@ -141,17 +145,29 @@ function ctEq(a: string, b: string): boolean {
   return r === 0;
 }
 
-// Client-IP: plattform-gesetzte, vom Client nicht fälschbare Header bevorzugen,
-// damit ein Angreifer die per-IP-Sperre nicht über selbst gesetzte
-// X-Forwarded-For-Einträge umgeht.
+/** Grobe Plausibilitätsprüfung: sieht der Wert wie eine IPv4/IPv6-Adresse aus? */
+function looksLikeIp(s: string): boolean {
+  return /^\d{1,3}(\.\d{1,3}){3}$/.test(s) || (/^[0-9a-f:]{3,45}$/i.test(s) && s.includes(":"));
+}
+
+// Client-IP für die Rate-Limit-Zählung.
+//
+// Reihenfolge bewusst so: Der LETZTE Eintrag in X-Forwarded-For wird von der
+// Infrastruktur angehängt und ist damit die einzige Angabe, die ein Client
+// nicht selbst bestimmen kann — schickt er eigene Werte mit, landen die davor.
+// `cf-connecting-ip` dient nur als Rückfall; `x-real-ip` wird nicht mehr
+// verwendet, da dieser Header frei setzbar ist und die Per-IP-Bremse damit
+// wählbar machte. Alles, was nicht wie eine IP aussieht, landet im
+// gemeinsamen „unknown"-Eimer statt eine eigene Zählung zu bekommen.
 function clientIp(req: Request): string {
-  const real = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-real-ip");
-  if (real && real.trim()) return real.trim();
   const fwd = req.headers.get("x-forwarded-for");
   if (fwd) {
     const parts = fwd.split(",").map((s) => s.trim()).filter(Boolean);
-    if (parts.length) return parts[parts.length - 1];
+    const last = parts[parts.length - 1];
+    if (last && looksLikeIp(last)) return last;
   }
+  const cf = req.headers.get("cf-connecting-ip")?.trim();
+  if (cf && looksLikeIp(cf)) return cf;
   return "unknown";
 }
 
@@ -217,7 +233,14 @@ async function adminGate(req: Request, origin: string | null): Promise<GateOk | 
 
   let body: Record<string, unknown>;
   try {
-    body = await req.json();
+    const parsed = await req.json();
+    // `JSON.parse("null")` und `"[]"` gelingen — der anschließende Zugriff auf
+    // body.password würde dann abstürzen (500 ohne CORS-Header, kein
+    // Protokolleintrag). Deshalb hier auf ein echtes Objekt bestehen.
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { ok: false, res: json({ error: "bad_json" }, 400, origin) };
+    }
+    body = parsed as Record<string, unknown>;
   } catch {
     return { ok: false, res: json({ error: "bad_json" }, 400, origin) };
   }

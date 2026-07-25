@@ -54,14 +54,24 @@ function json(body: unknown, status: number, origin: string | null): Response {
   });
 }
 
+/** Grobe Plausibilitätsprüfung: sieht der Wert wie eine IPv4/IPv6-Adresse aus? */
+function looksLikeIp(s: string): boolean {
+  return /^\d{1,3}(\.\d{1,3}){3}$/.test(s) || (/^[0-9a-f:]{3,45}$/i.test(s) && s.includes(":"));
+}
+
+// Client-IP für die Rate-Limit-Zählung. Der LETZTE Eintrag in X-Forwarded-For
+// wird von der Infrastruktur angehängt und ist als einziger nicht vom Client
+// bestimmbar — eigene Werte landen davor. `x-real-ip` ist frei setzbar und
+// machte die Bremse damit wählbar; deshalb hier nicht mehr verwendet.
 function clientIp(req: Request): string {
-  const real = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-real-ip");
-  if (real && real.trim()) return real.trim();
   const fwd = req.headers.get("x-forwarded-for");
   if (fwd) {
     const parts = fwd.split(",").map((s) => s.trim()).filter(Boolean);
-    if (parts.length) return parts[parts.length - 1];
+    const last = parts[parts.length - 1];
+    if (last && looksLikeIp(last)) return last;
   }
+  const cf = req.headers.get("cf-connecting-ip")?.trim();
+  if (cf && looksLikeIp(cf)) return cf;
   return "unknown";
 }
 
@@ -148,7 +158,12 @@ async function uploadCv(
   const path = `${id}/${sanitizeFilename(filename)}`;
   const { error } = await sb.storage.from(CV_BUCKET)
     .upload(path, bytes, { contentType: mimetype || "application/octet-stream", upsert: true });
-  if (error) return { error: error.message };
+  if (error) {
+    // Den Rohtext des Speicherdienstes nicht nach außen geben — er verrät
+    // Interna (Bucket-Namen, Richtlinien). Für die Fehlersuche ins Log.
+    console.error("cv upload failed:", error.message);
+    return { error: "Der Lebenslauf konnte nicht gespeichert werden." };
+  }
   return { path };
 }
 
@@ -160,7 +175,13 @@ async function handle(req: Request): Promise<Response> {
 
   let body: Record<string, unknown>;
   try {
-    body = await req.json();
+    const parsed = await req.json();
+    // `null` und Arrays parsen erfolgreich; der Feldzugriff danach würde
+    // abstürzen (500 ohne CORS-Header). Deshalb auf ein Objekt bestehen.
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return json({ error: "bad_json" }, 400, origin);
+    }
+    body = parsed as Record<string, unknown>;
   } catch {
     return json({ error: "bad_json" }, 400, origin);
   }
@@ -196,6 +217,10 @@ async function handle(req: Request): Promise<Response> {
   if (phone.length > 50) fields.phone = "Telefonnummer ist zu lang.";
   if (position.length > 120) fields.position = "Position ist zu lang.";
   if (message.length > 5000) fields.message = "Nachricht ist zu lang.";
+  // Ohne Einwilligung dürfen die Daten nicht gespeichert werden — bisher wurde
+  // das nur im Browser geprüft und war damit umgehbar.
+  const consent = body.gdpr_consent === true;
+  if (!consent) fields.gdpr_consent = "Bitte bestätigen Sie die Datenschutzerklärung.";
   if (Object.keys(fields).length > 0) {
     return json({ error: "validation", fields }, 422, origin);
   }
@@ -229,6 +254,9 @@ async function handle(req: Request): Promise<Response> {
     message: message || null,
     cv_path: cvPath,
     cv_filename: cvFilename,
+    // Nachweis der Einwilligung (Art. 7 Abs. 1 DSGVO).
+    gdpr_consent: consent,
+    consent_at: new Date().toISOString(),
   });
 
   if (error) {

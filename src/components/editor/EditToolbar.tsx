@@ -48,6 +48,7 @@ export function EditToolbar() {
   // Bereich oft im selben Wimpernschlag wie der Klick, und der Timer-Rückruf
   // liest dann noch den alten Wert aus seiner Closure. Der Ref ist sofort
   // aktuell, der State dient nur der Anzeige.
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [pinned, setPinnedState] = useState(false);
   const pinnedRef = useRef(false);
@@ -235,7 +236,10 @@ export function EditToolbar() {
                 }}
               />
             )}
-            {view === 'seo' && <SeoView onBack={() => setView('menu')} />}
+            {/* key={pathname}: Die Eingabefelder werden pro Seite neu
+                aufgebaut. Ohne das behielt der Bereich beim Seitenwechsel die
+                alten Werte und hätte sie auf die neue Seite geschrieben. */}
+            {view === 'seo' && <SeoView key={pathname} onBack={() => setView('menu')} />}
             {view === 'hilfe' && <HelpView onBack={() => setView('menu')} />}
           </motion.div>
         )}

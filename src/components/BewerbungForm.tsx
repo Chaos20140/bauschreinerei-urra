@@ -178,6 +178,10 @@ export function BewerbungForm() {
           phone: form.phone.trim(),
           position: form.position,
           message: form.message.trim(),
+          // Einwilligung mitschicken: Der Haken war bisher nur eine
+          // Browser-Prüfung und wurde nirgends festgehalten — im Streitfall
+          // wäre er damit nicht nachweisbar gewesen.
+          gdpr_consent: form.gdpr,
           honeypot: form.honeypot,
           ...cvFields,
         }),

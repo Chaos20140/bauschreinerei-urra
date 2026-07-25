@@ -24,6 +24,7 @@ export function ImagePicker({ id, alt, onClose }: Props) {
   const [err, setErr] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
+  const boxRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -36,7 +37,28 @@ export function ImagePicker({ id, alt, onClose }: Props) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      // Tastaturfokus im Dialog halten: Ohne das tabbt man aus dem
+      // „aria-modal"-Dialog heraus in die verdeckte Seite dahinter.
+      if (e.key !== 'Tab') return;
+      const box = boxRef.current;
+      if (!box) return;
+      const ziele = [...box.querySelectorAll<HTMLElement>('button, [href], input, select, textarea')]
+        .filter((el) => !el.hasAttribute('disabled') && el.offsetParent !== null);
+      if (ziele.length === 0) return;
+      const erster = ziele[0];
+      const letzter = ziele[ziele.length - 1];
+      const aktiv = document.activeElement;
+      if (e.shiftKey && (aktiv === erster || !box.contains(aktiv))) {
+        e.preventDefault();
+        letzter.focus();
+      } else if (!e.shiftKey && aktiv === letzter) {
+        e.preventDefault();
+        erster.focus();
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -85,7 +107,10 @@ export function ImagePicker({ id, alt, onClose }: Props) {
         onClick={onClose}
         className="absolute inset-0 w-full h-full bg-black/70 backdrop-blur-sm cursor-default"
       />
-      <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-neutral-950 border border-white/20 shadow-2xl p-5 text-white">
+      <div
+        ref={boxRef}
+        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-neutral-950 border border-white/20 shadow-2xl p-5 text-white"
+      >
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             <h2 className="text-lg font-medium">Bild wählen</h2>

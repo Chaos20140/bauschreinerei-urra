@@ -36,8 +36,9 @@ VITE_SUPABASE_URL=https://<projekt>.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…
 ```
 
-Ohne diese Werte läuft die Seite weiterhin — Bewertungen fallen auf die
-statische Liste in `src/data/content.ts` zurück, und das Kontaktformular zeigt
+Ohne diese Werte läuft die Seite weiterhin — der Bewertungs-Abschnitt entfällt
+dann ersatzlos (bewusst: lieber keine Bewertungen als erfundene), redaktionelle
+Änderungen aus dem Verwaltungsmodus greifen nicht, und das Kontaktformular zeigt
 einen Hinweis mit Telefonnummer statt zu senden.
 
 Im CI liegen dieselben Werte als GitHub-Repository-Secrets.

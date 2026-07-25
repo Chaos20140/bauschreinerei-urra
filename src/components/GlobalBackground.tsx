@@ -26,11 +26,35 @@ export function GlobalBackground() {
 }
 
 function VideoBackground() {
+  // Bewusst synchron aus matchMedia gelesen, nicht erst im Effekt: Stünde hier
+  // anfangs `false`, hätte der erste Render den Frame-Download bereits
+  // angestoßen — genau das, was bei reduzierter Bewegung vermieden werden soll.
+  const [reduceMotion, setReduceMotion] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduceMotion(media.matches);
+    const handler = (e: MediaQueryListEvent) => setReduceMotion(e.matches);
+    media.addEventListener('change', handler);
+    return () => media.removeEventListener('change', handler);
+  }, []);
+
+  // Wer Bewegung reduziert, bekommt den ruhigen Hintergrund — und lädt damit
+  // die Bildsequenz gar nicht erst (8,1 MB Desktop / 4,0 MB Mobil). Vorher
+  // wurde nur die Animation angehalten, heruntergeladen wurde trotzdem alles.
+  if (reduceMotion) return <SubPageBackground />;
+
+  return <ScrollBackground />;
+}
+
+function ScrollBackground() {
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia(MOBILE_QUERY).matches;
   });
-  const [reduceMotion, setReduceMotion] = useState(false);
 
   // Scroll-Fortschritt bewusst als Ref statt State: er ändert sich bei jedem
   // Scroll-Tick, und ein setState pro Tick hat den kompletten React-Baum
@@ -46,20 +70,9 @@ function VideoBackground() {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
+  // Diese Komponente läuft nur, wenn Bewegung erlaubt ist — die Prüfung liegt
+  // eine Ebene höher in VideoBackground.
   useEffect(() => {
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduceMotion(media.matches);
-    const handler = (e: MediaQueryListEvent) => setReduceMotion(e.matches);
-    media.addEventListener('change', handler);
-    return () => media.removeEventListener('change', handler);
-  }, []);
-
-  useEffect(() => {
-    if (reduceMotion) {
-      progressRef.current = 0;
-      return;
-    }
-
     let rafId: number | null = null;
 
     const runCompute = () => {
@@ -82,7 +95,7 @@ function VideoBackground() {
       window.removeEventListener('resize', onScroll);
       if (rafId !== null) cancelAnimationFrame(rafId);
     };
-  }, [reduceMotion]);
+  }, []);
 
   const variant = isMobile ? MOBILE : DESKTOP;
   const { framesRef, state, count } = useFrames(
