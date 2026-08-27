@@ -16,6 +16,12 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { sendeMail } from "../_shared/mail.ts";
 import { renderMail, renderText, type MailInhalt } from "../_shared/mailTemplate.ts";
+import {
+  emailUnbrauchbar,
+  nameUnbrauchbar,
+  pruefeVerdacht,
+  wortAnzahl,
+} from "../_shared/plausibilitaet.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -145,12 +151,19 @@ async function handle(req: Request): Promise<Response> {
   const message = clean(String(body.message ?? ""));
 
   const fields: Record<string, string> = {};
-  if (name.length < 2 || name.length > 120) fields.name = "Bitte geben Sie Ihren Namen an.";
-  if (!EMAIL_RE.test(email) || email.length > 200) fields.email = "Bitte geben Sie eine gültige E-Mail-Adresse an.";
+  // Länge UND Plausibilität: Markup, Adressen oder Tastatur-Müll im
+  // Namensfeld sind sicher keine echte Anfrage.
+  if (name.length > 120 || nameUnbrauchbar(name)) fields.name = "Bitte geben Sie Ihren Namen an.";
+  // Strengere Struktur-Prüfung als das grobe Muster: doppelte Punkte,
+  // fehlende Endung und Ähnliches sind nie zustellbar.
+  if (!EMAIL_RE.test(email) || emailUnbrauchbar(email)) fields.email = "Bitte geben Sie eine gültige E-Mail-Adresse an.";
   if (phone.length > 50) fields.phone = "Telefonnummer ist zu lang.";
   if (address.length > 200) fields.address = "Adresse ist zu lang.";
   if (projectType.length > 120) fields.project_type = "Projekttyp ist zu lang.";
   if (message.length < 5 || message.length > 5000) fields.message = "Bitte beschreiben Sie Ihr Anliegen kurz.";
+  // Obergrenze an Wörtern zusätzlich zur Zeichenzahl: bremst Fließtext-
+  // Spam, liegt aber weit über jeder echten Anfrage.
+  if (wortAnzahl(message) > 800) fields.message = "Die Nachricht ist zu lang.";
   // Ohne Einwilligung darf nichts gespeichert werden.
   const consent = body.gdpr_consent === true;
   if (!consent) fields.gdpr_consent = "Bitte bestätigen Sie die Datenschutzerklärung.";
@@ -178,6 +191,11 @@ async function handle(req: Request): Promise<Response> {
 
   // Benachrichtigung NACH dem Speichern und ohne throw: Die Anfrage ist
   // sicher abgelegt und darf nicht daran scheitern, dass der Mailserver klemmt.
+  // Verdacht nur ERMITTELN, nicht ablehnen: Die Anfrage ist bereits
+  // gespeichert. Der Hinweis erscheint in der Mail, damit der Betrieb
+  // selbst entscheiden kann.
+  const verdacht = pruefeVerdacht(name, message);
+
   const inhalt: MailInhalt = {
     titel: "Neue Anfrage",
     vorspann: `${name} hat über die Website eine Anfrage geschickt.`,
@@ -191,7 +209,9 @@ async function handle(req: Request): Promise<Response> {
     ],
     nachricht: { label: "Nachricht", text: message },
     aktion: { label: "In der Verwaltung öffnen", href: "https://urra-fenster.de/admin/anfragen" },
-    fussnote: "Eine Antwort geht direkt an die anfragende Person.",
+    fussnote: verdacht.verdaechtig
+      ? `Eine Antwort geht direkt an die anfragende Person. — Hinweis: Diese Anfrage wirkt automatisiert (${verdacht.gruende.join(", ")}), wurde aber gespeichert.`
+      : "Eine Antwort geht direkt an die anfragende Person.",
   };
 
   try {

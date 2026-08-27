@@ -13,6 +13,12 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { sendeMail } from "../_shared/mail.ts";
 import { renderMail, renderText, type MailInhalt } from "../_shared/mailTemplate.ts";
+import {
+  emailUnbrauchbar,
+  nameUnbrauchbar,
+  pruefeVerdacht,
+  wortAnzahl,
+} from "../_shared/plausibilitaet.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -220,11 +226,18 @@ async function handle(req: Request): Promise<Response> {
   const message = clean(String(body.message ?? ""));
 
   const fields: Record<string, string> = {};
-  if (name.length < 2 || name.length > 120) fields.name = "Bitte geben Sie Ihren Namen an.";
-  if (!EMAIL_RE.test(email) || email.length > 200) fields.email = "Bitte geben Sie eine gültige E-Mail-Adresse an.";
+  // Länge UND Plausibilität: Markup, Adressen oder Tastatur-Müll im
+  // Namensfeld sind sicher keine echte Anfrage.
+  if (name.length > 120 || nameUnbrauchbar(name)) fields.name = "Bitte geben Sie Ihren Namen an.";
+  // Strengere Struktur-Prüfung als das grobe Muster: doppelte Punkte,
+  // fehlende Endung und Ähnliches sind nie zustellbar.
+  if (!EMAIL_RE.test(email) || emailUnbrauchbar(email)) fields.email = "Bitte geben Sie eine gültige E-Mail-Adresse an.";
   if (phone.length > 50) fields.phone = "Telefonnummer ist zu lang.";
   if (position.length > 120) fields.position = "Position ist zu lang.";
   if (message.length > 5000) fields.message = "Nachricht ist zu lang.";
+  // Obergrenze an Wörtern zusätzlich zur Zeichenzahl: bremst Fließtext-
+  // Spam, liegt aber weit über jeder echten Anfrage.
+  if (wortAnzahl(message) > 800) fields.message = "Die Nachricht ist zu lang.";
   // Ohne Einwilligung dürfen die Daten nicht gespeichert werden — bisher wurde
   // das nur im Browser geprüft und war damit umgehbar.
   const consent = body.gdpr_consent === true;
@@ -278,6 +291,11 @@ async function handle(req: Request): Promise<Response> {
   // Benachrichtigung an den Betrieb. Bewusst NACH dem Speichern und ohne
   // throw: Die Bewerbung ist zu diesem Zeitpunkt sicher abgelegt und darf
   // nicht daran scheitern, dass der Mailserver gerade klemmt.
+  // Verdacht nur ERMITTELN, nicht ablehnen: Die Anfrage ist bereits
+  // gespeichert. Der Hinweis erscheint in der Mail, damit der Betrieb
+  // selbst entscheiden kann.
+  const verdacht = pruefeVerdacht(name, message);
+
   await benachrichtige({
     titel: "Neue Bewerbung",
     vorspann: `${name} hat sich ${position ? `auf „${position}“ ` : ""}beworben.`,
@@ -291,7 +309,9 @@ async function handle(req: Request): Promise<Response> {
     ],
     ...(message ? { nachricht: { label: "Anschreiben", text: message } } : {}),
     aktion: { label: "In der Verwaltung öffnen", href: "https://urra-fenster.de/admin/bewerbungen" },
-    fussnote: "Antworten geht direkt an die bewerbende Person.",
+    fussnote: verdacht.verdaechtig
+      ? `Antworten geht direkt an die bewerbende Person. — Hinweis: Diese Anfrage wirkt automatisiert (${verdacht.gruende.join(", ")}), wurde aber gespeichert.`
+      : "Antworten geht direkt an die bewerbende Person.",
   }, `Neue Bewerbung: ${name}`, email);
 
   return json({ ok: true, id }, 201, origin);
