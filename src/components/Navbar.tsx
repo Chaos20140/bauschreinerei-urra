@@ -81,7 +81,7 @@ export function Navbar() {
           <Link
             to="/"
             className="flex items-center gap-2 bg-neutral-900/90 backdrop-blur rounded-full pl-3 pr-5 py-2.5 no-shadow"
-            aria-label="Zur Startseite"
+            aria-label={`${brand.name} — zur Startseite`}
           >
             <Logo className="h-6 w-6" />
             <span className="text-white text-sm font-medium tracking-tight">

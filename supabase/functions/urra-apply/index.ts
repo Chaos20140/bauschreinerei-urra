@@ -11,6 +11,8 @@
 // Deploy: supabase functions deploy urra-apply --no-verify-jwt --project-ref <ref>
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { sendeMail } from "../_shared/mail.ts";
+import { renderMail, renderText, type MailInhalt } from "../_shared/mailTemplate.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -273,7 +275,51 @@ async function handle(req: Request): Promise<Response> {
     return json({ error: "db_error" }, 500, origin);
   }
 
+  // Benachrichtigung an den Betrieb. Bewusst NACH dem Speichern und ohne
+  // throw: Die Bewerbung ist zu diesem Zeitpunkt sicher abgelegt und darf
+  // nicht daran scheitern, dass der Mailserver gerade klemmt.
+  await benachrichtige({
+    titel: "Neue Bewerbung",
+    vorspann: `${name} hat sich ${position ? `auf „${position}“ ` : ""}beworben.`,
+    zeilen: [
+      { label: "Name", wert: name },
+      { label: "E-Mail", wert: email, link: `mailto:${email}` },
+      ...(phone ? [{ label: "Telefon", wert: phone, link: `tel:${phone.replace(/[^\d+]/g, "")}` }] : []),
+      ...(position ? [{ label: "Position", wert: position }] : []),
+      { label: "Lebenslauf", wert: cvFilename ? `${cvFilename} (in der Verwaltung abrufbar)` : "nicht beigefügt" },
+      { label: "Eingegangen", wert: new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" }) },
+    ],
+    ...(message ? { nachricht: { label: "Anschreiben", text: message } } : {}),
+    aktion: { label: "In der Verwaltung öffnen", href: "https://urra-fenster.de/admin/bewerbungen" },
+    fussnote: "Antworten geht direkt an die bewerbende Person.",
+  }, `Neue Bewerbung: ${name}`, email);
+
   return json({ ok: true, id }, 201, origin);
 }
 
 Deno.serve(handle);
+
+
+/**
+ * Baut die Mail und verschickt sie. Fehler werden nur protokolliert — der
+ * Formular-Vorgang läuft unabhängig davon weiter.
+ */
+async function benachrichtige(
+  inhalt: MailInhalt,
+  betreff: string,
+  antwortAn?: string,
+): Promise<void> {
+  try {
+    const r = await sendeMail({
+      betreff,
+      html: renderMail(inhalt),
+      text: renderText(inhalt),
+      antwortAn,
+    });
+    if (!r.ok && r.fehler !== "nicht_konfiguriert") {
+      console.error("Benachrichtigung fehlgeschlagen:", r.fehler);
+    }
+  } catch (e) {
+    console.error("Benachrichtigung: unerwarteter Fehler", e instanceof Error ? e.message : e);
+  }
+}

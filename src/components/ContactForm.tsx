@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Loader2, Check, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { CONTACT_FN_URL, FN_KEY } from '../lib/admin-config';
 
 type FormState = {
   name: string;
@@ -121,11 +122,12 @@ export function ContactForm() {
     setStatus('sending');
     setErrorMsg('');
 
-    // Client erst beim Absenden laden — er gehört nicht in den Startpfad.
-    const { supabase, isSupabaseConfigured } = await import('../lib/supabase');
-    if (!mounted.current) return;
-
-    if (!isSupabaseConfigured || !supabase) {
+    // Absenden über die Edge Function `urra-contact`: Sie prüft die Felder
+    // serverseitig, speichert die Anfrage und schickt die Benachrichtigung.
+    // Früher schrieb der Browser direkt in die Datenbank — dafür musste die
+    // Datenbank-Bibliothek geladen werden (rund 55 kB gzip), die Prüfungen
+    // waren umgehbar, und es gab keine Stelle für den Mailversand.
+    if (!CONTACT_FN_URL || !FN_KEY) {
       setErrorMsg(
         'Das Kontaktformular ist gerade nicht verfügbar. Bitte rufen Sie uns kurz an oder schreiben Sie uns eine E-Mail.'
       );
@@ -139,34 +141,54 @@ export function ContactForm() {
       REQUEST_TIMEOUT_MS
     );
 
-    const { error } = await supabase
-      .from('contact_requests')
-      .insert({
-        name: form.name.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim() || null,
-        address: form.address.trim() || null,
-        project_type: form.projectType || null,
-        message: form.message.trim(),
-        gdpr_consent: form.gdpr,
-        honeypot: form.honeypot,
-        user_agent:
-          typeof navigator !== 'undefined'
-            ? navigator.userAgent.slice(0, 500)
-            : null,
-      })
-      .abortSignal(controller.signal);
+    let res: Response;
+    try {
+      res = await fetch(CONTACT_FN_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${FN_KEY}`,
+          apikey: FN_KEY,
+        },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          address: form.address.trim(),
+          project_type: form.projectType,
+          message: form.message.trim(),
+          gdpr_consent: form.gdpr,
+          honeypot: form.honeypot,
+          user_agent:
+            typeof navigator !== 'undefined'
+              ? navigator.userAgent.slice(0, 500)
+              : '',
+        }),
+        signal: controller.signal,
+      });
+    } catch {
+      window.clearTimeout(timeout);
+      if (!mounted.current) return;
+      setStatus('error');
+      setErrorMsg(
+        'Keine Verbindung. Bitte versuchen Sie es in einem Moment erneut oder rufen Sie uns direkt an.'
+      );
+      return;
+    }
 
     window.clearTimeout(timeout);
     // Nach dem await kann die Komponente längst unmountet sein (Navigation
     // während des Sendens) — dann darf kein setState mehr laufen.
     if (!mounted.current) return;
 
-    if (error) {
+    if (!res.ok) {
       setStatus('error');
-      // Bewusst keine Backend-Fehlertexte an den Client durchreichen.
+      // Bewusst keine Backend-Fehlertexte durchreichen; nur die Fälle
+      // unterscheiden, bei denen ein anderer Hinweis wirklich hilft.
       setErrorMsg(
-        'Wir konnten Ihre Anfrage gerade nicht senden. Bitte versuchen Sie es in einem Moment erneut oder rufen Sie uns direkt an.'
+        res.status === 429
+          ? 'Es sind gerade viele Anfragen eingegangen. Bitte versuchen Sie es später erneut oder rufen Sie uns an.'
+          : 'Wir konnten Ihre Anfrage gerade nicht senden. Bitte versuchen Sie es in einem Moment erneut oder rufen Sie uns direkt an.'
       );
       return;
     }

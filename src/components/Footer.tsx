@@ -32,7 +32,7 @@ export function Footer() {
           </div>
 
           <div className="md:col-span-3 md:col-start-7">
-            <p className="text-white/45 text-xs tracking-[0.3em] uppercase mb-4">
+            <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-4">
               <Editable id="footer.nav.title">Navigation</Editable>
             </p>
             <ul className="space-y-2">
@@ -52,7 +52,7 @@ export function Footer() {
           </div>
 
           <div className="md:col-span-3">
-            <p className="text-white/45 text-xs tracking-[0.3em] uppercase mb-4">
+            <p className="text-white/55 text-xs tracking-[0.3em] uppercase mb-4">
               <Editable id="footer.kontakt.title">Kontakt</Editable>
             </p>
             <ul className="space-y-2 text-sm md:text-base">
@@ -82,7 +82,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-white/15 pt-6">
-          <p className="text-white/45 text-xs tracking-widest uppercase">
+          <p className="text-white/55 text-xs tracking-widest uppercase">
             <Editable id="footer.copyright">{footer.copyright}</Editable>
           </p>
           <ul className="flex flex-wrap items-center gap-5 md:gap-6">

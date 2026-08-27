@@ -35,11 +35,10 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        // React, Router und Supabase getrennt vom Seiten-Code: sie ändern sich
+        // React und Router getrennt vom Seiten-Code: sie ändern sich
         // selten und bleiben so über Deploys hinweg im Browser-Cache.
         manualChunks: {
           react: ['react', 'react-dom', 'react-router-dom'],
-          supabase: ['@supabase/supabase-js'],
         },
       },
     },
