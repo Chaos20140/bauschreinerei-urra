@@ -3,7 +3,7 @@
 Marketing-Website der Bauschreinerei Heribert Urra (Olsberg, Sauerland).
 Single-Page-App mit scroll-getriebener Bildsequenz als Hintergrund.
 
-**Live:** https://chaos20140.github.io/bauschreinerei-urra/
+**Live:** https://urra-fenster.de
 
 ## Stack
 
