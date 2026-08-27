@@ -18,7 +18,7 @@
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'sha256-WUnJTB3HISbg4dascZCrccH+N8UyrMqzD0CTp2JMWG4='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self'; connect-src 'self' https://*.supabase.co; frame-src https://maps.google.com https://www.google.com; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+      content="default-src 'self'; script-src 'self' 'sha256-6x8VeMOJS/MF610GpXWEn4SxGlAOk2el6eFeyYgS1Wc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self'; connect-src 'self' https://*.supabase.co; frame-src https://maps.google.com https://www.google.com; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="theme-color" content="#000000" />
@@ -110,14 +110,29 @@
           "addressCountry": "DE"
         },
         "areaServed": [
-          { "@type": "Place", "name": "Sauerland" },
-          { "@type": "Place", "name": "Ostwestfalen-Lippe" },
-          { "@type": "Place", "name": "Ruhrgebiet" }
+          {
+            "@type": "Place",
+            "name": "Sauerland"
+          },
+          {
+            "@type": "Place",
+            "name": "Ostwestfalen-Lippe"
+          },
+          {
+            "@type": "Place",
+            "name": "Ruhrgebiet"
+          }
         ],
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
             "opens": "08:00",
             "closes": "17:00"
           }
@@ -130,6 +145,82 @@
           "Garagentore",
           "RAL-Montage",
           "EnEV"
+        ],
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 51.3737323,
+          "longitude": 8.4641771
+        },
+        "hasMap": "https://www.google.com/maps/search/?api=1&query=Am%20Ochsenberg%2013%2C%2059939%20Olsberg",
+        "image": "https://urra-fenster.de/og-image.jpg",
+        "logo": "https://urra-fenster.de/favicon.svg",
+        "priceRange": "€€",
+        "serviceArea": {
+          "@type": "GeoCircle",
+          "geoMidpoint": {
+            "@type": "GeoCoordinates",
+            "latitude": 51.3737323,
+            "longitude": 8.4641771
+          },
+          "geoRadius": "120000"
+        },
+        "makesOffer": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Fenstermontage"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Haustüren"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Innentüren"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Schiebetüren"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Garagentore"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Aufmaß und Beratung"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Demontage und Entsorgung"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "RAL-Montage"
+            }
+          }
         ]
       }
     </script>

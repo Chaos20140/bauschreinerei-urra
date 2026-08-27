@@ -26,7 +26,14 @@ if (!match) {
   process.exit(1);
 }
 
-const hash = 'sha256-' + createHash('sha256').update(match[1]).digest('base64');
+// WICHTIG: Der Hash wird ueber die Fassung mit LF-Zeilenenden gebildet —
+// genau so, wie die Datei im Repository liegt und im Build ausgeliefert wird.
+// Auf Windows checkt Git die Datei mit CRLF aus; wuerde der Hash darueber
+// berechnet, passte er lokal, aber NICHT auf dem Linux-Runner der CI. Genau
+// das ist am 27.08.2026 passiert: Die Live-Seite blockierte ihr eigenes
+// Boot-Script, weil der eingetragene Hash aus einer CRLF-Fassung stammte.
+const scriptLf = match[1].split('\r\n').join('\n');
+const hash = 'sha256-' + createHash('sha256').update(scriptLf, 'utf8').digest('base64');
 const hashSlot = /'sha256-[A-Za-z0-9+/=]+'/;
 
 if (!hashSlot.test(html)) {

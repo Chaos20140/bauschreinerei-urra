@@ -111,7 +111,9 @@ export function Reviews() {
       .then((r) => (r.ok ? r.json() : []))
       .then((rows: ReviewRow[]) => {
         if (cancelled) return;
-        setItems(Array.isArray(rows) ? rows.map(rowToItem) : []);
+        const liste = Array.isArray(rows) ? rows.map(rowToItem) : [];
+        setItems(liste);
+        schreibeBewertungInStrukturDaten(liste);
       })
       .catch(() => {
         // Ohne Bewertungen entfällt der Abschnitt — lieber keine als erfundene.
@@ -213,4 +215,36 @@ export function Reviews() {
       </div>
     </section>
   );
+}
+
+/**
+ * Traegt Durchschnitt und Anzahl der ECHTEN Bewertungen in den
+ * schema.org-Block im Seitenkopf ein.
+ *
+ * Bewusst zur Laufzeit statt fest in index.html: Die Werte kommen aus der
+ * Datenbank und waeren dort bei jeder neuen Bewertung veraltet. Google
+ * verlangt ausserdem, dass die Bewertungen auf der Seite sichtbar sind — sie
+ * stehen direkt darunter. Ohne geladene Bewertungen wird nichts eingetragen,
+ * damit keine erfundene Kennzahl entsteht.
+ */
+function schreibeBewertungInStrukturDaten(liste: ReviewItem[]): void {
+  if (liste.length === 0) return;
+  const el = document.querySelector<HTMLScriptElement>(
+    'script[type="application/ld+json"]'
+  );
+  if (!el?.textContent) return;
+  try {
+    const data = JSON.parse(el.textContent) as Record<string, unknown>;
+    const schnitt = liste.reduce((s, r) => s + r.rating, 0) / liste.length;
+    data.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: Number(schnitt.toFixed(1)),
+      reviewCount: liste.length,
+      bestRating: 5,
+      worstRating: 1,
+    };
+    el.textContent = JSON.stringify(data);
+  } catch {
+    // Kaputter Block: lieber unveraendert lassen als ihn zu zerstoeren.
+  }
 }
