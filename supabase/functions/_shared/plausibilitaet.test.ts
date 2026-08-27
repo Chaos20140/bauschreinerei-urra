@@ -119,3 +119,21 @@ test('Hilfsfunktionen zaehlen richtig', () => {
   assert.equal(linkAnzahl('siehe http://a.de und www.b.de'), 2);
   assert.equal(linkAnzahl('kein Link hier'), 0);
 });
+
+test('Namen mit Steuerzeichen werden abgelehnt', () => {
+  // Zeilenumbrüche im Namen sind der Hebel für Kopfzeilen-Einschleusung.
+  const CR = String.fromCharCode(13);
+  const LF = String.fromCharCode(10);
+  for (const n of ['Hans' + CR + LF + 'Bcc: fremd@example.com',
+                   'Hans' + LF + 'X-Beliebig: 1',
+                   'Hans' + String.fromCharCode(0) + 'Null',
+                   'Hans' + String.fromCharCode(127)]) {
+    assert.equal(nameUnbrauchbar(n), true, `haette abgelehnt werden muessen: ${JSON.stringify(n)}`);
+  }
+});
+
+test('normale Namen bleiben trotz der neuen Pruefung erlaubt', () => {
+  for (const n of ['Heribert Urra', 'Anne-Marie von der Heide', "D'Angelo", 'Şiyar Güneş']) {
+    assert.equal(nameUnbrauchbar(n), false, `faelschlich abgelehnt: ${n}`);
+  }
+});

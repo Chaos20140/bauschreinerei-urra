@@ -36,6 +36,11 @@ export function nameUnbrauchbar(name: string): boolean {
   if (s.length < 2) return true;
   // Kein einziger Buchstabe (egal welches Alphabet)
   if (!/\p{L}/u.test(s)) return true;
+  // Steuerzeichen — vor allem Zeilenumbrüche. Der Name wandert in die
+  // Betreffzeile der Benachrichtigung; ein Umbruch dort erlaubte das
+  // Einschleusen eigener Kopfzeilen. Der Versand entfernt sie zusätzlich,
+  // aber ein Name mit Zeilenumbruch ist ohnehin keine echte Eingabe.
+  if (/[\u0000-\u001F\u007F]/.test(s)) return true;
   // Markup oder Adressen gehören nicht in ein Namensfeld
   if (/[<>]/.test(s)) return true;
   if (/https?:\/\/|www\./i.test(s)) return true;

@@ -7,8 +7,22 @@
 // DNS-Einträge oft als Fälschung eingestuft.
 //
 // Zugangsdaten ausschließlich aus Secrets — nie im Repository.
+//
+// WICHTIG — warum hier von Hand kodiert wird:
+// Der quoted-printable-Kodierer von denomailer 1.6.0 ist fehlerhaft. Er
+// zerschneidet die Zeilen stur alle 74 Zeichen und korrigiert dabei nur den
+// Anfang des nächsten Stücks, nicht dessen Ende. Trifft ein Schnitt mitten in
+// eine Folge wie "=C3=BC" (ü) oder "=3D" (=), gehen Zeichen verloren und im
+// Postfach erscheinen Reste wie "=20". Nachweisbar bei jeder Mail über ~74
+// Zeichen, also bei allen.
+//
+// Ausweg: Wir übergeben den Inhalt fertig kodiert als `mimeContent`. Diesen
+// Weg reicht die Bibliothek unverändert durch (client.ts: writeCmd), der
+// kaputte Kodierer wird nie aufgerufen. Als Verfahren dient base64 — es kennt
+// keine Sonderzeichen-Folgen, die ein Zeilenumbruch zerreißen könnte.
 
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { base64Utf8, betreffAscii, umbrucheBase64 } from "./mailKodierung.ts";
 
 const HOST = Deno.env.get("SMTP_HOST") || "";
 const PORT = Number(Deno.env.get("SMTP_PORT") || "465");
@@ -56,10 +70,23 @@ export async function sendeMail(a: MailAuftrag): Promise<{ ok: boolean; fehler?:
     await client.send({
       from: FROM,
       to: a.an || TO,
-      subject: a.betreff,
-      content: a.text,
-      html: a.html,
+      subject: betreffAscii(a.betreff),
       replyTo: a.antwortAn,
+      // Kein `content`/`html` übergeben — beides liefe durch den fehlerhaften
+      // Kodierer. Die Reihenfolge zählt: Bei multipart/alternative zeigt das
+      // Postfach den LETZTEN Teil an, den es darstellen kann.
+      mimeContent: [
+        {
+          mimeType: 'text/plain; charset="utf-8"',
+          content: umbrucheBase64(base64Utf8(a.text)),
+          transferEncoding: "base64",
+        },
+        {
+          mimeType: 'text/html; charset="utf-8"',
+          content: umbrucheBase64(base64Utf8(a.html)),
+          transferEncoding: "base64",
+        },
+      ],
     });
 
     return { ok: true };
