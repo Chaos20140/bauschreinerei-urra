@@ -11,6 +11,8 @@
 // Deploy: supabase functions deploy urra-admin --no-verify-jwt --project-ref <ref>
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { mailKonfiguriert, sendeMail } from "../_shared/mail.ts";
+import { renderMail, renderText } from "../_shared/mailTemplate.ts";
 import {
   buildCsv,
   CONTACT_CSV_COLUMNS,
@@ -315,6 +317,47 @@ async function handle(req: Request): Promise<Response> {
   // Login-Prüfung: das Gate ist schon bestanden.
   if (action === "check") {
     return json({ ok: true }, 200, origin);
+  }
+
+  // Prüft den Mailversand: baut dieselbe Vorlage wie im Ernstfall und
+  // verschickt sie an die konfigurierte Betriebsadresse. Bewusst KEIN
+  // freier Empfänger — sonst ließe sich die Funktion als Versandhelfer
+  // für fremde Adressen missbrauchen.
+  if (action === "mail-test") {
+    if (!mailKonfiguriert) {
+      return json(
+        { ok: false, grund: "nicht_konfiguriert" },
+        200,
+        origin,
+      );
+    }
+    const inhalt = {
+      titel: "Testnachricht",
+      vorspann:
+        "Diese Nachricht bestätigt, dass der Mailversand der Website funktioniert.",
+      zeilen: [
+        { label: "Anlass", wert: "Test aus der Verwaltung" },
+        {
+          label: "Zeitpunkt",
+          wert: new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" }),
+        },
+      ],
+      nachricht: {
+        label: "Hinweis",
+        text:
+          "Ab jetzt erhalten Sie bei jeder Anfrage und jeder Bewerbung automatisch eine Nachricht an diese Adresse.",
+      },
+      aktion: {
+        label: "Zur Verwaltung",
+        href: "https://urra-fenster.de/admin",
+      },
+    };
+    const r = await sendeMail({
+      betreff: "Testnachricht von urra-fenster.de",
+      html: renderMail(inhalt),
+      text: renderText(inhalt),
+    });
+    return json({ ok: r.ok, grund: r.fehler ?? null, detail: r.detail ?? null }, 200, origin);
   }
 
   // ── Inline-Editor: Text-Overrides speichern / zurücksetzen ─────────────────

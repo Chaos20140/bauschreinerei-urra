@@ -36,7 +36,7 @@ export type MailAuftrag = {
  * Anfrage verlieren: Der Datensatz ist zu diesem Zeitpunkt bereits gespeichert,
  * eine fehlgeschlagene Benachrichtigung darf den Vorgang nicht scheitern lassen.
  */
-export async function sendeMail(a: MailAuftrag): Promise<{ ok: boolean; fehler?: string }> {
+export async function sendeMail(a: MailAuftrag): Promise<{ ok: boolean; fehler?: string; detail?: string }> {
   if (!mailKonfiguriert) return { ok: false, fehler: "nicht_konfiguriert" };
 
   let client: SMTPClient | null = null;
@@ -67,7 +67,7 @@ export async function sendeMail(a: MailAuftrag): Promise<{ ok: boolean; fehler?:
     // Nur ins Log, nie zum Aufrufer: Die Meldung kann Hostnamen und
     // Kontodetails enthalten.
     console.error("mail: Versand fehlgeschlagen:", e instanceof Error ? e.message : e);
-    return { ok: false, fehler: "versand_fehlgeschlagen" };
+    return { ok: false, fehler: "versand_fehlgeschlagen", detail: String(e instanceof Error ? e.message : e).slice(0, 300) };
   } finally {
     try {
       await client?.close();

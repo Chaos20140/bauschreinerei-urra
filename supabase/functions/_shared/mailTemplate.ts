@@ -54,13 +54,24 @@ export type MailInhalt = {
   fussnote?: string;
 };
 
+/**
+ * Entfernt Zeilenumbrüche samt Einrückung aus dem fertigen HTML.
+ *
+ * Notwendig wegen der quoted-printable-Kodierung des Versands: Ein
+ * Leerzeichen vor einem Zeilenumbruch wird dort zu "=20" — bei eingerücktem
+ * HTML also überall. Diese Zeichen landeten sichtbar in der Mail.
+ */
+function kompakt(html: string): string {
+  return html.replace(/\n\s*/g, "");
+}
+
 export function renderMail(i: MailInhalt): string {
   const nachricht = i.nachricht
     ? `
       <tr>
         <td style="padding:22px 0 0 0;font-family:${SCHRIFT};">
           <div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:${GEDECKT};margin-bottom:8px;">${esc(i.nachricht.label)}</div>
-          <div style="font-size:16px;line-height:1.6;color:${MARKE};background:#fafafa;border:1px solid ${RAND};border-radius:10px;padding:16px;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;">${esc(i.nachricht.text)}</div>
+          <div style="font-size:16px;line-height:1.6;color:${MARKE};background:#fafafa;border:1px solid ${RAND};border-radius:10px;padding:16px;word-break:break-word;overflow-wrap:anywhere;">${esc(i.nachricht.text).split("\n").join("<br>")}</div>
         </td>
       </tr>`
     : "";
@@ -78,7 +89,7 @@ export function renderMail(i: MailInhalt): string {
     ? `<div style="margin-top:10px;">${esc(i.fussnote)}</div>`
     : "";
 
-  return `<!doctype html>
+  return kompakt(`<!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
@@ -138,7 +149,7 @@ export function renderMail(i: MailInhalt): string {
     </tr>
   </table>
 </body>
-</html>`;
+</html>`);
 }
 
 /** Reine Text-Fassung — für Clients ohne HTML und gegen Spam-Einstufung. */
