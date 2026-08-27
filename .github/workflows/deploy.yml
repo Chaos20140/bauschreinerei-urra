@@ -39,7 +39,6 @@ jobs:
 
       - name: Build
         env:
-          GITHUB_PAGES: 'true'
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
         # `npm run build` erzeugt zusätzlich pro Route eine echte index.html

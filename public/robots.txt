@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /bauschreinerei-urra/admin
+Disallow: /admin
 
-Sitemap: https://chaos20140.github.io/bauschreinerei-urra/sitemap.xml
+Sitemap: https://urra-fenster.de/sitemap.xml

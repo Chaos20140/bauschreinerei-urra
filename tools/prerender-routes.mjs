@@ -20,8 +20,8 @@ import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
-const ORIGIN = 'https://chaos20140.github.io';
-const BASE = '/bauschreinerei-urra/';
+const ORIGIN = 'https://urra-fenster.de';
+const BASE = '/';
 
 const ROUTES = [
   {

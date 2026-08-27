@@ -30,6 +30,12 @@ const ALLOWED_CV_TYPES = new Set([
 ]);
 
 const ALLOWED_ORIGINS = new Set([
+  // Eigene Domain (Hauptadresse) — www leitet dorthin um, wird aber der
+  // Vollständigkeit halber mitgeführt.
+  "https://urra-fenster.de",
+  "https://www.urra-fenster.de",
+  // Alte GitHub-Pages-Adresse: bleibt vorerst erlaubt, damit während der
+  // DNS-Umstellung nichts abreißt. Kann später entfallen.
   "https://chaos20140.github.io",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
@@ -38,7 +44,7 @@ const ALLOWED_ORIGINS = new Set([
 ]);
 
 function corsHeaders(origin: string | null): Record<string, string> {
-  const allow = origin && ALLOWED_ORIGINS.has(origin) ? origin : "https://chaos20140.github.io";
+  const allow = origin && ALLOWED_ORIGINS.has(origin) ? origin : "https://urra-fenster.de";
   return {
     "Access-Control-Allow-Origin": allow,
     "Access-Control-Allow-Methods": "POST, OPTIONS",

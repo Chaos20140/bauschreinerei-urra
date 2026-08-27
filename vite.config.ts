@@ -1,7 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-const repoBase = process.env.GITHUB_PAGES === 'true' ? '/bauschreinerei-urra/' : '/';
+// Die Seite läuft unter der eigenen Domain urra-fenster.de, liegt dort also
+// im Wurzelverzeichnis. Früher stand hier ein Unterpfad, weil GitHub Pages
+// unter <nutzer>.github.io/<repo>/ auslieferte — mit eigener Domain entfällt
+// das. (Müsste die Seite je wieder unter der github.io-Adresse laufen, hier
+// auf '/bauschreinerei-urra/' zurückstellen.)
+const repoBase = '/';
 
 export default defineConfig({
   base: repoBase,

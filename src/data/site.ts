@@ -5,9 +5,9 @@
  * Open-Graph-URLs und der sitemap.xml. Bei einem Umzug auf eine eigene Domain
  * hier ändern und zusätzlich die absoluten URLs in index.html anpassen.
  */
-export const ORIGIN = 'https://chaos20140.github.io';
+export const ORIGIN = 'https://urra-fenster.de';
 
-/** Basis-Pfad der App ('/bauschreinerei-urra/' auf GitHub Pages, '/' lokal). */
+/** Basis-Pfad der App — seit dem Umzug auf die eigene Domain immer '/'. */
 export const BASE = import.meta.env.BASE_URL;
 
 /**

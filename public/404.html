@@ -8,7 +8,7 @@
       // the original path encoded into the query string. The boot script in
       // index.html restores it via history.replaceState.
       (function () {
-        var segmentCount = 1; // /<repo-name>/ — drop one segment
+        var segmentCount = 0; // eigene Domain: App liegt im Wurzelverzeichnis
         var l = window.location;
         l.replace(
           l.protocol +
