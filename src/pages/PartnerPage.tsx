@@ -49,7 +49,7 @@ export function PartnerPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="partner.hersteller.eyebrow">{partners.eyebrow}</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="partner.hersteller.title">{partners.title}</Editable>
             </h2>
             <p className="mt-5 text-white/85 text-base md:text-lg leading-relaxed">
@@ -108,7 +108,7 @@ export function PartnerPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="partner.standards.eyebrow">Standards</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="partner.standards.title">Nach welchen Normen wir bauen.</Editable>
             </h2>
             <p className="mt-5 text-white/85 text-base md:text-lg leading-relaxed">

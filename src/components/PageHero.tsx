@@ -53,8 +53,8 @@ export function PageHero({
   );
   const titleClass =
     titleSize === 'compact'
-      ? 'hero-title text-white font-medium text-[7vw] md:text-[5vw] lg:text-[4vw] leading-[1] break-words'
-      : 'hero-title text-white font-medium text-[14vw] md:text-[7.5vw] lg:text-[6vw] leading-[0.95]';
+      ? 'hero-title text-white font-medium text-[7vw] md:text-[min(5vw,96px)] lg:text-[min(4vw,76.8px)] leading-[1] break-words'
+      : 'hero-title text-white font-medium text-[14vw] md:text-[min(7.5vw,144px)] lg:text-[min(6vw,115.2px)] leading-[0.95]';
   const titleStyle =
     titleSize === 'compact'
       ? { textWrap: 'balance' as const, hyphens: 'auto' as const }

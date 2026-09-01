@@ -82,7 +82,7 @@ export function ProjectDetailPage() {
                 {project.category} · {project.location} · {project.year}
               </p>
               <h1
-                className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] lg:text-[4.5vw] leading-[0.95]"
+                className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] lg:text-[min(4.5vw,86.4px)] leading-[0.95]"
                 style={{ textWrap: 'balance' }}
               >
                 <Editable id={`projekte.item.${project.slug}.title`}>
@@ -128,7 +128,7 @@ export function ProjectDetailPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="projektdetail.eckdaten.eyebrow">Eckdaten</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[3.4vw] leading-[1] mb-6">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(3.4vw,65.3px)] leading-[1] mb-6">
               <Editable id="projektdetail.eckdaten.title">Was umgesetzt wurde.</Editable>
             </h2>
             <dl className="space-y-3 text-sm md:text-base">
@@ -178,7 +178,7 @@ export function ProjectDetailPage() {
               <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
                 <Editable id="projektdetail.galerie.eyebrow">Galerie</Editable>
               </p>
-              <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5vw] leading-[0.95]">
+              <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5vw,96px)] leading-[0.95]">
                 <Editable id="projektdetail.galerie.title">Mehr Eindrücke.</Editable>
               </h2>
             </BlurIn>

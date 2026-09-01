@@ -44,7 +44,7 @@ export function KarrierePage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="karriere.bewerbung.eyebrow">Bewerbung</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[9vw] md:text-[3.4vw] leading-[1.02]">
+            <h2 className="hero-title text-white font-medium text-[9vw] md:text-[min(3.4vw,65.3px)] leading-[1.02]">
               <Editable id="karriere.bewerbung.title">Deine Unterlagen, direkt zu uns.</Editable>
             </h2>
             <p className="mt-4 text-white/80 text-base md:text-lg leading-relaxed">

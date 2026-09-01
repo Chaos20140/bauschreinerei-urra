@@ -16,7 +16,7 @@ export function Regions() {
             <p className="text-xs md:text-sm text-white/60 tracking-widest uppercase mb-4">
               <Editable id="home.regions.eyebrow">{regions.eyebrow}</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="home.regions.title">Nordrhein-Westfalen.</Editable>
             </h2>
           </BlurIn>

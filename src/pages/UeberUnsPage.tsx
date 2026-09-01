@@ -85,7 +85,7 @@ export function UeberUnsPage() {
                   Der sr-only-Teil trägt die eigentliche Seitenaussage für
                   Screenreader und Suchmaschinen, sichtbar bleibt das Zitat. */}
               <h1
-                className="hero-title text-white font-medium text-[5.5vw] md:text-[2.6vw] lg:text-[2.1vw] leading-[1.3] max-w-4xl"
+                className="hero-title text-white font-medium text-[5.5vw] md:text-[min(2.6vw,49.9px)] lg:text-[min(2.1vw,40.3px)] leading-[1.3] max-w-4xl"
                 style={{ textWrap: 'balance' }}
               >
                 <span className="sr-only">
@@ -176,7 +176,7 @@ export function UeberUnsPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="ueberuns.history.eyebrow">Geschichte</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="ueberuns.history.title">Wie wir hierher kamen.</Editable>
             </h2>
           </BlurIn>
@@ -207,7 +207,7 @@ export function UeberUnsPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="ueberuns.values.eyebrow">Werte</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="ueberuns.values.title">Woran wir uns messen lassen.</Editable>
             </h2>
           </BlurIn>

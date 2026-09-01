@@ -16,7 +16,7 @@ export function Faq() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="home.faq.eyebrow">{faq.eyebrow}</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[12vw] md:text-[6vw] leading-[0.92]">
+            <h2 className="hero-title text-white font-medium text-[12vw] md:text-[min(6vw,115.2px)] leading-[0.92]">
               <Editable id="home.faq.title">{faq.title}</Editable>
             </h2>
           </BlurIn>

@@ -163,7 +163,7 @@ export function KontaktPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="kontakt.location.label">Standort</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5vw,96px)] leading-[0.95]">
               <Editable id="kontakt.location.title">So finden Sie uns.</Editable>
             </h2>
             <p className="mt-5 text-white/80 text-base md:text-lg leading-relaxed">

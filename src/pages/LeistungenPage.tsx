@@ -102,7 +102,7 @@ export function LeistungenPage() {
               <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
                 <Editable id="leistungen.kern.eyebrow">Kernleistungen</Editable>
               </p>
-              <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+              <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
                 <Editable id="leistungen.kern.title">Das machen wir.</Editable>
               </h2>
             </div>
@@ -133,7 +133,7 @@ export function LeistungenPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="leistungen.ablauf.eyebrow">Ablauf</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="leistungen.ablauf.title">Wie wir arbeiten.</Editable>
             </h2>
             <p className="mt-6 text-white/85 text-base md:text-lg leading-relaxed">
@@ -163,7 +163,7 @@ export function LeistungenPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="leistungen.einsatz.eyebrow">Im Einsatz</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="leistungen.einsatz.title">So sieht das aus.</Editable>
             </h2>
           </BlurIn>
@@ -201,7 +201,7 @@ export function LeistungenPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="leistungen.materialien.eyebrow">Materialien</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="leistungen.materialien.title">Kunststoff. Aluminium. Holz.</Editable>
             </h2>
             <p className="mt-6 text-white/85 text-base md:text-lg leading-relaxed">
@@ -231,7 +231,7 @@ export function LeistungenPage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="leistungen.produkte.eyebrow">Produkte</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="leistungen.produkte.title">Fenster, Türen, Tore.</Editable>
             </h2>
           </BlurIn>

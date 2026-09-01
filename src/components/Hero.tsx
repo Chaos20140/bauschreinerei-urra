@@ -40,7 +40,7 @@ export function Hero() {
         <div className="flex-1 flex flex-col justify-center max-w-6xl">
           <BlurIn delay={0.3}>
             <h1
-              className="hero-title text-white font-medium text-[15vw] md:text-[10vw] leading-[0.88]"
+              className="hero-title text-white font-medium text-[15vw] md:text-[min(10vw,192px)] leading-[0.88]"
               style={SHADOW_HEAVY}
             >
               <Editable id="home.hero.title" rich>

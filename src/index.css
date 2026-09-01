@@ -33,6 +33,26 @@
     letter-spacing: -0.04em;
     line-height: 0.95;
     text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+
+    /* Sicherheitsnetz gegen ueberlaufende Ueberschriften.
+     *
+     * Die Groessen skalieren mit der Viewport-Breite, die Container sind aber
+     * ab ~1376px gedeckelt (max-w-7xl). Ein langes Wort ohne Trennmoeglichkeit
+     * lief deshalb aus seiner Grid-Spalte heraus und ueberdeckte den Text der
+     * Nachbarspalte. Die Groessen sind inzwischen per min() gekappt — das hier
+     * faengt den Rest ab, denn alle diese Texte sind im Verwaltungsmodus
+     * aenderbar: Der Betrieb kann jederzeit ein beliebig langes Wort eintragen.
+     *
+     * hyphens trennt an sinnvollen Stellen (html lang="de" ist gesetzt),
+     * overflow-wrap greift nur, wenn selbst das nicht reicht.
+     *
+     * Bewusst `anywhere` und NICHT `break-word`: Letzteres beeinflusst die
+     * Mindestbreite des Elements nicht. In einem Grid-Track blieb ein langes
+     * Wort damit ungebrochen stehen und lief heraus (gemessen auf /ueber-uns:
+     * 570px Text in einem 539px breiten Feld). `anywhere` zaehlt in die
+     * Mindestbreite und bricht deshalb zuverlaessig. */
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 
   .text-on-video {

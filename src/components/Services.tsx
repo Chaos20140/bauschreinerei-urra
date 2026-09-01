@@ -11,7 +11,7 @@ export function Services() {
             <p className="text-xs md:text-sm text-white/60 tracking-[0.3em] uppercase mb-4">
               <Editable id="home.services.eyebrow">{services.eyebrow}</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[12vw] md:text-[7vw]">
+            <h2 className="hero-title text-white font-medium text-[12vw] md:text-[min(7vw,134.4px)]">
               <Editable id="home.services.title">{services.title}</Editable>
             </h2>
           </BlurIn>

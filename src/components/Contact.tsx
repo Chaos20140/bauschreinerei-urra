@@ -17,7 +17,7 @@ export function Contact() {
             <p className="text-xs md:text-sm text-white/60 tracking-widest uppercase mb-4">
               <Editable id="home.contact.eyebrow">{contact.eyebrow}</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[12vw] md:text-[8vw]">
+            <h2 className="hero-title text-white font-medium text-[12vw] md:text-[min(8vw,153.6px)]">
               <Editable id="home.contact.lead">{contact.lead}</Editable>
             </h2>
           </div>

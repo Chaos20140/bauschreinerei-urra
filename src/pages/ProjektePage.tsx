@@ -58,7 +58,7 @@ export function ProjektePage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="projekte.objektarten.eyebrow">Objektarten</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="projekte.objektarten.title">Was wir umsetzen.</Editable>
             </h2>
           </BlurIn>
@@ -99,7 +99,7 @@ export function ProjektePage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="projekte.referenzen.eyebrow">Referenzen</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="projekte.referenzen.title">Aus unserer Werkstatt.</Editable>
             </h2>
             <p className="mt-5 text-white/80 text-base md:text-lg leading-relaxed">
@@ -148,7 +148,7 @@ export function ProjektePage() {
                         <p className="text-white/55 text-[10px] md:text-xs tracking-[0.3em] uppercase mb-4">
                           {p.category} · {p.location} · {p.year}
                         </p>
-                        <h3 className="hero-title text-white font-medium text-[9vw] md:text-[3.4vw] lg:text-[2.8vw] leading-[1] mb-5">
+                        <h3 className="hero-title text-white font-medium text-[9vw] md:text-[min(3.4vw,65.3px)] lg:text-[min(2.8vw,53.8px)] leading-[1] mb-5">
                           <Editable id={`projekte.item.${p.slug}.title`}>{p.title}</Editable>
                         </h3>
                         <p className="text-white/80 text-base md:text-lg leading-relaxed mb-7">
@@ -179,7 +179,7 @@ export function ProjektePage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="projekte.eckdaten.eyebrow">Eckdaten</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="projekte.eckdaten.title">Das spricht für uns.</Editable>
             </h2>
           </BlurIn>
@@ -206,7 +206,7 @@ export function ProjektePage() {
             <p className="text-white/60 text-xs tracking-[0.3em] uppercase mb-3">
               <Editable id="projekte.servicegebiet.eyebrow">Servicegebiet</Editable>
             </p>
-            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[5.5vw] leading-[0.95]">
+            <h2 className="hero-title text-white font-medium text-[10vw] md:text-[min(5.5vw,105.6px)] leading-[0.95]">
               <Editable id="projekte.servicegebiet.title">Wo wir bauen.</Editable>
             </h2>
           </BlurIn>

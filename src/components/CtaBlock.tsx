@@ -22,7 +22,7 @@ export function CtaBlock({
     <section className="relative px-6 md:px-12 py-24 md:py-32">
       <div className="max-w-5xl mx-auto text-center">
         <BlurIn>
-          <h2 className="hero-title text-white font-medium text-[12vw] md:text-[6vw] leading-[0.92] mb-6 md:mb-8">
+          <h2 className="hero-title text-white font-medium text-[12vw] md:text-[min(6vw,115.2px)] leading-[0.92] mb-6 md:mb-8">
             {idPrefix ? <Editable id={`${idPrefix}.cta.title`} rich>{title}</Editable> : title}
           </h2>
         </BlurIn>
