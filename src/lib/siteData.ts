@@ -26,7 +26,7 @@ export const CONTACT_IDS = {
 } as const;
 
 export type ContactInfo = {
-  /** „Am Ochsenberg 13" */
+  /** „Laurentiusstraße 1A" */
   street: string;
   /** „59939 Olsberg" (PLZ und Ort in einer Zeile — so wird es auch bearbeitet) */
   city: string;

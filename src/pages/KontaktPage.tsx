@@ -22,7 +22,7 @@ export function KontaktPage() {
   useDocumentMeta({
     title: 'Kontakt · Angebot anfragen | Bauschreinerei Urra Olsberg',
     description:
-      'Bauschreinerei Urra, Am Ochsenberg 13 in 59939 Olsberg. Telefon, E-Mail, WhatsApp oder Anfrageformular — wir melden uns werktags binnen 24 Stunden.',
+      'Bauschreinerei Urra, Laurentiusstraße 1A in 59939 Olsberg. Telefon, E-Mail, WhatsApp oder Anfrageformular — wir melden uns werktags binnen 24 Stunden.',
   });
 
   return (

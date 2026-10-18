@@ -8,7 +8,7 @@ export function ImpressumPage() {
   useDocumentMeta({
     title: 'Impressum · Bauschreinerei Urra',
     description:
-      'Anbieterkennzeichnung nach § 5 DDG: Bauschreinerei Heribert Urra, Am Ochsenberg 13, 59939 Olsberg.',
+      'Anbieterkennzeichnung nach § 5 DDG: Bauschreinerei Heribert Urra, Laurentiusstraße 1A, 59939 Olsberg.',
   });
 
   return (

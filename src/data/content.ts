@@ -171,7 +171,7 @@ export const contact = {
   eyebrow: 'Kontakt',
   lead: 'Lassen Sie uns über Ihr Projekt sprechen.',
   address: {
-    street: 'Am Ochsenberg 13',
+    street: 'Laurentiusstraße 1A',
     zip: '59939',
     city: 'Olsberg',
   },

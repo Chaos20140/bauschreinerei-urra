@@ -10,7 +10,7 @@ export const impressum = {
       lines: [
         'Bauschreinerei Heribert Urra',
         'Inhaber: Heribert Urra',
-        'Am Ochsenberg 13',
+        'Laurentiusstraße 1A',
         '59939 Olsberg',
         'Deutschland',
       ],
@@ -29,7 +29,7 @@ export const impressum = {
     },
     {
       heading: 'Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV',
-      lines: ['Heribert Urra', 'Am Ochsenberg 13', '59939 Olsberg'],
+      lines: ['Heribert Urra', 'Laurentiusstraße 1A', '59939 Olsberg'],
     },
     {
       // Die EU-Plattform zur Online-Streitbeilegung wurde zum 20.07.2025
@@ -67,7 +67,7 @@ export const datenschutz = {
       lines: [
         'Bauschreinerei Heribert Urra',
         'Inhaber: Heribert Urra',
-        'Am Ochsenberg 13',
+        'Laurentiusstraße 1A',
         '59939 Olsberg',
         'Telefon: +49 160 99116995',
         'E-Mail: h.urra@bauschreinerei-urra.de',
