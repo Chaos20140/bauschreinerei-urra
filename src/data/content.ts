@@ -186,7 +186,7 @@ export const contact = {
 
 const _whatsappNumberE164 = '4915141853814';
 const _whatsappMessage = encodeURIComponent(
-  'Hallo Bauschreinerei Urra, ich interessiere mich für ein Fenster- oder Türen-Projekt und hätte gerne ein unverbindliches Angebot.'
+  'Hallo Bauschreinerei Urra, ich habe ein Anliegen und würde mich über eine Rückmeldung freuen.'
 );
 
 export const whatsapp = {
