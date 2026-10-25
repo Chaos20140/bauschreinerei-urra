@@ -175,7 +175,7 @@ export const contact = {
     zip: '59939',
     city: 'Olsberg',
   },
-  phone: { display: '+49 160 99116995', href: 'tel:+4916099116995' },
+  phone: { display: '+49 1514 1853814', href: 'tel:+4915141853814' },
   email: { display: 'h.urra@bauschreinerei-urra.de', href: 'mailto:h.urra@bauschreinerei-urra.de' },
   cta: 'Termin anfragen',
   // Ziel jedes "Termin anfragen"-Buttons: Kontaktformular auf der Kontaktseite.
@@ -184,13 +184,13 @@ export const contact = {
   callCta: 'Direkt anrufen',
 } as const;
 
-const _whatsappNumberE164 = '4916099116995';
+const _whatsappNumberE164 = '4915141853814';
 const _whatsappMessage = encodeURIComponent(
   'Hallo Bauschreinerei Urra, ich interessiere mich für ein Fenster- oder Türen-Projekt und hätte gerne ein unverbindliches Angebot.'
 );
 
 export const whatsapp = {
-  display: '+49 160 99116995',
+  display: '+49 1514 1853814',
   numberE164: _whatsappNumberE164,
   href: `https://wa.me/${_whatsappNumberE164}?text=${_whatsappMessage}`,
   label: 'Per WhatsApp schreiben',

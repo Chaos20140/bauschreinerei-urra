@@ -18,7 +18,7 @@ export const impressum = {
     {
       heading: 'Kontakt',
       lines: [
-        'Telefon: +49 160 99116995',
+        'Telefon: +49 1514 1853814',
         'E-Mail: h.urra@bauschreinerei-urra.de',
         'Web: www.urra-fenster.de',
       ],
@@ -69,7 +69,7 @@ export const datenschutz = {
         'Inhaber: Heribert Urra',
         'Laurentiusstraße 1A',
         '59939 Olsberg',
-        'Telefon: +49 160 99116995',
+        'Telefon: +49 1514 1853814',
         'E-Mail: h.urra@bauschreinerei-urra.de',
       ],
     },
